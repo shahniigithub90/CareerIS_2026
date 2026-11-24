@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Features - CareerIS Career Information System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Custom styles for Features page */
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #1a252f;
+        }
+
+        .hero-features {
+            background: linear-gradient(rgba(44, 62, 80, 0.9), rgba(44, 62, 80, 0.9)), url('https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 100px 0;
+            margin-top: 56px;
+        }
+
+        .feature-icon-box {
+            width: 70px;
+            height: 70px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .alumni-feature .feature-icon-box {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: var(--secondary-color);
+        }
+
+        .internship-feature .feature-icon-box {
+            background-color: rgba(46, 204, 113, 0.1);
+            color: #2ecc71;
+        }
+
+        .certification-feature .feature-icon-box {
+            background-color: rgba(155, 89, 182, 0.1);
+            color: #9b59b6;
+        }
+
+        .feature-card {
+            border: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            height: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+
+        .portal-header {
+            padding: 20px;
+            border-radius: 10px 10px 0 0;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .alumni-portal .portal-header {
+            background: linear-gradient(135deg, var(--secondary-color), #2980b9);
+        }
+
+        .internship-portal .portal-header {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+        }
+
+        .certification-portal .portal-header {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-list li i {
+            width: 20px;
+            margin-right: 10px;
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            color: var(--primary-color);
+            font-weight: 500;
+            padding: 12px 25px;
+        }
+
+        .nav-tabs .nav-link.active {
+            border-bottom: 3px solid var(--secondary-color);
+            color: var(--secondary-color);
+            background: transparent;
+        }
+
+        .comparison-table th {
+            background-color: var(--light-color);
+            font-weight: 600;
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            color: var(--primary-color) !important;
+        }
+
+        .btn-primary {
+            background-color: var(--secondary-color);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+
+        .footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 40px 0;
+        }
+
+        .tech-feature {
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            height: 100%;
+        }
+
+        .tech-icon {
+            font-size: 2.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg fixed-top" id="mainNav">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+            <div style="width:36px;height:36px;background:linear-gradient(135deg,#3498db,#2980b9);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+                <i class="fas fa-graduation-cap text-white" style="font-size:1rem;"></i>
+            </div>
+            <span><span class="brand-career">Career</span><span class="brand-is">IS</span></span>
+        </a>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-center gap-1">
+                <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+                <li class="nav-item"><a class="nav-link active" href="features.html">Features</a></li>
+                <li class="nav-item"><a class="nav-link" href="roles.html">User Roles</a></li>
+                <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+                <li class="nav-item ms-2"><a class="nav-link" href="login.html">Login</a></li>
+                <li class="nav-item"><a class="nav-link navbar-btn" href="register.html">Get Started</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero-features">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="display-4 fw-bold mb-4">Platform Features</h1>
+                <p class="lead mb-4">Explore the comprehensive features of our integrated career management platform</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <!-- Portal Overview Tabs -->
+    <section class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold mb-3">Three Integrated Portals</h2>
+                <p class="text-muted">Each portal serves specific needs while working together seamlessly</p>
+            </div>
+
+            <ul class="nav nav-tabs justify-content-center mb-5" id="portalTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="alumni-tab" data-bs-toggle="tab" data-bs-target="#alumni" type="button" role="tab">
+                        <i class="fas fa-user-graduate me-2"></i> Alumni Portal
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="internship-tab" data-bs-toggle="tab" data-bs-target="#internship" type="button" role="tab">
+                        <i class="fas fa-briefcase me-2"></i> Internship Portal
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="certification-tab" data-bs-toggle="tab" data-bs-target="#certification" type="button" role="tab">
+                        <i class="fas fa-certificate me-2"></i> Certification Portal
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content" id="portalTabsContent">
+                <!-- Alumni Portal Tab -->
+                <div class="tab-pane fade show active" id="alumni" role="tabpanel">
+                    <div class="row align-items-center">
+                        <div class="col-lg-6 mb-4">
+                            <h3 class="fw-bold mb-4">Alumni Portal</h3>
+                            <p class="mb-4">The Alumni Portal creates a vibrant network where graduated students can reconnect with their alma mater and support current students through mentorship and opportunities.</p>
+
+                            <div class="row mt-4">
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-start">
+                                        <i class="fas fa-user-plus text-primary me-3 mt-1"></i>
+                                        <div>
+                                            <h5>Profile Management</h5>
+                                            <p class="small text-muted mb-0">Create and update professional profiles</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-start">
+                                        <i class="fas fa-search text-primary me-3 mt-1"></i>
+                                        <div>
+                                            <h5>Directory Search</h5>
+                                            <p class="small text-muted mb-0">Find and connect with other alumni</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-start">
+                                        <i class="fas fa-briefcase text-primary me-3 mt-1"></i>
+                                        <div>
+                                            <h5>Job Posting</h5>
+                                            <p class="small text-muted mb-0">Post opportunities for students</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-start">
+                                        <i class="fas fa-users text-primary me-3 mt-1"></i>
+                                        <div>
+                                            <h5>Batch Reunions</h5>
+                                            <p class="small text-muted mb-0">Organize batch gatherings</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                                 alt="Alumni Networking"
+                                 class="img-fluid rounded shadow-lg">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Internship Portal Tab -->
+                <div class="tab-pane fade" id="internship" role="tabpanel">
+                    <div class="row align-items-center">
+                        <div class="col-lg-6 mb-4">
+                            <h3 class="fw-bold mb-4">Internship Portal</h3>
+                            <p class="mb-4">The Internship Portal streamlines the process of finding, applying for, and managing internship opportunities, connecting students directly with companies and alumni recruiters.</p>
+
+                            <div class="row mt-4">
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-start">
+                                        <i class="fas fa-search text-success me-3 mt-1"></i>
+                                        <div>
+                                            <h5>Listings & Search</h5>
+                                            <p class="small text-muted mb-0">Find internships by role, company, location</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-start">
+                                        <i class="fas fa-file-upload text-success me-3 mt-1"></i>
+                                        <div>
+                                            <h5>Resume Upload</h5>
+                                            <p class="small text-muted mb-0">Upload and manage CVs/resumes</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-start">
+                                        <i class="fas fa-paper-plane text-success me-3 mt-1"></i>
+                                        <div>
+                                            <h5>Quick Applications</h5>
+                                            <p class="small text-muted mb-0">One-click apply with saved profiles</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-start">
+                                        <i class="fas fa-bookmark text-success me-3 mt-1"></i>
+                                        <div>
+                                            <h5>Save Listings</h5>
+                                            <p class="small text-muted mb-0">Bookmark favorite opportunities</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                                 alt="Internship Portal"
+                                 class="img-fluid rounded shadow-lg">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Certification Portal Tab -->
+                <div class="tab-pane fade" id="certification" role="tabpanel">
+                    <div class="row align-items-center">
+                        <div class="col-lg-6 mb-4">
+                            <h3 class="fw-bold mb-4">Certification Portal</h3>
+                            <p class="mb-4">The Certification Portal allows students to build a verifiable digital portfolio of their skills and certifications, making it easier to showcase qualifications to potential employers.</p>
+
+                            <div class="row mt-4">
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-start">
+                                        <i class="fas fa-upload text-purple me-3 mt-1"></i>
+                                        <div>
+                                            <h5>Certificate Upload</h5>
+                                            <p class="small text-muted mb-0">Upload PDF/image certificates</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-start">
+                                        <i class="fas fa-check-circle text-purple me-3 mt-1"></i>
+                                        <div>
+                                            <h5>Verification System</h5>
+                                            <p class="small text-muted mb-0">Admin verification for authenticity</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-start">
+                                        <i class="fas fa-download text-purple me-3 mt-1"></i>
+                                        <div>
+                                            <h5>Certificate Download</h5>
+                                            <p class="small text-muted mb-0">Download certificates anytime</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-start">
+                                        <i class="fas fa-cog text-purple me-3 mt-1"></i>
+                                        <div>
+                                            <h5>Certificate Management</h5>
+                                            <p class="small text-muted mb-0">Organize and manage certificates</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                                 alt="Certification Portal"
+                                 class="img-fluid rounded shadow-lg">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Detailed Features by Portal -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold mb-3">Detailed Feature Breakdown</h2>
+                <p class="text-muted">Comprehensive capabilities for each portal</p>
+            </div>
+
+            <div class="row">
+                <!-- Alumni Portal Features -->
+                <div class="col-lg-4 mb-4">
+                    <div class="feature-card card alumni-portal">
+                        <div class="portal-header">
+                            <h3 class="mb-0"><i class="fas fa-user-graduate me-2"></i> Alumni Portal</h3>
+                        </div>
+                        <div class="card-body">
+                            <ul class="feature-list list-unstyled">
+                                <li><i class="fas fa-user-plus text-primary"></i> Profile Creation & Management</li>
+                                <li><i class="fas fa-search text-primary"></i> Alumni Directory Search</li>
+                                <li><i class="fas fa-briefcase text-primary"></i> Job Posting for Students</li>
+                                <li><i class="fas fa-newspaper text-primary"></i> University News Updates</li>
+                                <li><i class="fas fa-users text-primary"></i> Batch Reunion Organization</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Internship Portal Features -->
+                <div class="col-lg-4 mb-4">
+                    <div class="feature-card card internship-portal">
+                        <div class="portal-header">
+                            <h3 class="mb-0"><i class="fas fa-briefcase me-2"></i> Internship Portal</h3>
+                        </div>
+                        <div class="card-body">
+                            <ul class="feature-list list-unstyled">
+                                <li><i class="fas fa-list-alt text-success"></i> Internship Listings & Search</li>
+                                <li><i class="fas fa-file-upload text-success"></i> Resume/CV Upload</li>
+                                <li><i class="fas fa-paper-plane text-success"></i> One-Click Applications</li>
+                                <li><i class="fas fa-tasks text-success"></i> Application Status Tracking</li>
+                                <li><i class="fas fa-bookmark text-success"></i> Save Favorite Listings</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Certification Portal Features -->
+                <div class="col-lg-4 mb-4">
+                    <div class="feature-card card certification-portal">
+                        <div class="portal-header">
+                            <h3 class="mb-0"><i class="fas fa-certificate me-2"></i> Certification Portal</h3>
+                        </div>
+                        <div class="card-body">
+                            <ul class="feature-list list-unstyled">
+                                <li><i class="fas fa-upload text-purple"></i> Certificate Upload (PDF/Image)</li>
+                                <li><i class="fas fa-check-double text-purple"></i> Admin Verification System</li>
+                                <li><i class="fas fa-download text-purple"></i> Certificate Download</li>
+                                <li><i class="fas fa-cog text-purple"></i> Certificate Management</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technical Features -->
+    <section class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold mb-3">Technical Features</h2>
+                <p class="text-muted">Under-the-hood capabilities that power CareerIS</p>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="tech-feature">
+                        <div class="tech-icon">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <h4>Secure Authentication</h4>
+                        <p>Role-based login system with password encryption for students, alumni, and administrators.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                    <div class="tech-feature">
+                        <div class="tech-icon">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <h4>CRUD Operations</h4>
+                        <p>Full Create, Read, Update, Delete functionality for all data entities across the platform.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                    <div class="tech-feature">
+                        <div class="tech-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h4>Responsive Design</h4>
+                        <p>Fully responsive interface that works seamlessly on desktop, tablet, and mobile devices.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-4 mx-auto">
+                    <div class="tech-feature">
+                        <div class="tech-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <h4>Admin Dashboard</h4>
+                        <p>Comprehensive admin panel for user management, content approval, and analytics.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Feature Comparison -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold mb-3">Portal Comparison</h2>
+                <p class="text-muted">How each portal serves different user needs</p>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-bordered comparison-table">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Feature Category</th>
+                            <th>Alumni Portal</th>
+                            <th>Internship Portal</th>
+                            <th>Certification Portal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Primary Users</strong></td>
+                            <td>Graduated Students</td>
+                            <td>Current Students</td>
+                            <td>Students & Alumni</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Main Purpose</strong></td>
+                            <td>Networking & Giving Back</td>
+                            <td>Finding Opportunities</td>
+                            <td>Skill Documentation</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Key Action</strong></td>
+                            <td>Connect & Mentor</td>
+                            <td>Apply & Track</td>
+                            <td>Upload & Verify</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Admin Role</strong></td>
+                            <td>Approval & Moderation</td>
+                            <td>Post Verification</td>
+                            <td>Certificate Validation</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Integration</strong></td>
+                            <td>Posts internships</td>
+                            <td>Uses certifications</td>
+                            <td>Enhances profiles</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+<footer class="footer">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="footer-brand d-flex align-items-center gap-2 mb-3">
+                    <div style="width:36px;height:36px;background:linear-gradient(135deg,#3498db,#2980b9);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+                        <i class="fas fa-graduation-cap text-white" style="font-size:1rem;"></i>
+                    </div>
+                    <span><span class="brand-career">Career</span><span class="brand-is">IS</span></span>
+                </div>
+                <p style="font-size:0.9rem;">A comprehensive Career Information System for Jinnah University for Women — connecting students, alumni, and industry partners.</p>
+                <div class="mt-3">
+                    <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4">
+                <h5>Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="index.html">Home</a></li>
+                    <li class="mb-2"><a href="about.html">About</a></li>
+                    <li class="mb-2"><a href="features.html">Features</a></li>
+                    <li class="mb-2"><a href="roles.html">User Roles</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-3 col-md-4">
+                <h5>Portals</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="dashboard/alumni.html">Alumni Portal</a></li>
+                    <li class="mb-2"><a href="dashboard/student.html">Internship Portal</a></li>
+                    <li class="mb-2"><a href="dashboard/student.html">Certification Portal</a></li>
+                    <li class="mb-2"><a href="login.html">Login</a></li>
+                    <li><a href="register.html">Register</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-3 col-md-4">
+                <h5>Contact Info</h5>
+                <ul class="list-unstyled" style="font-size:0.9rem;">
+                    <li class="mb-2"><i class="fas fa-university me-2" style="color:var(--secondary);"></i>Jinnah University for Women</li>
+                    <li class="mb-2"><i class="fas fa-map-marker-alt me-2" style="color:var(--secondary);"></i>Niazmabad, Block 5, Karachi</li>
+                    <li class="mb-2"><i class="fas fa-envelope me-2" style="color:var(--secondary);"></i>info@careeris.edu</li>
+                    <li><i class="fas fa-user-tie me-2" style="color:var(--secondary);"></i>Supervisor: Ms. Ushna Tasleem</li>
+                </ul>
+            </div>
+        </div>
+        <hr class="footer-divider">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+            <p class="mb-0" style="font-size:0.85rem;">© 2026 CareerIS — Career Information System. Final Year Project.</p>
+            <p class="mb-0" style="font-size:0.8rem;color:rgba(255,255,255,0.3);">Rabaika · Samra · Ariqah · Shahneela</p>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

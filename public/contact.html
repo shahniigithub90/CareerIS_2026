@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact — CareerIS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Custom styles for Contact page */
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #1a252f;
+        }
+
+        .hero-contact {
+            background: linear-gradient(rgba(44, 62, 80, 0.9), rgba(44, 62, 80, 0.9)), url('https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 100px 0;
+            margin-top: 56px;
+        }
+
+        .contact-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            height: 100%;
+        }
+
+        .contact-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .contact-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--secondary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 1.5rem;
+        }
+
+        .contact-form {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .form-control, .form-select {
+            border: 2px solid #e9ecef;
+            padding: 12px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            color: var(--primary-color) !important;
+        }
+
+        .btn-primary {
+            background-color: var(--secondary-color);
+            border: none;
+            padding: 12px 30px;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+
+        .footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 40px 0;
+        }
+
+        .team-member {
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+
+        .team-member:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--light-color);
+            color: var(--primary-color);
+            margin: 0 5px;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .social-links a:hover {
+            background: var(--secondary-color);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .faq-item {
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 20px;
+            background: var(--light-color);
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-answer {
+            padding: 20px;
+            display: none;
+        }
+
+        .contact-hours {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .hours-row {
+            padding: 10px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .hours-row:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg fixed-top" id="mainNav">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+            <div style="width:36px;height:36px;background:linear-gradient(135deg,#3498db,#2980b9);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+                <i class="fas fa-graduation-cap text-white" style="font-size:1rem;"></i>
+            </div>
+            <span><span class="brand-career">Career</span><span class="brand-is">IS</span></span>
+        </a>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-center gap-1">
+                <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+                <li class="nav-item"><a class="nav-link" href="features.html">Features</a></li>
+                <li class="nav-item"><a class="nav-link" href="roles.html">User Roles</a></li>
+                <li class="nav-item"><a class="nav-link active" href="contact.html">Contact</a></li>
+                <li class="nav-item ms-2"><a class="nav-link" href="login.html">Login</a></li>
+                <li class="nav-item"><a class="nav-link navbar-btn" href="register.html">Get Started</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero-contact">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="display-4 fw-bold mb-4">Contact Us</h1>
+                <p class="lead mb-4">Get in touch with our team for inquiries, support, or collaboration opportunities</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <!-- Contact Information -->
+    <section class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold mb-3">Get In Touch</h2>
+                <p class="text-muted">Multiple ways to reach our team</p>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="contact-card p-4 text-center">
+                        <div class="contact-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <h4 class="mb-3">Visit Us</h4>
+                        <p class="text-muted mb-0">
+                            Computer Science Department<br>
+                            Block 5, Nazimabad<br>
+                            Campus Road, Karachi City<br>
+                            ZIP Code: 12345
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="contact-card p-4 text-center">
+                        <div class="contact-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <h4 class="mb-3">Email Us</h4>
+                        <p class="text-muted mb-0">
+                            <strong>General Inquiries:</strong><br>
+                            info@careeris.edu<br><br>
+                            <strong>Technical Support:</strong><br>
+                            support@careeris.edu<br><br>
+                            <strong>Career Services:</strong><br>
+                            careers@careeris.edu
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="contact-card p-4 text-center">
+                        <div class="contact-icon">
+                            <i class="fas fa-phone-alt"></i>
+                        </div>
+                        <h4 class="mb-3">Call Us</h4>
+                        <p class="text-muted mb-0">
+                            <strong>Main Office:</strong><br>
+                            +1 (555) 123-4567<br><br>
+                            <strong>Student Support:</strong><br>
+                            +1 (555) 123-4568<br><br>
+                            <strong>Emergency:</strong><br>
+                            +1 (555) 123-4569
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Form -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="contact-form">
+                        <h3 class="fw-bold mb-4">Send Us a Message</h3>
+                        <form id="contactForm">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">First Name *</label>
+                                    <input type="text" class="form-control" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Last Name *</label>
+                                    <input type="text" class="form-control" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Email Address *</label>
+                                <input type="email" class="form-control" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Phone Number</label>
+                                <input type="tel" class="form-control">
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Department/University</label>
+                                <input type="text" class="form-control" placeholder="Your university or organization">
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Inquiry Type *</label>
+                                <select class="form-select" required>
+                                    <option value="">Select inquiry type</option>
+                                    <option value="general">General Information</option>
+                                    <option value="technical">Technical Support</option>
+                                    <option value="partnership">Partnership Opportunity</option>
+                                    <option value="feedback">Feedback/Suggestions</option>
+                                    <option value="career">Career Services</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Your Message *</label>
+                                <textarea class="form-control" rows="5" required placeholder="Please provide details about your inquiry..."></textarea>
+                            </div>
+
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="newsletter" checked>
+                                <label class="form-check-label" for="newsletter">
+                                    Subscribe to our newsletter for updates
+                                </label>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100" onclick="submitForm(event)">
+                                <i class="fas fa-paper-plane me-2"></i> Send Message
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold mb-3">Our Team</h2>
+                <p class="text-muted">Meet the FYP team behind CareerIS</p>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="team-member">
+                        <div class="mb-3">
+                            <div class="rounded-circle bg-primary d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                <i class="fas fa-user fa-2x text-white"></i>
+                            </div>
+                        </div>
+                        <h5 class="mb-1">Rabaika Qureshi</h5>
+                        <p class="text-muted mb-2">Student</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="team-member">
+                        <div class="mb-3">
+                            <div class="rounded-circle bg-success d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                <i class="fas fa-user fa-2x text-white"></i>
+                            </div>
+                        </div>
+                        <h5 class="mb-1">Samra Kashaf</h5>
+                        <p class="text-muted mb-2">Student</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="team-member">
+                        <div class="mb-3">
+                            <div class="rounded-circle bg-info d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                <i class="fas fa-user fa-2x text-white"></i>
+                            </div>
+                        </div>
+                        <h5 class="mb-1">Ariqah M.Rafiq</h5>
+                        <p class="text-muted mb-2">Student</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="team-member">
+                        <div class="mb-3">
+                            <div class="rounded-circle bg-warning d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                <i class="fas fa-user fa-2x text-white"></i>
+                            </div>
+                        </div>
+                        <h5 class="mb-1">Shahneela Aslam</h5>
+                        <p class="text-muted mb-2">Student</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h5 class="mb-2">Project Supervisor</h5>
+                        <p class="mb-0 fw-bold">Ms Ushna Tasleem</p>
+                        <p class="text-muted mb-0">Professor, Computer Science Department</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold mb-3">Frequently Asked Questions</h2>
+                <p class="text-muted">Common questions about CareerIS</p>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6 mb-4">
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(1)">
+                            What is CareerIS?
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer" id="faq1">
+                            CareerIS is a Career Information System designed as a Final Year Project. It integrates three portals: Alumni Portal, Internship Portal, and Certification Portal to connect students, alumni, and industry opportunities.
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(2)">
+                            Who can use CareerIS?
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer" id="faq2">
+                            CareerIS has three user roles: Students (current university students), Alumni (graduated students), and Administrators (university staff). Each role has specific permissions and access levels.
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(3)">
+                            How do I get access to CareerIS?
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer" id="faq3">
+                            Access is role-based. Students can register with university credentials. Alumni status requires graduation verification and admin approval. Admin access is granted to university staff only.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 mb-4">
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(4)">
+                            Is CareerIS free to use?
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer" id="faq4">
+                            Yes, CareerIS is completely free for students, alumni, and university staff. It's developed as an academic project to enhance university career services.
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(5)">
+                            How are certificates verified?
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer" id="faq5">
+                            Students upload certificates which are then verified by administrators. The admin team checks certificate authenticity before marking them as verified in the system.
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(6)">
+                            Can I contribute to CareerIS development?
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer" id="faq6">
+                            Currently, CareerIS is a Final Year Project. However, we welcome feedback and suggestions. For collaboration opportunities, please contact us through the form above.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<footer class="footer">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="footer-brand d-flex align-items-center gap-2 mb-3">
+                    <div style="width:36px;height:36px;background:linear-gradient(135deg,#3498db,#2980b9);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+                        <i class="fas fa-graduation-cap text-white" style="font-size:1rem;"></i>
+                    </div>
+                    <span><span class="brand-career">Career</span><span class="brand-is">IS</span></span>
+                </div>
+                <p style="font-size:0.9rem;">A comprehensive Career Information System for Jinnah University for Women — connecting students, alumni, and industry partners.</p>
+                <div class="mt-3">
+                    <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4">
+                <h5>Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="index.html">Home</a></li>
+                    <li class="mb-2"><a href="about.html">About</a></li>
+                    <li class="mb-2"><a href="features.html">Features</a></li>
+                    <li class="mb-2"><a href="roles.html">User Roles</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-3 col-md-4">
+                <h5>Portals</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="dashboard/alumni.html">Alumni Portal</a></li>
+                    <li class="mb-2"><a href="dashboard/student.html">Internship Portal</a></li>
+                    <li class="mb-2"><a href="dashboard/student.html">Certification Portal</a></li>
+                    <li class="mb-2"><a href="login.html">Login</a></li>
+                    <li><a href="register.html">Register</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-3 col-md-4">
+                <h5>Contact Info</h5>
+                <ul class="list-unstyled" style="font-size:0.9rem;">
+                    <li class="mb-2"><i class="fas fa-university me-2" style="color:var(--secondary);"></i>Jinnah University for Women</li>
+                    <li class="mb-2"><i class="fas fa-map-marker-alt me-2" style="color:var(--secondary);"></i>Niazmabad, Block 5, Karachi</li>
+                    <li class="mb-2"><i class="fas fa-envelope me-2" style="color:var(--secondary);"></i>info@careeris.edu</li>
+                    <li><i class="fas fa-user-tie me-2" style="color:var(--secondary);"></i>Supervisor: Ms. Ushna Tasleem</li>
+                </ul>
+            </div>
+        </div>
+        <hr class="footer-divider">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+            <p class="mb-0" style="font-size:0.85rem;">© 2026 CareerIS — Career Information System. Final Year Project.</p>
+            <p class="mb-0" style="font-size:0.8rem;color:rgba(255,255,255,0.3);">Rabaika · Samra · Ariqah · Shahneela</p>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/main.js"></script>
+
+<script>
+    // Contact Form Submission
+    function submitForm(event) {
+        event.preventDefault();
+        alert('Thank you for your message! We will respond within 24 hours.');
+        document.getElementById('contactForm').reset();
+    }
+
+    // FAQ Toggle
+    function toggleFAQ(id) {
+        const answer = document.getElementById('faq' + id);
+        const icon = event.currentTarget.querySelector('i');
+
+        if (answer.style.display === 'block') {
+            answer.style.display = 'none';
+            icon.classList.remove('fa-chevron-up');
+            icon.classList.add('fa-chevron-down');
+        } else {
+            answer.style.display = 'block';
+            icon.classList.remove('fa-chevron-down');
+            icon.classList.add('fa-chevron-up');
+        }
+    }
+
+    // Initialize FAQ answers as hidden
+    document.addEventListener('DOMContentLoaded', function() {
+        for (let i = 1; i <= 6; i++) {
+            document.getElementById('faq' + i).style.display = 'none';
+        }
+    });
+</script>
+</body>
+</html>

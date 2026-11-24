@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About — CareerIS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Custom styles for About page */
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #1a252f;
+        }
+
+        .hero-about {
+            background: linear-gradient(rgba(44, 62, 80, 0.9), rgba(44, 62, 80, 0.9)), url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 100px 0;
+            margin-top: 56px;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 30px 20px;
+            border-radius: 15px;
+            background: white;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--secondary-color);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: 8px;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--secondary-color);
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 40px;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content {
+            margin-right: calc(50% + 30px);
+            text-align: right;
+        }
+
+        .timeline-item:nth-child(even) .timeline-content {
+            margin-left: calc(50% + 30px);
+        }
+
+        .timeline-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 50%;
+            top: 20px;
+            width: 16px;
+            height: 16px;
+            background: var(--secondary-color);
+            border-radius: 50%;
+            transform: translateX(-50%);
+            border: 3px solid white;
+            box-shadow: 0 0 0 3px var(--secondary-color);
+        }
+
+        .timeline-year {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 5px;
+        }
+
+        .value-card {
+            text-align: center;
+            padding: 30px 20px;
+            border-radius: 15px;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            height: 100%;
+            transition: all 0.3s;
+        }
+
+        .value-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .value-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 1.8rem;
+        }
+
+        .tech-stack-item {
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            background: white;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+
+        .tech-stack-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .tech-icon-lg {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .team-card {
+            text-align: center;
+            padding: 30px 20px;
+            border-radius: 15px;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+            height: 100%;
+        }
+
+        .team-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .team-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 40px 0;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg fixed-top" id="mainNav">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+            <div style="width:36px;height:36px;background:linear-gradient(135deg,#3498db,#2980b9);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+                <i class="fas fa-graduation-cap text-white" style="font-size:1rem;"></i>
+            </div>
+            <span><span class="brand-career">Career</span><span class="brand-is">IS</span></span>
+        </a>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-center gap-1">
+                <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                <li class="nav-item"><a class="nav-link active" href="about.html">About</a></li>
+                <li class="nav-item"><a class="nav-link" href="features.html">Features</a></li>
+                <li class="nav-item"><a class="nav-link" href="roles.html">User Roles</a></li>
+                <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+                <li class="nav-item ms-2"><a class="nav-link" href="login.html">Login</a></li>
+                <li class="nav-item"><a class="nav-link navbar-btn" href="register.html">Get Started</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero-about">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="display-4 fw-bold mb-4">About CareerIS</h1>
+                <p class="lead mb-4">Bridging the gap between academia and industry through technology and human connection</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row g-4 justify-content-center">
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card">
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">Integrated Portals</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card">
+                    <div class="stat-number">4</div>
+                    <div class="stat-label">Team Members</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card">
+                    <div class="stat-number">FYP</div>
+                    <div class="stat-label">2026 Project</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card">
+                    <div class="stat-number">JUW</div>
+                    <div class="stat-label">University</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- What is CareerIS -->
+<section class="py-5">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <h2 class="fw-bold mb-4">What is CareerIS?</h2>
+                <p class="mb-4">CareerIS (Career Information System) is a web-based platform designed to support career development within a university environment. The system connects students, alumni, and administrators through a centralized digital interface.</p>
+                <p class="mb-4">Students can create profiles, explore internship opportunities, and upload or track their certifications. Alumni can maintain professional profiles, post internships, and guide students through mentorship. Administrators manage user accounts, approve certifications, and monitor system activities.</p>
+                <a href="features.html" class="btn btn-primary">
+                    <i class="fas fa-bars me-2"></i> Explore Features
+                </a>
+            </div>
+            <div class="col-lg-6">
+                <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                     alt="Team Collaboration"
+                     class="img-fluid rounded shadow-lg">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Mission & Vision -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold mb-3">Our Mission & Vision</h2>
+            <p class="text-muted">Driving career development in the digital age</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div style="width:50px;height:50px;background:rgba(52,152,219,0.1);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#3498db;font-size:1.3rem;margin-right:15px;">
+                                <i class="fas fa-bullseye"></i>
+                            </div>
+                            <h4 class="mb-0">Our Mission</h4>
+                        </div>
+                        <p class="mb-0">To create a seamless digital bridge between university students and professional opportunities by leveraging alumni networks and industry partnerships, thereby enhancing employability and career readiness for every student.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div style="width:50px;height:50px;background:rgba(155,89,182,0.1);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#9b59b6;font-size:1.3rem;margin-right:15px;">
+                                <i class="fas fa-eye"></i>
+                            </div>
+                            <h4 class="mb-0">Our Vision</h4>
+                        </div>
+                        <p class="mb-0">To become the standard career management platform for universities, transforming how educational institutions prepare students for successful professional lives through technology-enabled connections and alumni mentorship.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Core Values -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold mb-3">Our Core Values</h2>
+            <p class="text-muted">The principles that guide our platform development</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="value-card">
+                    <div class="value-icon" style="background:rgba(52,152,219,0.1);color:#3498db;">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h5>Collaboration</h5>
+                    <p class="text-muted small">Fostering meaningful connections between students, alumni, and industry professionals.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="value-card">
+                    <div class="value-icon" style="background:rgba(46,204,113,0.1);color:#2ecc71;">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h5>Integrity</h5>
+                    <p class="text-muted small">Maintaining transparency and trust in all interactions across the platform.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="value-card">
+                    <div class="value-icon" style="background:rgba(230,126,34,0.1);color:#e67e22;">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h5>Innovation</h5>
+                    <p class="text-muted small">Continuously improving and adapting to the evolving needs of the academic community.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="value-card">
+                    <div class="value-icon" style="background:rgba(155,89,182,0.1);color:#9b59b6;">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h5>Excellence</h5>
+                    <p class="text-muted small">Striving for the highest quality in every feature, interaction, and outcome.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Project Timeline -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold mb-3">Project Timeline</h2>
+            <p class="text-muted">The development journey of CareerIS</p>
+        </div>
+
+        <div class="timeline d-none d-md-block">
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-year">Phase 1 — Sep 2025</div>
+                    <h5>Project Inception</h5>
+                    <p class="mb-0 text-muted small">Identified the problem of fragmented career services at JUW. Defined scope for Alumni, Internship, and Certification portals.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-year">Phase 2 — Oct 2025</div>
+                    <h5>Requirements & Design</h5>
+                    <p class="mb-0 text-muted small">Gathered requirements from stakeholders. Created wireframes, database schema, and system architecture diagrams.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-year">Phase 3 — Nov–Dec 2025</div>
+                    <h5>Development</h5>
+                    <p class="mb-0 text-muted small">Built the full-stack application using Node.js, Express, MongoDB, and Bootstrap. Implemented JWT authentication and role-based access.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-year">Phase 4 — Jan–Feb 2026</div>
+                    <h5>Testing & Refinement</h5>
+                    <p class="mb-0 text-muted small">Conducted thorough testing across all portals. Refined UI/UX based on user feedback and resolved bugs.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-year">Phase 5 — Mar 2026</div>
+                    <h5>Final Presentation</h5>
+                    <p class="mb-0 text-muted small">Final year project submission and presentation to the evaluation committee at Jinnah University for Women.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile timeline (simplified) -->
+        <div class="d-md-none">
+            <div class="row g-3">
+                <div class="col-12"><div class="card border-0 shadow-sm"><div class="card-body"><small class="text-primary fw-bold">Sep 2025</small><h6 class="mt-1 mb-1">Project Inception</h6><p class="text-muted small mb-0">Defined scope and identified problem.</p></div></div></div>
+                <div class="col-12"><div class="card border-0 shadow-sm"><div class="card-body"><small class="text-primary fw-bold">Oct 2025</small><h6 class="mt-1 mb-1">Requirements & Design</h6><p class="text-muted small mb-0">Wireframes and system architecture.</p></div></div></div>
+                <div class="col-12"><div class="card border-0 shadow-sm"><div class="card-body"><small class="text-primary fw-bold">Nov–Dec 2025</small><h6 class="mt-1 mb-1">Development</h6><p class="text-muted small mb-0">Full-stack application built.</p></div></div></div>
+                <div class="col-12"><div class="card border-0 shadow-sm"><div class="card-body"><small class="text-primary fw-bold">Jan–Feb 2026</small><h6 class="mt-1 mb-1">Testing & Refinement</h6><p class="text-muted small mb-0">Testing and UI/UX improvements.</p></div></div></div>
+                <div class="col-12"><div class="card border-0 shadow-sm"><div class="card-body"><small class="text-primary fw-bold">Mar 2026</small><h6 class="mt-1 mb-1">Final Presentation</h6><p class="text-muted small mb-0">Project submission and presentation.</p></div></div></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Tech Stack -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold mb-3">Technology Stack</h2>
+            <p class="text-muted">Built with modern, reliable technologies</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-2 col-md-4 col-6">
+                <div class="tech-stack-item">
+                    <div class="tech-icon-lg text-success"><i class="fab fa-node-js"></i></div>
+                    <p class="mb-0 fw-600 small">Node.js</p>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-6">
+                <div class="tech-stack-item">
+                    <div class="tech-icon-lg" style="color:#000;"><i class="fas fa-server"></i></div>
+                    <p class="mb-0 small">Express.js</p>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-6">
+                <div class="tech-stack-item">
+                    <div class="tech-icon-lg text-success"><i class="fas fa-leaf"></i></div>
+                    <p class="mb-0 small">MongoDB</p>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-6">
+                <div class="tech-stack-item">
+                    <div class="tech-icon-lg text-primary"><i class="fab fa-bootstrap"></i></div>
+                    <p class="mb-0 small">Bootstrap 5</p>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-6">
+                <div class="tech-stack-item">
+                    <div class="tech-icon-lg" style="color:#f7df1e;"><i class="fab fa-js-square"></i></div>
+                    <p class="mb-0 small">JavaScript</p>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-6">
+                <div class="tech-stack-item">
+                    <div class="tech-icon-lg" style="color:#e44d26;"><i class="fab fa-html5"></i></div>
+                    <p class="mb-0 small">HTML5 / CSS3</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Team Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold mb-3">Meet the Team</h2>
+            <p class="text-muted">The students behind CareerIS — </p>
+        </div>
+        <div class="row g-4 justify-content-center">
+            <div class="col-lg-3 col-md-6">
+                <div class="team-card">
+                    <div class="team-avatar bg-primary">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h5 class="mb-1">Rabaika Qureshi</h5>
+                    <p class="text-muted small mb-2">Full-Stack Developer</p>
+                    <p class="text-muted small mb-0">Computer Science, JUW</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="team-card">
+                    <div class="team-avatar bg-success">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h5 class="mb-1">Samra Kashaf</h5>
+                    <p class="text-muted small mb-2">Frontend Developer</p>
+                    <p class="text-muted small mb-0">Computer Science, JUW</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="team-card">
+                    <div class="team-avatar bg-info">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h5 class="mb-1">Ariqah M.Rafiq</h5>
+                    <p class="text-muted small mb-2">Backend Developer</p>
+                    <p class="text-muted small mb-0">Computer Science, JUW</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="team-card">
+                    <div class="team-avatar bg-warning">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h5 class="mb-1">Shahneela Aslam</h5>
+                    <p class="text-muted small mb-2">UI/UX Designer</p>
+                    <p class="text-muted small mb-0">Computer Science, JUW</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-5">
+            <div class="card border-0 shadow-sm d-inline-block">
+                <div class="card-body px-5 py-4">
+                    <div style="width:60px;height:60px;background:rgba(52,152,219,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 15px;color:#3498db;font-size:1.5rem;">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <h5 class="mb-1">Ms. Ushna Tasleem</h5>
+                    <p class="text-muted mb-0">Project Supervisor · Professor, Computer Science Department</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="footer-brand d-flex align-items-center gap-2 mb-3">
+                    <div style="width:36px;height:36px;background:linear-gradient(135deg,#3498db,#2980b9);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+                        <i class="fas fa-graduation-cap text-white" style="font-size:1rem;"></i>
+                    </div>
+                    <span><span class="brand-career">Career</span><span class="brand-is">IS</span></span>
+                </div>
+                <p style="font-size:0.9rem;">A comprehensive Career Information System for Jinnah University for Women — connecting students, alumni, and industry partners.</p>
+                <div class="mt-3">
+                    <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4">
+                <h5>Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="index.html">Home</a></li>
+                    <li class="mb-2"><a href="about.html">About</a></li>
+                    <li class="mb-2"><a href="features.html">Features</a></li>
+                    <li class="mb-2"><a href="roles.html">User Roles</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-3 col-md-4">
+                <h5>Portals</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="dashboard/alumni.html">Alumni Portal</a></li>
+                    <li class="mb-2"><a href="dashboard/student.html">Internship Portal</a></li>
+                    <li class="mb-2"><a href="dashboard/student.html">Certification Portal</a></li>
+                    <li class="mb-2"><a href="login.html">Login</a></li>
+                    <li><a href="register.html">Register</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-3 col-md-4">
+                <h5>Contact Info</h5>
+                <ul class="list-unstyled" style="font-size:0.9rem;">
+                    <li class="mb-2"><i class="fas fa-university me-2" style="color:var(--secondary);"></i>Jinnah University for Women</li>
+                    <li class="mb-2"><i class="fas fa-map-marker-alt me-2" style="color:var(--secondary);"></i>Niazmabad, Block 5, Karachi</li>
+                    <li class="mb-2"><i class="fas fa-envelope me-2" style="color:var(--secondary);"></i>info@careeris.edu</li>
+                    <li><i class="fas fa-user-tie me-2" style="color:var(--secondary);"></i>Supervisor: Ms. Ushna Tasleem</li>
+                </ul>
+            </div>
+        </div>
+        <hr class="footer-divider">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+            <p class="mb-0" style="font-size:0.85rem;">© 2026 CareerIS — Career Information System. Final Year Project.</p>
+            <p class="mb-0" style="font-size:0.8rem;color:rgba(255,255,255,0.3);">Rabaika · Samra · Ariqah · Shahneela</p>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

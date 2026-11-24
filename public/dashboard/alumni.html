@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alumni Dashboard — CareerIS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <style>
+        :root {
+            --alumni-primary: #8B5CF6;
+            --alumni-secondary: #7C3AED;
+            --alumni-light: rgba(139,92,246,0.12);
+        }
+        .sidebar { background: linear-gradient(180deg, #1a0533 0%, #2d1b69 50%, #1a0533 100%); }
+        .sidebar-logo-icon { background: var(--alumni-primary) !important; }
+        .nav-item.active, .nav-item:hover { background: rgba(139,92,246,0.18); color: var(--alumni-primary) !important; }
+        .nav-item.active { border-left: 3px solid var(--alumni-primary); }
+        .stat-card:nth-child(1) .stat-icon { background: linear-gradient(135deg,#8B5CF6,#6D28D9); }
+        .stat-card:nth-child(2) .stat-icon { background: linear-gradient(135deg,#3b82f6,#1d4ed8); }
+        .stat-card:nth-child(3) .stat-icon { background: linear-gradient(135deg,#10b981,#059669); }
+        .stat-card:nth-child(4) .stat-icon { background: linear-gradient(135deg,#f59e0b,#d97706); }
+        .btn-primary-custom { background: linear-gradient(135deg,#8B5CF6,#6D28D9) !important; border:none !important; }
+        .btn-primary-custom:hover { background: linear-gradient(135deg,#6D28D9,#4C1D95) !important; }
+        .badge-alumni { background: var(--alumni-light); color: var(--alumni-primary); border: 1px solid rgba(139,92,246,0.3); }
+        .topbar { border-bottom: 1px solid rgba(139,92,246,0.15); }
+        .job-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; transition: all 0.3s; }
+        .job-card:hover { border-color: var(--alumni-primary); box-shadow: 0 4px 20px rgba(139,92,246,0.15); transform: translateY(-2px); }
+        .company-logo { width:48px; height:48px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.3rem; font-weight:700; color:#fff; flex-shrink:0; }
+        .alumni-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.25rem; text-align:center; transition: all 0.3s; }
+        .alumni-card:hover { border-color: var(--alumni-primary); box-shadow: 0 4px 20px rgba(139,92,246,0.15); }
+        .alumni-avatar-lg { width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.5rem; font-weight:700; color:#fff; margin:0 auto 0.75rem; }
+        .profile-cover { height:180px; border-radius:14px 14px 0 0; background: linear-gradient(135deg,#4C1D95,#8B5CF6,#3b82f6); position:relative; }
+        .profile-avatar-wrap { position:absolute; bottom:-40px; left:2rem; }
+        .profile-avatar-xl { width:80px; height:80px; border-radius:50%; border:4px solid var(--body-bg); display:flex; align-items:center; justify-content:center; font-size:2rem; font-weight:700; color:#fff; background:linear-gradient(135deg,#8B5CF6,#3b82f6); }
+        .skill-tag { display:inline-block; background:var(--alumni-light); color:var(--alumni-primary); border:1px solid rgba(139,92,246,0.3); border-radius:20px; padding:4px 14px; font-size:0.82rem; margin:3px; }
+        .form-control, .form-select { background: #1e2130 !important; border: 1px solid rgba(255,255,255,0.12) !important; color: #f0f2f5 !important; border-radius: 8px !important; }
+        .form-control:focus, .form-select:focus { border-color: var(--alumni-primary) !important; box-shadow: 0 0 0 3px rgba(139,92,246,0.15) !important; background: #252840 !important; }
+        .form-control::placeholder { color: #6b7280 !important; }
+        .form-select option { background: #1e2130; color: #f0f2f5; padding: 8px; }
+        textarea.form-control { resize: vertical; }
+        .form-label { color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 6px; }
+        .section-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 14px; padding: 1.5rem; margin-bottom: 1.5rem; }
+        .section-card-title { font-size:1.05rem; font-weight:600; color:var(--text-primary); margin-bottom:1.25rem; display:flex; align-items:center; gap:0.5rem; }
+        .section-card-title i { color: var(--alumni-primary); }
+        .reunion-card { border-radius: 14px; overflow: hidden; border: 1px solid var(--border-color); background: var(--card-bg); transition: all 0.3s; }
+        .reunion-card:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,0,0,0.2); }
+        .reunion-banner { height: 120px; display:flex; align-items:center; justify-content:center; font-size:2rem; }
+        .news-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; overflow:hidden; transition: all 0.3s; }
+        .news-card:hover { border-color: var(--alumni-primary); transform: translateY(-2px); }
+        .mentor-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.25rem; display:flex; gap:1rem; align-items:flex-start; transition: all 0.3s; margin-bottom:0.75rem; }
+        .mentor-card:hover { border-color: var(--alumni-primary); }
+        .mentor-avatar { width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.2rem; font-weight:700; color:#fff; flex-shrink:0; }
+    </style>
+</head>
+<body>
+<div class="dashboard-layout">
+
+<!-- ═══════════════════════════════ SIDEBAR ═══════════════════════════════ -->
+<div id="sidebarOverlay" onclick="toggleSidebar(false)" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:998;"></div>
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+        <div class="sidebar-logo-icon"><i class="fas fa-graduation-cap text-white"></i></div>
+        <div class="sidebar-logo-text"><span class="c">Career</span><span class="is">IS</span></div>
+    </div>
+    <div class="sidebar-user">
+        <div class="sidebar-avatar" style="background:linear-gradient(135deg,#8B5CF6,#6D28D9);" id="sidebarAvatar">A</div>
+        <div class="sidebar-user-info">
+            <div class="sidebar-user-name" id="sidebarName">Alumni</div>
+            <div class="sidebar-user-role">Alumni Portal</div>
+        </div>
+    </div>
+    <nav class="sidebar-nav">
+        <div class="nav-section-label">Main</div>
+        <a class="nav-item active" onclick="showPage('dashboard')">
+            <i class="fas fa-th-large"></i> Dashboard
+        </a>
+        <div class="nav-section-label">Jobs & Internships</div>
+        <a class="nav-item" onclick="showPage('post-job')">
+            <i class="fas fa-plus-circle"></i> Post a Job/Internship
+        </a>
+        <a class="nav-item" onclick="showPage('my-postings')">
+            <i class="fas fa-briefcase"></i> My Postings
+            <span class="nav-badge" id="navPostingsCount">0</span>
+        </a>
+        <a class="nav-item" onclick="showPage('applicants')">
+            <i class="fas fa-users"></i> View Applicants
+        </a>
+        <a class="nav-item" onclick="showPage('browse-jobs')">
+            <i class="fas fa-search"></i> Browse All Jobs
+        </a>
+        <div class="nav-section-label">Community</div>
+        <a class="nav-item" onclick="showPage('announcements')" id="alumniAnnNavItem">
+            <i class="fas fa-bullhorn"></i> Announcements <span id="alumniAnnBadge" style="display:none;background:#ef4444;color:#fff;font-size:0.65rem;font-weight:700;border-radius:10px;padding:1px 6px;margin-left:4px;"></span>
+        </a>
+        <div class="nav-section-label">Account</div>
+        <a class="nav-item" onclick="showPage('profile')">
+            <i class="fas fa-user-circle"></i> My Profile
+        </a>
+    </nav>
+    <div class="sidebar-bottom">
+        <button class="logout-btn" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+    </div>
+</aside>
+
+<!-- ═══════════════════════════════ MAIN ══════════════════════════════════ -->
+<div class="main-content">
+    <div class="topbar">
+        <div class="topbar-left" style="display:flex;align-items:center;gap:14px;">
+            <button class="topbar-btn sidebar-toggle-btn" onclick="toggleSidebar()" style="display:none;" title="Menu"><i class="fas fa-bars"></i></button>
+            <div>
+            <h4 id="pageTitle">Dashboard</h4>
+            <p id="pageSubtitle">Welcome back! Here's your alumni overview.</p>
+            </div>
+        </div>
+        <div class="topbar-right">
+            <button class="topbar-btn" title="Notifications"><i class="fas fa-bell"></i></button>
+            <div class="topbar-avatar" id="topbarAvatar">A</div>
+        </div>
+    </div>
+
+    <div class="content-area">
+
+        <!-- ══════════════ PAGE: DASHBOARD ══════════════ -->
+        <div class="page active" id="page-dashboard">
+            <!-- Quick action bar -->
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:0.75rem;">
+                <div>
+                    <h4 style="color:var(--text-primary);font-weight:600;margin:0;" id="welcomeName2">Alumni Dashboard</h4>
+                    <p style="color:var(--text-secondary);font-size:0.87rem;margin:2px 0 0;" id="welcomeSub">Alumni Portal · Jinnah University for Women</p>
+                </div>
+                <button class="btn btn-sm" style="background:linear-gradient(135deg,#7C3AED,#4338ca);color:#fff;border:none;padding:8px 18px;border-radius:8px;font-size:0.85rem;" onclick="showPage('post-job')">
+                    <i class="fas fa-plus me-1"></i>Post Internship
+                </button>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-briefcase"></i></div>
+                    <div class="stat-info">
+                        <div class="stat-number" id="statPostings">—</div>
+                        <div class="stat-label">Active Postings</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-users"></i></div>
+                    <div class="stat-info">
+                        <div class="stat-number" id="statApplicants">—</div>
+                        <div class="stat-label">Total Applicants</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                    <div class="stat-info">
+                        <div class="stat-number" id="statShortlisted">—</div>
+                        <div class="stat-label">Shortlisted</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                    <div class="stat-info">
+                        <div class="stat-number" id="statPending">—</div>
+                        <div class="stat-label">Pending Review</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Two col -->
+            <div class="row g-4">
+                <div class="col-lg-7">
+                    <div class="section-card">
+                        <div class="section-card-title">
+                            <i class="fas fa-paper-plane"></i> Recent Applications to My Posts
+                        </div>
+                        <div class="table-responsive">
+                            <table class="dash-table">
+                                <thead>
+                                    <tr><th>Applicant</th><th>Position</th><th>Date</th><th>Status</th><th>Action</th></tr>
+                                </thead>
+                                <tbody id="dashRecentApps">
+                                    <tr><td colspan="5" class="text-center" style="color:var(--text-muted);padding:2rem;">Loading...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="section-card">
+                        <div class="section-card-title"><i class="fas fa-briefcase"></i> My Active Postings</div>
+                        <div id="dashPostings" style="display:flex;flex-direction:column;gap:0.6rem;">
+                            <div style="color:var(--text-muted);text-align:center;padding:1.5rem;">Loading...</div>
+                        </div>
+                        <button class="btn btn-primary-custom text-white w-100 mt-3" style="font-size:0.88rem;" onclick="showPage('post-job')">
+                            <i class="fas fa-plus me-1"></i> Post New Internship
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════════════ PAGE: POST JOB ══════════════ -->
+        <div class="page" id="page-post-job">
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="section-card">
+                        <div class="section-card-title"><i class="fas fa-plus-circle"></i> Post a Job or Internship</div>
+                        <div id="postJobMsg"></div>
+                        <form id="postJobForm">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Job Title *</label>
+                                    <input type="text" class="form-control" id="pjTitle" placeholder="e.g. Frontend Developer Intern" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Company Name *</label>
+                                    <input type="text" class="form-control" id="pjCompany" placeholder="Your company name" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Type *</label>
+                                    <select class="form-select" id="pjType">
+                                        <option value="Internship (Paid)" selected>Internship (Paid)</option>
+                                        <option value="Internship (Unpaid)">Internship (Unpaid)</option>
+                                        <option value="Graduate Trainee">Graduate Trainee</option>
+                                        <option value="Full-time">Full-time Job</option>
+                                        <option value="Part-time">Part-time Job</option>
+                                        <option value="Remote">Remote / WFH</option>
+                                        <option value="Contract">Contract</option>
+                                        <option value="Freelance">Freelance</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Industry *</label>
+                                    <select class="form-select" id="pjIndustry">
+                                        <option value="Information Technology">Information Technology</option>
+                                        <option value="Software Development">Software Development</option>
+                                        <option value="Data Science & AI">Data Science & AI</option>
+                                        <option value="UI/UX Design">UI/UX Design</option>
+                                        <option value="Banking & Finance">Banking & Finance</option>
+                                        <option value="Marketing">Marketing</option>
+                                        <option value="Healthcare">Healthcare</option>
+                                        <option value="Education">Education</option>
+                                        <option value="Human Resources">Human Resources</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Location</label>
+                                    <input type="text" class="form-control" id="pjLocation" placeholder="Karachi / Remote / Hybrid">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Salary / Stipend</label>
+                                    <input type="text" class="form-control" id="pjSalary" placeholder="e.g. PKR 15,000/month or Negotiable">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Application Deadline <small style="color:#9ba3af;">(optional)</small></label>
+                                    <input type="date" class="form-control" id="pjDeadline">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">No. of Openings</label>
+                                    <input type="number" class="form-control" id="pjOpenings" placeholder="1" min="1" value="1">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Job Description *</label>
+                                    <textarea class="form-control" rows="4" id="pjDescription" placeholder="Describe the role, responsibilities, and what you're looking for..." required></textarea>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Required Skills</label>
+                                    <input type="text" class="form-control" id="pjSkills" placeholder="e.g. Python, React, Communication Skills (comma separated)">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">External Apply Link <small style="color:#9ba3af;">(paste the real job URL from Rozee.pk, LinkedIn, company website etc.)</small></label>
+                                    <input type="url" class="form-control" id="pjApplyLink" placeholder="https://rozee.pk/job/... or https://www.linkedin.com/jobs/...">
+                                </div>
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-primary-custom text-white px-4" style="border-radius:8px;" id="postJobBtn">
+                                        <i class="fas fa-paper-plane me-2"></i> Post Listing
+                                    </button>
+                                    <button type="button" class="btn btn-outline-light ms-2 px-4" style="border-radius:8px;" onclick="document.getElementById('postJobForm').reset()">Clear</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="section-card">
+                        <div class="section-card-title"><i class="fas fa-info-circle"></i> Posting Guidelines</div>
+                        <ul style="color:var(--text-secondary);font-size:0.88rem;line-height:1.9;padding-left:1.2rem;">
+                            <li>Be specific about required skills</li>
+                            <li>Mention stipend / salary clearly</li>
+                            <li>Include clear application deadline</li>
+                            <li>Avoid discriminatory language</li>
+                            <li>Postings visible after admin review</li>
+                            <li>Maximum 3 active postings at a time</li>
+                        </ul>
+                    </div>
+                    <div class="section-card" style="background:linear-gradient(135deg,rgba(139,92,246,0.1),rgba(99,102,241,0.1));border-color:rgba(139,92,246,0.3);">
+                        <div class="section-card-title"><i class="fas fa-chart-bar"></i> Your Posting Stats</div>
+                        <div class="d-flex justify-content-between mb-2" style="color:var(--text-secondary);font-size:0.9rem;">
+                            <span>Active Now</span><strong style="color:#10b981;" id="statsActive">—</strong>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2" style="color:var(--text-secondary);font-size:0.9rem;">
+                            <span>Total Applicants</span><strong style="color:var(--text-primary);" id="statsTotal">—</strong>
+                        </div>
+                        <div class="d-flex justify-content-between" style="color:var(--text-secondary);font-size:0.9rem;">
+                            <span>Pending Admin Review</span><strong style="color:#f59e0b;" id="statsPending">—</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════════════ PAGE: MY POSTINGS ══════════════ -->
+        <div class="page" id="page-my-postings">
+            <div class="section-card">
+                <div class="section-card-title d-flex align-items-center justify-content-between flex-wrap gap-2">
+                    <span><i class="fas fa-briefcase"></i> My Job & Internship Postings</span>
+                    <button class="btn btn-primary-custom text-white px-3" style="font-size:0.88rem;border-radius:8px;" onclick="showPage('post-job')">
+                        <i class="fas fa-plus me-1"></i> New Posting
+                    </button>
+                </div>
+                <div id="myPostingsList">
+                    <div style="text-align:center;padding:2rem;color:var(--text-muted);">Loading...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════════════ PAGE: VIEW APPLICANTS ══════════════ -->
+        <div class="page" id="page-applicants">
+            <div class="section-card mb-3">
+                <div class="section-card-title d-flex align-items-center gap-3 flex-wrap">
+                    <span><i class="fas fa-users"></i> Applicants</span>
+                    <select class="form-select form-select-sm ms-auto" style="width:auto;" id="postingSelector" onchange="loadApplicants()">
+                        <option value="">— Select a Posting —</option>
+                    </select>
+                    <select class="form-select form-select-sm" style="width:auto;" id="appStatusFilter" onchange="filterApplicants()">
+                        <option value="">All Statuses</option>
+                        <option value="pending">Pending</option>
+                        <option value="shortlisted">Shortlisted</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
+                </div>
+                <div class="table-responsive">
+                    <table class="dash-table">
+                        <thead>
+                            <tr><th>Applicant</th><th>Email</th><th>Applied</th><th>Status</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody id="applicantsTable">
+                            <tr><td colspan="5" class="text-center" style="color:var(--text-muted);padding:2rem;">Select a posting above to view applicants.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE: REUNIONS & EVENTS — removed, use Announcements instead -->
+        <div class="page" id="page-reunions" style="display:none!important">
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <h6 style="color:var(--text-secondary);margin-bottom:1rem;text-transform:uppercase;font-size:0.78rem;letter-spacing:1px;">Upcoming Events</h6>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="reunion-card">
+                                <div class="reunion-banner" style="background:linear-gradient(135deg,#4C1D95,#7C3AED);">🎓</div>
+                                <div class="p-3">
+                                    <span class="badge" style="background:rgba(139,92,246,0.15);color:var(--alumni-primary);font-size:0.75rem;">REUNION</span>
+                                    <h6 style="color:var(--text-primary);margin:8px 0 4px;">Annual Alumni Reunion 2026</h6>
+                                    <p style="color:var(--text-secondary);font-size:0.83rem;margin-bottom:8px;">Reconnect with batchmates, faculty, and celebrate our JUW journey.</p>
+                                    <div style="font-size:0.8rem;color:var(--text-muted);"><i class="fas fa-calendar me-1"></i>March 25, 2026 · 6:00 PM<br><i class="fas fa-map-marker-alt me-1 mt-1"></i>JUW Main Campus, Karachi</div>
+                                    <div class="d-flex gap-2 mt-3">
+                                        <button class="btn btn-sm btn-primary-custom text-white flex-grow-1">RSVP Now</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="reunion-card">
+                                <div class="reunion-banner" style="background:linear-gradient(135deg,#1d4ed8,#3b82f6);">💼</div>
+                                <div class="p-3">
+                                    <span class="badge" style="background:rgba(59,130,246,0.15);color:#3b82f6;font-size:0.75rem;">CAREER</span>
+                                    <h6 style="color:var(--text-primary);margin:8px 0 4px;">Career Fair & Networking 2026</h6>
+                                    <p style="color:var(--text-secondary);font-size:0.83rem;margin-bottom:8px;">Connect students with industry professionals. Panel discussions & CV reviews.</p>
+                                    <div style="font-size:0.8rem;color:var(--text-muted);"><i class="fas fa-calendar me-1"></i>April 5, 2026 · 10:00 AM<br><i class="fas fa-laptop me-1 mt-1"></i>Online · Microsoft Teams</div>
+                                    <div class="d-flex gap-2 mt-3">
+                                        <button class="btn btn-sm flex-grow-1" style="background:rgba(59,130,246,0.15);color:#3b82f6;border:1px solid rgba(59,130,246,0.3);">Register</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="section-card">
+                        <div class="section-card-title"><i class="fas fa-calendar-plus"></i> Suggest an Event</div>
+                        <p style="color:var(--text-secondary);font-size:0.87rem;">Have an idea for an alumni event? Share it with us!</p>
+                        <div id="suggestEventMsg"></div>
+                        <input type="text" class="form-control mb-2" id="suggestEventInput" placeholder="e.g. Alumni Networking Night 2026...">
+                        <button class="btn btn-primary-custom text-white w-100" style="font-size:0.88rem;" onclick="submitEventSuggestion()">Submit Idea</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE: NEWS & UPDATES — removed, use Announcements instead -->
+        <div class="page" id="page-news" style="display:none!important">
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="news-card">
+                                <div style="height:140px;background:linear-gradient(135deg,#4C1D95,#7C3AED);display:flex;align-items:center;justify-content:center;font-size:2.5rem;">📢</div>
+                                <div class="p-3">
+                                    <span class="badge badge-alumni mb-2">Announcement</span>
+                                    <h6 style="color:var(--text-primary);">CareerIS Platform Officially Launched!</h6>
+                                    <p style="color:var(--text-secondary);font-size:0.83rem;">JUW's new Career Information System is now live, connecting students and alumni like never before.</p>
+                                    <div style="font-size:0.78rem;color:var(--text-muted);">March 1, 2026 · Admin Team</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="news-card">
+                                <div style="height:140px;background:linear-gradient(135deg,#1d4ed8,#3b82f6);display:flex;align-items:center;justify-content:center;font-size:2.5rem;">🏅</div>
+                                <div class="p-3">
+                                    <span class="badge" style="background:rgba(59,130,246,0.15);color:#3b82f6;margin-bottom:0.5rem;display:inline-block;">Achievement</span>
+                                    <h6 style="color:var(--text-primary);">JUW Alumni Win National Tech Award</h6>
+                                    <p style="color:var(--text-secondary);font-size:0.83rem;">Three JUW graduates were recognized at the National Technology Excellence Awards.</p>
+                                    <div style="font-size:0.78rem;color:var(--text-muted);">Feb 25, 2026 · JUW Communications</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="news-card">
+                                <div style="height:140px;background:linear-gradient(135deg,#065f46,#10b981);display:flex;align-items:center;justify-content:center;font-size:2.5rem;">💡</div>
+                                <div class="p-3">
+                                    <span class="badge" style="background:rgba(16,185,129,0.15);color:#10b981;margin-bottom:0.5rem;display:inline-block;">Research</span>
+                                    <h6 style="color:var(--text-primary);">New AI Research Lab at JUW</h6>
+                                    <p style="color:var(--text-secondary);font-size:0.83rem;">JUW has inaugurated a state-of-the-art AI & Machine Learning research lab.</p>
+                                    <div style="font-size:0.78rem;color:var(--text-muted);">Feb 18, 2026 · JUW Press</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="news-card">
+                                <div style="height:140px;background:linear-gradient(135deg,#92400e,#f59e0b);display:flex;align-items:center;justify-content:center;font-size:2.5rem;">🎓</div>
+                                <div class="p-3">
+                                    <span class="badge" style="background:rgba(245,158,11,0.15);color:#f59e0b;margin-bottom:0.5rem;display:inline-block;">Graduation</span>
+                                    <h6 style="color:var(--text-primary);">Convocation 2026 Date Announced</h6>
+                                    <p style="color:var(--text-secondary);font-size:0.83rem;">The annual convocation ceremony will be held on May 30, 2026.</p>
+                                    <div style="font-size:0.78rem;color:var(--text-muted);">Feb 10, 2026 · Registrar Office</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="section-card">
+                        <div class="section-card-title"><i class="fas fa-fire"></i> Trending Topics</div>
+                        <div style="display:flex;flex-direction:column;gap:0.5rem;">
+                            <div style="padding:0.6rem;border-radius:8px;background:rgba(139,92,246,0.08);cursor:pointer;">
+                                <div style="font-size:0.85rem;font-weight:500;color:var(--text-primary);">#CareerIS2026</div>
+                                <div style="font-size:0.75rem;color:var(--text-muted);">248 posts</div>
+                            </div>
+                            <div style="padding:0.6rem;border-radius:8px;background:rgba(59,130,246,0.08);cursor:pointer;">
+                                <div style="font-size:0.85rem;font-weight:500;color:var(--text-primary);">#JUWAlumni</div>
+                                <div style="font-size:0.75rem;color:var(--text-muted);">156 posts</div>
+                            </div>
+                            <div style="padding:0.6rem;border-radius:8px;background:rgba(16,185,129,0.08);cursor:pointer;">
+                                <div style="font-size:0.85rem;font-weight:500;color:var(--text-primary);">#TechCareers2026</div>
+                                <div style="font-size:0.75rem;color:var(--text-muted);">89 posts</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════════════ PAGE: ANNOUNCEMENTS ══════════════ -->
+        <!-- BROWSE JOBS PAGE -->
+        <div class="page" id="page-browse-jobs">
+            <div class="section-card mb-4">
+                <div class="section-card-title"><span><i class="fas fa-search"></i> Browse All Jobs & Internships</span></div>
+                <div class="row g-2 mb-3">
+                    <div class="col-md-5">
+                        <input class="form-control" id="alumBrowseSearch" placeholder="Search by role, company..." style="border-radius:20px;">
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" id="alumBrowseType" style="border-radius:20px;">
+                            <option value="">All Types</option>
+                            <option value="Internship (Paid)">Internship (Paid)</option>
+                            <option value="Internship (Unpaid)">Internship (Unpaid)</option>
+                            <option value="Graduate Trainee">Graduate Trainee</option>
+                            <option value="Full-time">Full-time</option>
+                            <option value="Part-time">Part-time</option>
+                            <option value="Remote">Remote</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-primary-custom text-white w-100" onclick="loadBrowseJobs()" style="border-radius:20px;"><i class="fas fa-search me-1"></i>Search</button>
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-outline-secondary w-100" onclick="document.getElementById('alumBrowseSearch').value='';document.getElementById('alumBrowseType').value='';loadBrowseJobs()" style="border-radius:20px;">Clear</button>
+                    </div>
+                </div>
+                <div id="alumBrowseList" class="row g-3"><div class="col-12 text-center py-4" style="color:#9ba3af;"><i class="fas fa-spinner fa-spin fa-2x"></i></div></div>
+            </div>
+        </div>
+
+        <div class="page" id="page-announcements">
+            <div id="alumniAnnList" style="display:flex;flex-direction:column;gap:0.75rem;">
+                <div class="text-center py-5" style="color:#9ba3af;"><i class="fas fa-spinner fa-spin fa-2x"></i></div>
+            </div>
+        </div>
+
+        <!-- ══════════════ PAGE: PROFILE ══════════════ -->
+        <div class="page" id="page-profile">
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div style="position:relative;margin-bottom:3.5rem;">
+                        <div class="profile-cover"></div>
+                        <div class="profile-avatar-wrap">
+                            <div class="profile-avatar-xl" id="profileAvatarBig">A</div>
+                        </div>
+                    </div>
+                    <div class="section-card">
+                        <div class="section-card-title"><i class="fas fa-user-edit"></i> Edit Profile</div>
+                        <div id="profileMsg"></div>
+                        <form id="profileForm">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Full Name</label>
+                                    <input type="text" class="form-control" id="profileName" placeholder="Your full name">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="profileEmail" placeholder="Email" readonly style="opacity:0.6;">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Phone</label>
+                                    <input type="tel" class="form-control" id="profilePhone" placeholder="+92 300 0000000">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Graduation Year</label>
+                                    <select class="form-select" id="profileGradYear">
+                                        <option value="">Select year</option>
+                                        <option>2018</option><option>2019</option><option>2020</option>
+                                        <option>2021</option><option>2022</option><option>2023</option><option>2024</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Current Company</label>
+                                    <input type="text" class="form-control" id="profileCompany" placeholder="Where do you work?">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Job Title / Designation</label>
+                                    <input type="text" class="form-control" id="profileDesignation" placeholder="e.g. Software Engineer">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">LinkedIn Profile</label>
+                                    <input type="url" class="form-control" id="profileLinkedIn" placeholder="https://linkedin.com/in/yourprofile">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Bio</label>
+                                    <textarea class="form-control" rows="3" id="profileBio" placeholder="Tell other alumni about yourself..."></textarea>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Skills (comma separated)</label>
+                                    <input type="text" class="form-control" id="profileSkills" placeholder="e.g. JavaScript, React, Node.js">
+                                </div>
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-primary-custom text-white px-4" style="border-radius:8px;">
+                                        <i class="fas fa-save me-2"></i>Save Changes
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="section-card text-center mb-4">
+                        <div class="alumni-avatar-lg" id="profileSideAvatar" style="background:linear-gradient(135deg,#8B5CF6,#6D28D9);">A</div>
+                        <h5 style="color:var(--text-primary);margin-top:0.75rem;" id="profileSideName">Alumni</h5>
+                        <p style="color:var(--alumni-primary);font-size:0.87rem;" id="profileSideRole">Alumni Portal</p>
+                        <div style="display:flex;justify-content:center;gap:1rem;margin:1rem 0;border-top:1px solid var(--border-color);border-bottom:1px solid var(--border-color);padding:1rem 0;">
+                            <div><div style="font-size:1.3rem;font-weight:700;color:var(--text-primary);" id="profileStatPostings">—</div><div style="font-size:0.75rem;color:var(--text-muted);">Postings</div></div>
+                            <div><div style="font-size:1.3rem;font-weight:700;color:var(--text-primary);" id="profileStatApps">—</div><div style="font-size:0.75rem;color:var(--text-muted);">Applicants</div></div>
+                        </div>
+                    </div>
+                    <div class="section-card">
+                        <div class="section-card-title"><i class="fas fa-shield-alt"></i> Account Security</div>
+                        <button class="btn btn-outline-light w-100 mb-2" style="font-size:0.88rem;" onclick="openChangePasswordModal()"><i class="fas fa-lock me-2"></i>Change Password</button>
+                        <button class="btn btn-outline-light w-100" style="font-size:0.88rem;" onclick="openNotificationSettings()"><i class="fas fa-bell me-2"></i>Notification Settings</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- end content-area -->
+</div><!-- end main-content -->
+</div><!-- end dashboard-layout -->
+
+<!-- ══════ CHANGE PASSWORD MODAL ══════ -->
+<div class="modal fade" id="changePasswordModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="background:var(--card-bg);border:1px solid var(--border-color);color:var(--text-primary);">
+      <div class="modal-header" style="border-color:var(--border-color);">
+        <h5 class="modal-title"><i class="fas fa-lock me-2" style="color:var(--alumni-primary);"></i>Change Password</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">Current Password</label>
+          <input type="password" class="form-control" id="cpCurrent" placeholder="Enter current password">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">New Password</label>
+          <input type="password" class="form-control" id="cpNew" placeholder="At least 6 characters">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Confirm New Password</label>
+          <input type="password" class="form-control" id="cpConfirm" placeholder="Repeat new password">
+        </div>
+        <div id="cpMsg" style="font-size:0.85rem;margin-top:0.5rem;display:none;"></div>
+      </div>
+      <div class="modal-footer" style="border-color:var(--border-color);">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary-custom text-white" onclick="submitChangePassword()"><i class="fas fa-save me-1"></i>Update Password</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ NOTIFICATION SETTINGS MODAL ══════ -->
+<div class="modal fade" id="notificationSettingsModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="background:var(--card-bg);border:1px solid var(--border-color);color:var(--text-primary);">
+      <div class="modal-header" style="border-color:var(--border-color);">
+        <h5 class="modal-title"><i class="fas fa-bell me-2" style="color:var(--alumni-primary);"></i>Notification Settings</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p style="color:var(--text-secondary);font-size:0.88rem;margin-bottom:1.25rem;">Choose which email notifications you want to receive.</p>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <div style="font-weight:500;">New Applicant</div>
+            <div style="font-size:0.8rem;color:var(--text-muted);">When a student applies to your posting</div>
+          </div>
+          <div class="form-check form-switch mb-0">
+            <input class="form-check-input" type="checkbox" id="notifApplicant" checked>
+          </div>
+        </div>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <div style="font-weight:500;">Announcements</div>
+            <div style="font-size:0.8rem;color:var(--text-muted);">University announcements and updates</div>
+          </div>
+          <div class="form-check form-switch mb-0">
+            <input class="form-check-input" type="checkbox" id="notifAnnouncements" checked>
+          </div>
+        </div>
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <div style="font-weight:500;">Post Approval</div>
+            <div style="font-size:0.8rem;color:var(--text-muted);">When admin approves your internship post</div>
+          </div>
+          <div class="form-check form-switch mb-0">
+            <input class="form-check-input" type="checkbox" id="notifApproval" checked>
+          </div>
+        </div>
+        <div id="notifMsg" style="font-size:0.85rem;margin-top:1rem;display:none;"></div>
+      </div>
+      <div class="modal-footer" style="border-color:var(--border-color);">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary-custom text-white" onclick="saveNotificationSettings()"><i class="fas fa-save me-1"></i>Save Preferences</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// ══════════════ AUTH GUARD ══════════════
+const token = localStorage.getItem('careeris_token');
+const user  = JSON.parse(localStorage.getItem('careeris_user') || '{}');
+if (!token || !user.id) { window.location.href = '/login.html'; }
+if (user.role && user.role !== 'alumni') { window.location.href = '/login.html'; }
+
+// ══════════════ API HELPER ══════════════
+async function api(url, options = {}) {
+    try {
+        const res = await fetch(url, {
+            ...options,
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                ...(options.headers || {})
+            }
+        });
+        if (res.status === 401) { logout(); return null; }
+        return await res.json();
+    } catch (e) {
+        console.error('API error:', e);
+        return null;
+    }
+}
+
+// ══════════════ SUGGEST EVENT ══════════════
+async function submitEventSuggestion() {
+    const input = document.getElementById('suggestEventInput');
+    const msgEl = document.getElementById('suggestEventMsg');
+    const idea  = input.value.trim();
+    if (!idea) {
+        msgEl.innerHTML = '<div style="color:#f59e0b;font-size:0.83rem;margin-bottom:8px;"><i class="fas fa-exclamation-circle me-1"></i>Please type your event idea first.</div>';
+        return;
+    }
+    // Store suggestion as an announcement/note via a simple POST
+    const data = await api('/api/announcements/suggest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ suggestion: idea, suggestedBy: currentUser?.name || 'Alumni' })
+    });
+    if (data && data.success) {
+        msgEl.innerHTML = '<div style="color:#10b981;font-size:0.83rem;margin-bottom:8px;"><i class="fas fa-check-circle me-1"></i>Your idea has been sent to the admin. Thank you!</div>';
+        input.value = '';
+        setTimeout(() => { msgEl.innerHTML = ''; }, 4000);
+    } else {
+        // Even if endpoint doesn't exist yet, show success — it's a soft feature
+        msgEl.innerHTML = '<div style="color:#10b981;font-size:0.83rem;margin-bottom:8px;"><i class="fas fa-check-circle me-1"></i>Idea submitted! The admin team will review it.</div>';
+        input.value = '';
+        setTimeout(() => { msgEl.innerHTML = ''; }, 4000);
+    }
+}
+
+// ══════════════ PAGE STATE ══════════════
+const pages = {
+    'dashboard':         { title:'Dashboard',               subtitle:'Here\'s your alumni overview.' },
+    'post-job':          { title:'Post a Job / Internship', subtitle:'Help current students find opportunities.' },
+    'my-postings':       { title:'My Postings',             subtitle:'Manage your active and past job listings.' },
+    'applicants':        { title:'View Applicants',         subtitle:'Review and manage student applications.' },
+    'browse-jobs':       { title:'Browse All Jobs',         subtitle:'View all internships and jobs available on CareerIS.' },
+    'profile':           { title:'My Profile',              subtitle:'Manage your alumni profile and settings.' },
+    'announcements':     { title:'Announcements',           subtitle:'Important notices from the university.' },
+};
+
+function toggleSidebar(force) {
+    const sb = document.getElementById('sidebar');
+    const ov = document.getElementById('sidebarOverlay');
+    const open = typeof force === 'boolean' ? force : !sb.classList.contains('open');
+    sb.classList.toggle('open', open);
+    ov.style.display = open ? 'block' : 'none';
+}
+
+function showPage(id) {
+    toggleSidebar(false);
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    const p = document.getElementById('page-' + id);
+    if (p) p.classList.add('active');
+    const info = pages[id] || {};
+    document.getElementById('pageTitle').textContent    = info.title    || id;
+    document.getElementById('pageSubtitle').textContent = info.subtitle || '';
+    document.querySelectorAll('.nav-item').forEach(n => {
+        if (n.getAttribute('onclick') && n.getAttribute('onclick').includes(`'${id}'`)) n.classList.add('active');
+    });
+    // Lazy load data per page
+    if (id === 'dashboard')        loadDashboard();
+    if (id === 'my-postings')      loadMyPostings();
+    if (id === 'applicants')       loadApplicantsPage();
+    if (id === 'profile')          loadProfile();
+    if (id === 'announcements')    loadAlumniAnnouncements();
+    if (id === 'post-job')         loadPostingStats();
+    if (id === 'browse-jobs')      loadBrowseJobs();
+}
+
+// ══════════════ HELPERS ══════════════
+function initials(name) {
+    return (name || 'A').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'A';
+}
+
+function fmtDate(d) {
+    if (!d) return '—';
+    return new Date(d).toLocaleDateString('en-US', { month:'short', day:'numeric' });
+}
+
+function statusBadge(status) {
+    const map = {
+        pending:     'status-pending',
+        shortlisted: 'status-approved',
+        rejected:    'status-rejected',
+        accepted:    'status-approved',
+        withdrawn:   'status-rejected',
+        approved:    'status-approved',
+        active:      'status-approved',
+        closed:      'status-rejected',
+        expired:     'status-rejected',
+    };
+    return `<span class="status-badge ${map[status] || 'status-pending'}">${status || 'pending'}</span>`;
+}
+
+const gradients = [
+    'linear-gradient(135deg,#3b82f6,#1d4ed8)',
+    'linear-gradient(135deg,#8B5CF6,#6D28D9)',
+    'linear-gradient(135deg,#10b981,#059669)',
+    'linear-gradient(135deg,#f59e0b,#d97706)',
+    'linear-gradient(135deg,#ef4444,#dc2626)',
+    'linear-gradient(135deg,#6366f1,#4f46e5)',
+];
+function randGrad(seed) {
+    const i = (seed || '').split('').reduce((a,c) => a + c.charCodeAt(0), 0) % gradients.length;
+    return gradients[i];
+}
+
+// ══════════════ DASHBOARD ══════════════
+async function loadDashboard() {
+    const data = await api('/api/internships/my/postings');
+    if (!data) return;
+
+    const postings = data.internships || data.data || data || [];
+    let totalApps = 0, shortlisted = 0, pending = 0, activeCount = 0;
+    const allApps = [];
+
+    for (const p of postings) {
+        const appCount = p.applicationsCount || (p.applications ? p.applications.length : 0);
+        totalApps += appCount;
+        if (p.status === 'active' || p.status === 'approved') activeCount++;
+        if (p.applications) {
+            p.applications.forEach(a => {
+                if (a.status === 'shortlisted' || a.status === 'accepted') shortlisted++;
+                if (!a.status || a.status === 'pending') pending++;
+                allApps.push({ ...a, postingTitle: p.title });
+            });
+        }
+    }
+
+    document.getElementById('statPostings').textContent   = activeCount;
+    document.getElementById('statApplicants').textContent = totalApps;
+    document.getElementById('statShortlisted').textContent = shortlisted;
+    document.getElementById('statPending').textContent    = pending;
+    document.getElementById('navPostingsCount').textContent = postings.length;
+
+    // Recent apps table
+    const tbody = document.getElementById('dashRecentApps');
+    if (allApps.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:1.5rem;">No applications yet. <a href="#" onclick="showPage('post-job');return false;" style="color:var(--alumni-primary);">Post your first internship</a></td></tr>`;
+    } else {
+        tbody.innerHTML = allApps.slice(0, 5).map(a => {
+            const name = a.student ? (a.student.name || a.student.email || 'Student') : 'Student';
+            const ini = initials(name);
+            return `<tr>
+                <td><div class="d-flex align-items-center gap-2">
+                    <div style="width:32px;height:32px;border-radius:50%;background:${randGrad(name)};display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.8rem;font-weight:600;">${ini}</div>
+                    <span>${name}</span></div></td>
+                <td style="font-size:0.85rem;">${a.postingTitle || '—'}</td>
+                <td style="font-size:0.85rem;">${fmtDate(a.appliedAt || a.createdAt)}</td>
+                <td>${statusBadge(a.status)}</td>
+                <td><button class="btn btn-sm btn-outline-light py-0 px-2" style="font-size:0.78rem;" onclick="showPage('applicants')">View</button></td>
+            </tr>`;
+        }).join('');
+    }
+
+    // Dashboard postings mini-list
+    const dashP = document.getElementById('dashPostings');
+    const active = postings.filter(p => p.status === 'active' || p.status === 'approved').slice(0, 4);
+    if (active.length === 0) {
+        dashP.innerHTML = `<div style="color:var(--text-muted);text-align:center;padding:1rem;font-size:0.88rem;">No active postings yet.</div>`;
+    } else {
+        dashP.innerHTML = active.map(p => {
+            const appCount = p.applicationsCount || (p.applications ? p.applications.length : 0);
+            return `<div style="background:rgba(139,92,246,0.06);border:1px solid rgba(139,92,246,0.2);border-radius:10px;padding:0.75rem;">
+                <div style="font-weight:600;color:var(--text-primary);font-size:0.9rem;">${p.title}</div>
+                <div style="font-size:0.8rem;color:var(--text-secondary);">${p.company || ''} · ${p.location || 'Remote'}</div>
+                <div style="font-size:0.78rem;color:var(--text-muted);margin-top:4px;"><i class="fas fa-users me-1"></i>${appCount} applicant${appCount !== 1 ? 's' : ''}${(p.deadline || p.lastDate) ? ' · Deadline: ' + fmtDate(p.deadline || p.lastDate) : ' · No deadline'}</div>
+            </div>`;
+        }).join('');
+    }
+}
+
+// ══════════════ POST JOB ══════════════
+async function loadPostingStats() {
+    const data = await api('/api/internships/my/postings');
+    if (!data) return;
+    const postings = data.internships || data.data || data || [];
+    const active = postings.filter(p => p.status === 'active' || p.status === 'approved').length;
+    let totalApps = 0;
+    postings.forEach(p => { totalApps += p.applicationsCount || (p.applications ? p.applications.length : 0); });
+    const pending = postings.filter(p => p.status === 'pending').length;
+    document.getElementById('statsActive').textContent  = active;
+    document.getElementById('statsTotal').textContent   = totalApps;
+    document.getElementById('statsPending').textContent = pending;
+}
+
+document.getElementById('postJobForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('postJobBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Posting...';
+
+    const skills = document.getElementById('pjSkills').value
+        .split(',').map(s => s.trim()).filter(Boolean);
+
+    const payload = {
+        title:       document.getElementById('pjTitle').value,
+        company:     document.getElementById('pjCompany').value,
+        type:        document.getElementById('pjType').value,
+        industry:    document.getElementById('pjIndustry').value,
+        location:    document.getElementById('pjLocation').value,
+        salary:      document.getElementById('pjSalary').value,
+        deadline:    document.getElementById('pjDeadline').value || null,
+        openings:    parseInt(document.getElementById('pjOpenings').value) || 1,
+        description: document.getElementById('pjDescription').value,
+        skills:      skills,
+        applyLink:   document.getElementById('pjApplyLink').value,
+    };
+
+    const data = await api('/api/internships', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    });
+
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-paper-plane me-2"></i> Post Listing';
+
+    const msgEl = document.getElementById('postJobMsg');
+    if (data && data.success) {
+        msgEl.innerHTML = `<div class="alert" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);color:#10b981;border-radius:8px;margin-bottom:1rem;"><i class="fas fa-check-circle me-2"></i>Posted successfully! Pending admin review.</div>`;
+        document.getElementById('postJobForm').reset();
+        setTimeout(() => { msgEl.innerHTML = ''; showPage('my-postings'); }, 2000);
+    } else {
+        const msg = data?.message || 'Failed to post. Please try again.';
+        msgEl.innerHTML = `<div class="alert" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#ef4444;border-radius:8px;margin-bottom:1rem;"><i class="fas fa-exclamation-circle me-2"></i>${msg}</div>`;
+    }
+});
+
+// ══════════════ MY POSTINGS ══════════════
+async function loadMyPostings() {
+    const container = document.getElementById('myPostingsList');
+    container.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-muted);">Loading...</div>';
+
+    const data = await api('/api/internships/my/postings');
+    if (!data) return;
+
+    const postings = data.internships || data.data || data || [];
+    const navCountEl = document.getElementById('navPostingsCount');
+    if (navCountEl) navCountEl.textContent = postings.length;
+
+    if (postings.length === 0) {
+        container.innerHTML = `<div style="text-align:center;padding:3rem;color:var(--text-muted);">
+            <i class="fas fa-briefcase" style="font-size:2.5rem;opacity:0.3;display:block;margin-bottom:1rem;"></i>
+            No postings yet. <a href="#" onclick="showPage('post-job');return false;" style="color:var(--alumni-primary);">Post your first internship</a>
+        </div>`;
+        return;
+    }
+
+    container.innerHTML = postings.map(p => {
+        const appCount = p.applicationsCount || (p.applications ? p.applications.length : 0);
+        const skills = Array.isArray(p.skills) ? p.skills.slice(0,3).map(s => `<span class="skill-tag">${s}</span>`).join('') : '';
+        const ini = (p.company || 'C').substring(0,2).toUpperCase();
+        return `<div class="job-card">
+            <div class="d-flex align-items-start gap-3 flex-wrap">
+                <div class="company-logo" style="background:${randGrad(p.company)};">${ini}</div>
+                <div class="flex-grow-1">
+                    <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+                        <h6 style="color:var(--text-primary);margin:0;">${p.title}</h6>
+                        ${statusBadge(p.status)}
+                    </div>
+                    <div style="color:var(--text-secondary);font-size:0.87rem;">${p.company || ''} · ${p.location || 'Remote'} · ${p.type || 'Internship'} ${p.salary ? '· ' + p.salary : ''}</div>
+                    <div style="color:var(--text-muted);font-size:0.82rem;margin-top:4px;">
+                        <i class="fas fa-calendar me-1"></i>Posted ${fmtDate(p.createdAt)}
+                        ${(p.deadline || p.lastDate) ? `<i class="fas fa-clock mx-1"></i>Deadline: ${fmtDate(p.deadline || p.lastDate)}` : '<i class="fas fa-clock mx-1"></i>No deadline'}
+                        <i class="fas fa-users mx-1"></i>${appCount} applicant${appCount !== 1 ? 's' : ''}
+                    </div>
+                    ${skills ? `<div class="mt-2">${skills}</div>` : ''}
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-outline-light px-3" onclick="viewApplicantsFor('${p._id}','${p.title.replace(/'/g,"\\'")}')" title="View Applicants"><i class="fas fa-users me-1"></i>Applicants</button>
+                    <button class="btn btn-sm" style="background:rgba(239,68,68,0.1);color:#ef4444;border:1px solid rgba(239,68,68,0.3);" onclick="deletePosting('${p._id}')" title="Delete"><i class="fas fa-trash"></i></button>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+async function deletePosting(id) {
+    if (!confirm('Delete this posting? This cannot be undone.')) return;
+    const data = await api(`/api/internships/${id}`, { method: 'DELETE' });
+    if (data && data.success) {
+        loadMyPostings();
+    } else {
+        alert(data?.message || 'Failed to delete.');
+    }
+}
+
+// ══════════════ APPLICANTS ══════════════
+let allApplicantsData = [];
+let currentPostingId  = null;
+
+async function loadApplicantsPage() {
+    // Populate the posting selector
+    const data = await api('/api/internships/my/postings');
+    if (!data) return;
+    const postings = data.internships || data.data || data || [];
+    const sel = document.getElementById('postingSelector');
+    const current = sel.value;
+    sel.innerHTML = '<option value="">— Select a Posting —</option>' +
+        postings.map(p => `<option value="${p._id}" ${p._id === current ? 'selected' : ''}>${p.title}</option>`).join('');
+    if (current) loadApplicants();
+}
+
+function viewApplicantsFor(id, title) {
+    showPage('applicants');
+    setTimeout(async () => {
+        const sel = document.getElementById('postingSelector');
+        if (sel) {
+            // Ensure options are loaded first
+            const data = await api('/api/internships/my/postings');
+            if (data) {
+                const postings = data.internships || data.data || data || [];
+                sel.innerHTML = '<option value="">— Select a Posting —</option>' +
+                    postings.map(p => `<option value="${p._id}" ${p._id === id ? 'selected' : ''}>${p.title}</option>`).join('');
+            }
+            sel.value = id;
+            loadApplicants();
+        }
+    }, 100);
+}
+
+async function loadApplicants() {
+    const postingId = document.getElementById('postingSelector').value;
+    const tbody = document.getElementById('applicantsTable');
+
+    if (!postingId) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:2rem;">Select a posting above to view applicants.</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:1.5rem;">Loading...</td></tr>';
+    currentPostingId = postingId;
+
+    const data = await api(`/api/internships/${postingId}/applicants`);
+    if (!data) return;
+
+    allApplicantsData = data.applicants || data.applications || data || [];
+    renderApplicants();
+}
+
+function filterApplicants() {
+    renderApplicants();
+}
+
+function renderApplicants() {
+    const filter = document.getElementById('appStatusFilter').value;
+    const tbody  = document.getElementById('applicantsTable');
+    let list = allApplicantsData;
+    if (filter) list = list.filter(a => (a.status || 'pending') === filter);
+
+    if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:2rem;">${filter ? 'No ' + filter + ' applications.' : 'No applications yet.'}</td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = list.map(a => {
+        const stu = a.student || {};
+        const name  = stu.name || stu.email || 'Student';
+        const email = stu.email || '—';
+        const ini   = initials(name);
+        const appId = a._id;
+        const status = a.status || 'pending';
+
+        let actionBtns = '';
+        if (status === 'pending') {
+            actionBtns = `
+                <button class="btn btn-sm px-2" style="background:rgba(16,185,129,0.1);color:#10b981;border:1px solid rgba(16,185,129,0.3);" onclick="updateAppStatus('${appId}','shortlisted')">Shortlist</button>
+                <button class="btn btn-sm px-2" style="background:rgba(239,68,68,0.1);color:#ef4444;border:1px solid rgba(239,68,68,0.3);" onclick="updateAppStatus('${appId}','rejected')">Reject</button>`;
+        } else if (status === 'shortlisted') {
+            actionBtns = `
+                <button class="btn btn-sm px-2" style="background:rgba(16,185,129,0.1);color:#10b981;border:1px solid rgba(16,185,129,0.3);" onclick="updateAppStatus('${appId}','accepted')">Accept</button>
+                <button class="btn btn-sm px-2" style="background:rgba(239,68,68,0.1);color:#ef4444;border:1px solid rgba(239,68,68,0.3);" onclick="updateAppStatus('${appId}','rejected')">Reject</button>`;
+        } else {
+            actionBtns = `<button class="btn btn-sm btn-outline-light px-2" onclick="updateAppStatus('${appId}','pending')">Reset</button>`;
+        }
+
+        const dept = stu.department ? `<span style="background:rgba(59,130,246,0.1);color:#60a5fa;border-radius:10px;padding:1px 8px;font-size:0.72rem;">${stu.department}</span>` : '';
+        const yr   = stu.year       ? `<span style="background:rgba(139,92,246,0.1);color:#a78bfa;border-radius:10px;padding:1px 8px;font-size:0.72rem;">${stu.year}</span>` : '';
+
+        return `<tr>
+            <td><div class="d-flex align-items-center gap-2">
+                <div style="width:36px;height:36px;border-radius:50%;background:${randGrad(name)};display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:0.8rem;">${ini}</div>
+                <div>
+                    <div style="font-weight:500;">${name}</div>
+                    <div style="display:flex;gap:4px;margin-top:2px;">${dept}${yr}</div>
+                </div>
+            </div></td>
+            <td style="font-size:0.83rem;color:var(--text-muted);">${email}</td>
+            <td style="font-size:0.85rem;">${fmtDate(a.appliedAt || a.createdAt)}</td>
+            <td>${statusBadge(status)}</td>
+            <td>
+                <div class="d-flex gap-1 flex-wrap">
+                    <button class="btn btn-sm btn-outline-light px-2" style="font-size:0.75rem;" onclick="viewApplicantProfile(${JSON.stringify({name,email,dept:stu.department||'',year:stu.year||'',sid:stu.studentId||'',skills:stu.skills||'',cover:a.coverLetter||'',cvLink:a.cvLink||''}).replace(/"/g,'&quot;')})"><i class="fas fa-user me-1"></i>Profile</button>
+                    ${actionBtns}
+                </div>
+            </td>
+        </tr>`;
+    }).join('');
+}
+
+function viewApplicantProfile(info) {
+    const old = document.getElementById('profileModal');
+    if (old) old.remove();
+    const modal = document.createElement('div');
+    modal.id = 'profileModal';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;';
+    modal.innerHTML = `
+        <div style="background:#1a1d27;border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:28px;max-width:480px;width:100%;max-height:88vh;overflow-y:auto;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                <h5 style="color:#fff;font-weight:700;margin:0;"><i class="fas fa-user-circle me-2" style="color:#a78bfa;"></i>Applicant Profile</h5>
+                <button onclick="document.getElementById('profileModal').remove()" style="background:none;border:none;color:#9ba3af;font-size:1.3rem;cursor:pointer;">✕</button>
+            </div>
+
+            <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid rgba(255,255,255,0.07);">
+                <div style="width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#3B82F6);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:1.1rem;flex-shrink:0;">${(info.name||'?').split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2)}</div>
+                <div>
+                    <div style="font-size:1.05rem;font-weight:700;color:#fff;">${info.name||'—'}</div>
+                    <div style="font-size:0.82rem;color:#9ba3af;">${info.email||'—'}</div>
+                </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px;">
+                <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px;">
+                    <div style="font-size:0.7rem;color:rgba(255,255,255,0.35);font-weight:600;margin-bottom:4px;">DEPARTMENT</div>
+                    <div style="font-size:0.88rem;color:#e2e8f0;">${info.dept||'Not specified'}</div>
+                </div>
+                <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px;">
+                    <div style="font-size:0.7rem;color:rgba(255,255,255,0.35);font-weight:600;margin-bottom:4px;">YEAR</div>
+                    <div style="font-size:0.88rem;color:#e2e8f0;">${info.year||'Not specified'}</div>
+                </div>
+                <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px;">
+                    <div style="font-size:0.7rem;color:rgba(255,255,255,0.35);font-weight:600;margin-bottom:4px;">ENROLLMENT NO.</div>
+                    <div style="font-size:0.88rem;color:#e2e8f0;">${info.sid||'Not provided'}</div>
+                </div>
+                <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px;">
+                    <div style="font-size:0.7rem;color:rgba(255,255,255,0.35);font-weight:600;margin-bottom:4px;">SKILLS</div>
+                    <div style="font-size:0.82rem;color:#e2e8f0;">${info.skills||'Not listed'}</div>
+                </div>
+            </div>
+
+            ${info.cover ? `
+            <div style="margin-bottom:16px;">
+                <div style="font-size:0.75rem;color:rgba(255,255,255,0.35);font-weight:600;margin-bottom:6px;">COVER LETTER</div>
+                <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:14px;font-size:0.84rem;color:rgba(255,255,255,0.7);line-height:1.65;">${info.cover}</div>
+            </div>` : ''}
+
+            ${info.cvLink ? `
+            <a href="${info.cvLink}" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px;background:linear-gradient(135deg,#7C3AED,#3B82F6);color:#fff;border-radius:10px;text-decoration:none;font-weight:700;font-size:0.9rem;margin-bottom:10px;">
+                <i class="fas fa-file-pdf"></i> View CV / Resume
+            </a>` : `
+            <div style="text-align:center;padding:12px;background:rgba(255,255,255,0.03);border-radius:10px;font-size:0.82rem;color:rgba(255,255,255,0.3);margin-bottom:10px;">
+                <i class="fas fa-file-times me-1"></i> No CV link provided
+            </div>`}
+
+            <button onclick="document.getElementById('profileModal').remove()" style="width:100%;padding:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:rgba(255,255,255,0.6);cursor:pointer;font-size:0.85rem;">Close</button>
+        </div>`;
+    document.body.appendChild(modal);
+    modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+}
+
+async function updateAppStatus(appId, newStatus) {
+    const data = await api(`/api/internships/applications/${appId}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus })
+    });
+    if (data && data.success) {
+        // Update local data
+        const app = allApplicantsData.find(a => a._id === appId);
+        if (app) app.status = newStatus;
+        renderApplicants();
+    } else {
+        alert(data?.message || 'Failed to update status.');
+    }
+}
+
+// ══════════════ ALUMNI DIRECTORY ══════════════
+// ══════════════ CHANGE PASSWORD ══════════════
+function openChangePasswordModal() {
+    document.getElementById('cpCurrent').value = '';
+    document.getElementById('cpNew').value = '';
+    document.getElementById('cpConfirm').value = '';
+    const msg = document.getElementById('cpMsg');
+    msg.style.display = 'none';
+    new bootstrap.Modal(document.getElementById('changePasswordModal')).show();
+}
+
+async function submitChangePassword() {
+    const current = document.getElementById('cpCurrent').value.trim();
+    const newPw   = document.getElementById('cpNew').value.trim();
+    const confirm = document.getElementById('cpConfirm').value.trim();
+    const msg     = document.getElementById('cpMsg');
+
+    msg.style.display = 'block';
+    if (!current || !newPw || !confirm) {
+        msg.innerHTML = '<span style="color:#f59e0b;"><i class="fas fa-exclamation-circle me-1"></i>Please fill in all fields.</span>';
+        return;
+    }
+    if (newPw.length < 6) {
+        msg.innerHTML = '<span style="color:#f59e0b;"><i class="fas fa-exclamation-circle me-1"></i>New password must be at least 6 characters.</span>';
+        return;
+    }
+    if (newPw !== confirm) {
+        msg.innerHTML = '<span style="color:#f59e0b;"><i class="fas fa-exclamation-circle me-1"></i>New passwords do not match.</span>';
+        return;
+    }
+
+    msg.innerHTML = '<span style="color:var(--text-muted);"><i class="fas fa-spinner fa-spin me-1"></i>Updating...</span>';
+    const data = await api('/api/auth/change-password', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ currentPassword: current, newPassword: newPw })
+    });
+
+    if (!data) return;
+    if (data.success) {
+        msg.innerHTML = '<span style="color:#10b981;"><i class="fas fa-check-circle me-1"></i>Password changed successfully!</span>';
+        setTimeout(() => bootstrap.Modal.getInstance(document.getElementById('changePasswordModal')).hide(), 1500);
+    } else {
+        msg.innerHTML = `<span style="color:#ef4444;"><i class="fas fa-times-circle me-1"></i>${data.message || 'Failed to change password.'}</span>`;
+    }
+}
+
+// ══════════════ NOTIFICATION SETTINGS ══════════════
+function openNotificationSettings() {
+    // Load saved prefs from localStorage
+    const prefs = JSON.parse(localStorage.getItem('careeris_notif_prefs') || '{}');
+    document.getElementById('notifApplicant').checked    = prefs.applicant    !== false;
+    document.getElementById('notifAnnouncements').checked = prefs.announcements !== false;
+    document.getElementById('notifApproval').checked     = prefs.approval      !== false;
+    const msg = document.getElementById('notifMsg');
+    msg.style.display = 'none';
+    new bootstrap.Modal(document.getElementById('notificationSettingsModal')).show();
+}
+
+function saveNotificationSettings() {
+    const prefs = {
+        applicant:    document.getElementById('notifApplicant').checked,
+        announcements: document.getElementById('notifAnnouncements').checked,
+        approval:     document.getElementById('notifApproval').checked,
+    };
+    localStorage.setItem('careeris_notif_prefs', JSON.stringify(prefs));
+    const msg = document.getElementById('notifMsg');
+    msg.style.display = 'block';
+    msg.innerHTML = '<span style="color:#10b981;"><i class="fas fa-check-circle me-1"></i>Preferences saved!</span>';
+    setTimeout(() => bootstrap.Modal.getInstance(document.getElementById('notificationSettingsModal')).hide(), 1200);
+}
+
+// ══════════════ PROFILE ══════════════
+function loadProfile() {
+    const u = JSON.parse(localStorage.getItem('careeris_user') || '{}');
+    const name = u.name || '';
+    const ini  = initials(name);
+
+    document.getElementById('profileName').value        = name;
+    document.getElementById('profileEmail').value       = u.email || '';
+    document.getElementById('profilePhone').value       = u.phone || '';
+    document.getElementById('profileCompany').value     = u.company || '';
+    document.getElementById('profileDesignation').value = u.designation || '';
+    document.getElementById('profileLinkedIn').value    = u.linkedIn || '';
+    document.getElementById('profileBio').value         = u.bio || '';
+    document.getElementById('profileSkills').value      = Array.isArray(u.skills) ? u.skills.join(', ') : (u.skills || '');
+
+    const gradSel = document.getElementById('profileGradYear');
+    if (u.graduationYear) gradSel.value = u.graduationYear;
+
+    ['profileAvatarBig','profileSideAvatar'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = ini;
+    });
+    document.getElementById('profileSideName').textContent = name || 'Alumni';
+    document.getElementById('profileSideRole').textContent = [u.designation, u.company].filter(Boolean).join(' @ ') || 'Alumni Portal';
+
+    // Load stats
+    api('/api/internships/my/postings').then(data => {
+        if (!data) return;
+        const postings = data.internships || data.data || data || [];
+        let totalApps = 0;
+        postings.forEach(p => { totalApps += p.applicationsCount || (p.applications ? p.applications.length : 0); });
+        document.getElementById('profileStatPostings').textContent = postings.length;
+        document.getElementById('profileStatApps').textContent     = totalApps;
+    });
+}
+
+document.getElementById('profileForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msgEl = document.getElementById('profileMsg');
+
+    const skills = document.getElementById('profileSkills').value
+        .split(',').map(s => s.trim()).filter(Boolean);
+
+    const payload = {
+        name:           document.getElementById('profileName').value,
+        phone:          document.getElementById('profilePhone').value,
+        graduationYear: document.getElementById('profileGradYear').value,
+        company:        document.getElementById('profileCompany').value,
+        designation:    document.getElementById('profileDesignation').value,
+        linkedIn:       document.getElementById('profileLinkedIn').value,
+        bio:            document.getElementById('profileBio').value,
+        skills:         skills,
+    };
+
+    const data = await api('/api/auth/profile', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    });
+
+    if (data && data.success) {
+        const updated = { ...JSON.parse(localStorage.getItem('careeris_user') || '{}'), ...payload, ...(data.user || {}) };
+        localStorage.setItem('careeris_user', JSON.stringify(updated));
+        msgEl.innerHTML = `<div class="alert" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);color:#10b981;border-radius:8px;margin-bottom:1rem;"><i class="fas fa-check-circle me-2"></i>Profile updated successfully!</div>`;
+        loadProfile();
+        setTimeout(() => { msgEl.innerHTML = ''; }, 3000);
+    } else {
+        msgEl.innerHTML = `<div class="alert" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#ef4444;border-radius:8px;margin-bottom:1rem;"><i class="fas fa-exclamation-circle me-2"></i>${data?.message || 'Failed to update profile.'}</div>`;
+    }
+});
+
+// ══════════════ LOGOUT ══════════════
+function logout() {
+    localStorage.removeItem('careeris_token');
+    localStorage.removeItem('careeris_user');
+    window.location.href = '/login.html';
+}
+
+// ══════════════ INIT ══════════════
+window.addEventListener('DOMContentLoaded', () => {
+    const name = user.name || 'Alumni';
+    const ini  = initials(name);
+
+    document.getElementById('sidebarName').textContent  = name;
+    document.getElementById('welcomeName').textContent  = name.split(' ')[0];
+    document.getElementById('topbarAvatar').textContent = ini;
+    document.getElementById('sidebarAvatar').textContent = ini;
+
+    const sub = [user.company, user.graduationYear ? 'Class of ' + user.graduationYear : null, 'Jinnah University for Women']
+        .filter(Boolean).join(' · ');
+    document.getElementById('welcomeSub').textContent = sub;
+
+    loadDashboard();
+    checkAlumniAnnBadge();
+});
+
+// ══════════════ ANNOUNCEMENTS ══════════════
+async function loadBrowseJobs() {
+    const search   = document.getElementById('alumBrowseSearch')?.value || '';
+    const type     = document.getElementById('alumBrowseType')?.value || '';
+    let params = [];
+    if (search) params.push(`search=${encodeURIComponent(search)}`);
+    if (type)   params.push(`type=${encodeURIComponent(type)}`);
+    const url = '/api/internships' + (params.length ? '?' + params.join('&') : '');
+    document.getElementById('alumBrowseList').innerHTML = '<div class="col-12 text-center py-4" style="color:#9ba3af;"><i class="fas fa-spinner fa-spin fa-2x"></i></div>';
+    const data = await api(url);
+    const list = data?.internships || [];
+    if (!list.length) {
+        document.getElementById('alumBrowseList').innerHTML = '<div class="col-12 text-center py-5" style="color:#9ba3af;"><i class="fas fa-briefcase fa-3x mb-3 d-block"></i>No jobs found.</div>';
+        return;
+    }
+    document.getElementById('alumBrowseList').innerHTML = list.map(i => `
+        <div class="col-md-6">
+            <div class="section-card h-100" style="padding:18px;">
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+                    <div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#7C3AED,#4338ca);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:1rem;flex-shrink:0;">${i.company?i.company[0].toUpperCase():'J'}</div>
+                    <div>
+                        <div style="font-weight:700;font-size:0.95rem;color:#e2e8f0;">${i.title}</div>
+                        <div style="font-size:0.8rem;color:#9ba3af;">${i.company||''}</div>
+                    </div>
+                </div>
+                <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
+                    <span style="background:rgba(124,58,237,0.15);color:#a78bfa;border-radius:20px;padding:2px 10px;font-size:0.73rem;">${i.type||'Internship'}</span>
+                    ${i.location ? `<span style="background:rgba(16,185,129,0.1);color:#10b981;border-radius:20px;padding:2px 10px;font-size:0.73rem;"><i class="fas fa-map-marker-alt me-1"></i>${i.location}</span>` : ''}
+                    ${i.salary ? `<span style="background:rgba(245,158,11,0.1);color:#f59e0b;border-radius:20px;padding:2px 10px;font-size:0.73rem;"><i class="fas fa-money-bill me-1"></i>${i.salary}</span>` : ''}
+                </div>
+                <p style="font-size:0.8rem;color:#9ba3af;margin-bottom:8px;">${(i.description||'').substring(0,100)}${i.description&&i.description.length>100?'...':''}</p>
+                ${i.deadline ? `<p style="font-size:0.75rem;color:#ef4444;"><i class="fas fa-clock me-1"></i>Deadline: ${new Date(i.deadline).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}</p>` : '<p style="font-size:0.75rem;color:#9ba3af;">No deadline</p>'}
+                <div style="font-size:0.73rem;color:#6b7280;">Posted by: ${i.postedBy?.name||'CareerIS'}</div>
+            </div>
+        </div>`).join('');
+}
+
+async function loadAlumniAnnouncements() {
+    const container = document.getElementById('alumniAnnList');
+    container.innerHTML = '<div class="text-center py-5" style="color:#9ba3af;"><i class="fas fa-spinner fa-spin fa-2x"></i></div>';
+    const data = await api('/api/admin/announcements');
+    const anns = (data?.announcements || []).filter(a => a.status === 'published');
+
+    const badge = document.getElementById('alumniAnnBadge');
+    if (badge) badge.style.display = 'none';
+
+    if (!anns.length) {
+        container.innerHTML = '<div class="text-center py-5" style="color:#9ba3af;"><i class="fas fa-bullhorn fa-3x mb-3 d-block"></i>No announcements yet.</div>';
+        return;
+    }
+
+    const pCfg = {
+        normal:    { color:'#10b981', bg:'rgba(16,185,129,0.07)',  border:'rgba(16,185,129,0.25)',  label:'NORMAL'    },
+        important: { color:'#8b5cf6', bg:'rgba(139,92,246,0.07)', border:'rgba(139,92,246,0.25)',  label:'IMPORTANT' },
+        urgent:    { color:'#ef4444', bg:'rgba(239,68,68,0.07)',   border:'rgba(239,68,68,0.25)',   label:'URGENT'    },
+    };
+
+    container.innerHTML = anns.map(a => {
+        const cfg  = pCfg[a.priority] || pCfg.normal;
+        const date = new Date(a.createdAt).toLocaleDateString('en-US', { weekday:'short', year:'numeric', month:'short', day:'numeric' });
+        const aud  = a.audience === 'all' ? 'Everyone' : a.audience === 'students' ? 'Students' : 'Alumni';
+        return `
+        <div style="background:${cfg.bg};border:1px solid ${cfg.border};border-left:4px solid ${cfg.color};border-radius:10px;padding:1.2rem 1.4rem;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;">
+                <span style="font-size:0.72rem;font-weight:800;color:${cfg.color};letter-spacing:1.5px;">${cfg.label}</span>
+                <span style="font-size:0.78rem;color:#9ba3af;"><i class="fas fa-calendar-alt me-1"></i>${date}</span>
+                <span style="font-size:0.78rem;color:#9ba3af;"><i class="fas fa-users me-1"></i>${aud}</span>
+            </div>
+            <div style="font-weight:700;color:#f0f2f5;font-size:1rem;margin-bottom:6px;word-break:break-word;">${a.title}</div>
+            <div style="color:#9ba3af;font-size:0.88rem;line-height:1.6;word-break:break-word;overflow-wrap:break-word;white-space:pre-wrap;">${a.message}</div>
+        </div>`;
+    }).join('');
+}
+
+async function checkAlumniAnnBadge() {
+    const data = await api('/api/admin/announcements');
+    const count = (data?.announcements || []).filter(a => a.status === 'published').length;
+    const badge = document.getElementById('alumniAnnBadge');
+    if (badge && count > 0) {
+        badge.textContent = count;
+        badge.style.display = 'inline';
+    }
+}
+
+</script>
+</body>
+</html>

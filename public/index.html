@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareerIS — Career Information System | JUW</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+        html{scroll-behavior:smooth;}
+        body{font-family:'Inter',sans-serif;background:#050816;color:#e2e8f0;overflow-x:hidden;}
+        ::-webkit-scrollbar{width:4px;}
+        ::-webkit-scrollbar-track{background:#050816;}
+        ::-webkit-scrollbar-thumb{background:linear-gradient(#7C3AED,#3B82F6);border-radius:4px;}
+
+        /* ── CANVAS BACKGROUND ── */
+        #particles{position:fixed;inset:0;z-index:0;pointer-events:none;}
+
+        /* ── NAVBAR ── */
+        .navbar{background:rgba(5,8,22,0.7);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+            border-bottom:1px solid rgba(124,58,237,0.15);padding:16px 0;position:fixed;top:0;left:0;right:0;z-index:1000;transition:all 0.3s;}
+        .navbar.scrolled{background:rgba(5,8,22,0.95);padding:12px 0;border-bottom-color:rgba(124,58,237,0.3);}
+        .brand{display:flex;align-items:center;gap:10px;text-decoration:none;}
+        .brand-icon{width:40px;height:40px;background:linear-gradient(135deg,#7C3AED,#3B82F6);border-radius:10px;
+            display:flex;align-items:center;justify-content:center;box-shadow:0 0 20px rgba(124,58,237,0.4);}
+        .brand-icon i{color:#fff;font-size:1.1rem;}
+        .brand-text{font-size:1.4rem;font-weight:900;letter-spacing:-0.5px;}
+        .brand-career{color:#fff;}
+        .brand-is{background:linear-gradient(135deg,#7C3AED,#60A5FA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+        .btn-login{color:rgba(255,255,255,0.8);font-weight:500;font-size:0.88rem;text-decoration:none;
+            padding:8px 20px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);transition:all 0.25s;}
+        .btn-login:hover{color:#fff;border-color:rgba(124,58,237,0.5);background:rgba(124,58,237,0.1);}
+        .btn-getstarted{color:#fff;font-weight:700;font-size:0.88rem;text-decoration:none;
+            padding:9px 24px;border-radius:8px;background:linear-gradient(135deg,#7C3AED,#3B82F6);
+            box-shadow:0 4px 20px rgba(124,58,237,0.4);transition:all 0.25s;}
+        .btn-getstarted:hover{color:#fff;transform:translateY(-2px);box-shadow:0 8px 30px rgba(124,58,237,0.6);}
+
+        /* ── HERO ── */
+        .hero{min-height:100vh;display:flex;align-items:center;position:relative;padding:120px 0 80px;overflow:hidden;z-index:1;}
+        .glow-orb{position:absolute;border-radius:50%;filter:blur(100px);pointer-events:none;animation:orbFloat 8s ease-in-out infinite;}
+        .orb1{width:600px;height:600px;background:radial-gradient(circle,rgba(124,58,237,0.25) 0%,transparent 70%);top:-150px;right:-100px;animation-delay:0s;}
+        .orb2{width:500px;height:500px;background:radial-gradient(circle,rgba(59,130,246,0.2) 0%,transparent 70%);bottom:-100px;left:-80px;animation-delay:3s;}
+        .orb3{width:300px;height:300px;background:radial-gradient(circle,rgba(6,182,212,0.15) 0%,transparent 70%);top:40%;left:45%;animation-delay:5s;}
+        @keyframes orbFloat{0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-30px) scale(1.05);}}
+
+.hero-title{font-size:clamp(2.6rem,5.5vw,4.2rem);font-weight:900;line-height:1.08;
+            letter-spacing:-2px;margin-bottom:24px;color:#fff;animation:fadeInUp 0.6s 0.1s ease both;}
+        .gradient-text{background:linear-gradient(135deg,#7C3AED 0%,#60A5FA 50%,#06B6D4 100%);
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+            background-size:200% 200%;animation:gradientShift 4s ease infinite;}
+        @keyframes gradientShift{0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
+
+.hero-sub{font-size:1.05rem;color:rgba(255,255,255,0.55);line-height:1.75;
+            max-width:520px;margin-bottom:42px;animation:fadeInUp 0.6s 0.2s ease both;}
+        .hero-btns{display:flex;gap:14px;flex-wrap:wrap;animation:fadeInUp 0.6s 0.3s ease both;}
+        .btn-primary-hero{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;
+            background:linear-gradient(135deg,#7C3AED,#3B82F6);color:#fff;font-weight:700;
+            font-size:0.95rem;border-radius:12px;text-decoration:none;
+            box-shadow:0 6px 30px rgba(124,58,237,0.45);transition:all 0.3s;}
+        .btn-primary-hero:hover{color:#fff;transform:translateY(-3px);box-shadow:0 12px 40px rgba(124,58,237,0.65);}
+        .btn-outline-hero{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;
+            background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.85);font-weight:600;
+            font-size:0.95rem;border-radius:12px;text-decoration:none;
+            border:1px solid rgba(255,255,255,0.1);transition:all 0.3s;}
+        .btn-outline-hero:hover{color:#fff;background:rgba(255,255,255,0.1);border-color:rgba(124,58,237,0.5);}
+
+        /* Hero right card */
+        .hero-card{background:rgba(15,18,35,0.8);border:1px solid rgba(124,58,237,0.2);
+            border-radius:24px;padding:28px;backdrop-filter:blur(20px);
+            box-shadow:0 40px 100px rgba(0,0,0,0.5),0 0 0 1px rgba(124,58,237,0.1),inset 0 1px 0 rgba(255,255,255,0.05);
+            animation:fadeInRight 0.7s 0.4s ease both;position:relative;overflow:hidden;}
+        .hero-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(124,58,237,0.05) 0%,transparent 60%);pointer-events:none;}
+        @keyframes fadeInRight{from{opacity:0;transform:translateX(40px);}to{opacity:1;transform:translateX(0);}}
+        .card-topbar{display:flex;align-items:center;gap:6px;margin-bottom:20px;}
+        .cdot{width:10px;height:10px;border-radius:50%;}
+        .cdot-r{background:#ff5f57;}.cdot-y{background:#ffbd2e;}.cdot-g{background:#28c941;}
+        .card-title-bar{margin-left:auto;font-size:0.72rem;color:rgba(255,255,255,0.3);font-weight:500;}
+        .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+        .stat-pill{background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.15);
+            border-radius:12px;padding:14px 16px;transition:all 0.3s;}
+        .stat-pill:hover{background:rgba(124,58,237,0.15);border-color:rgba(124,58,237,0.35);}
+        .stat-pill-num{font-size:1.5rem;font-weight:800;color:#fff;display:block;}
+        .stat-pill-label{font-size:0.7rem;color:rgba(255,255,255,0.45);font-weight:500;}
+        .activity-list{display:flex;flex-direction:column;gap:8px;}
+        .activity-item{display:flex;align-items:center;gap:10px;padding:10px 12px;
+            background:rgba(255,255,255,0.03);border-radius:10px;border:1px solid rgba(255,255,255,0.05);}
+        .act-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;flex-shrink:0;}
+        .act-text{font-size:0.75rem;color:rgba(255,255,255,0.6);}
+        .act-text strong{color:rgba(255,255,255,0.9);}
+        .act-time{margin-left:auto;font-size:0.68rem;color:rgba(255,255,255,0.3);}
+
+/* ── STATS BAR ── */
+        .stats-bar{position:relative;z-index:1;padding:50px 0;border-top:1px solid rgba(255,255,255,0.05);
+            border-bottom:1px solid rgba(255,255,255,0.05);background:rgba(255,255,255,0.02);}
+        .stat-item{text-align:center;}
+        .stat-num{font-size:2.5rem;font-weight:900;background:linear-gradient(135deg,#7C3AED,#60A5FA);
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:block;}
+        .stat-label{font-size:0.82rem;color:rgba(255,255,255,0.45);font-weight:500;margin-top:4px;}
+        .stat-divider{width:1px;background:rgba(255,255,255,0.08);align-self:stretch;}
+
+        /* ── FEATURES ── */
+        .features{padding:100px 0;position:relative;z-index:1;}
+        .section-eyebrow{display:inline-block;background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.25);
+            color:#a78bfa;font-size:0.75rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+            padding:5px 16px;border-radius:50px;margin-bottom:20px;}
+        .section-title{font-size:clamp(1.8rem,3vw,2.6rem);font-weight:900;color:#fff;letter-spacing:-1px;margin-bottom:16px;}
+        .section-sub{color:rgba(255,255,255,0.45);font-size:1rem;line-height:1.7;max-width:540px;margin:0 auto;}
+        .feat-card{background:rgba(15,18,35,0.6);border:1px solid rgba(255,255,255,0.06);border-radius:20px;
+            padding:28px;transition:all 0.4s;position:relative;overflow:hidden;cursor:default;
+            opacity:0;transform:translateY(30px);}
+        .feat-card.visible{opacity:1;transform:translateY(0);}
+        .feat-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(124,58,237,0.06) 0%,transparent 60%);
+            opacity:0;transition:opacity 0.3s;}
+        .feat-card:hover{border-color:rgba(124,58,237,0.3);transform:translateY(-6px);
+            box-shadow:0 20px 60px rgba(0,0,0,0.3),0 0 0 1px rgba(124,58,237,0.15);}
+        .feat-card:hover::before{opacity:1;}
+        .feat-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;
+            font-size:1.3rem;margin-bottom:18px;box-shadow:0 8px 20px rgba(0,0,0,0.3);}
+        .feat-title{font-size:1rem;font-weight:700;color:#fff;margin-bottom:10px;}
+        .feat-desc{font-size:0.85rem;color:rgba(255,255,255,0.45);line-height:1.65;}
+
+        /* ── HOW IT WORKS ── */
+        .how{padding:100px 0;position:relative;z-index:1;}
+        .step-card{background:rgba(15,18,35,0.6);border:1px solid rgba(255,255,255,0.06);
+            border-radius:20px;padding:32px 28px;position:relative;transition:all 0.4s;
+            opacity:0;transform:translateY(30px);}
+        .step-card.visible{opacity:1;transform:translateY(0);}
+        .step-card:hover{border-color:rgba(124,58,237,0.3);transform:translateY(-6px);}
+        .step-num{width:48px;height:48px;background:linear-gradient(135deg,#7C3AED,#3B82F6);
+            border-radius:12px;display:flex;align-items:center;justify-content:center;
+            font-size:1.2rem;font-weight:900;color:#fff;margin-bottom:20px;
+            box-shadow:0 8px 20px rgba(124,58,237,0.35);}
+        .step-title{font-size:1rem;font-weight:700;color:#fff;margin-bottom:8px;}
+        .step-desc{font-size:0.85rem;color:rgba(255,255,255,0.45);line-height:1.65;}
+        .step-connector{position:absolute;top:56px;right:-30px;width:60px;height:2px;
+            background:linear-gradient(90deg,rgba(124,58,237,0.5),transparent);}
+
+        /* ── ROLES ── */
+        .roles{padding:100px 0;position:relative;z-index:1;}
+        .role-card{border-radius:24px;padding:40px 32px;position:relative;overflow:hidden;
+            transition:all 0.4s;text-decoration:none;display:block;
+            opacity:0;transform:translateY(30px);}
+        .role-card.visible{opacity:1;transform:translateY(0);}
+        .role-card:hover{transform:translateY(-8px);}
+        .role-card-student{background:linear-gradient(135deg,#1e1b4b 0%,#312e81 100%);
+            border:1px solid rgba(99,102,241,0.3);box-shadow:0 20px 60px rgba(99,102,241,0.2);}
+        .role-card-alumni{background:linear-gradient(135deg,#064e3b 0%,#065f46 100%);
+            border:1px solid rgba(16,185,129,0.3);box-shadow:0 20px 60px rgba(16,185,129,0.2);}
+        .role-card-admin{background:linear-gradient(135deg,#1e1a24 0%,#2d1f3d 100%);
+            border:1px solid rgba(124,58,237,0.3);box-shadow:0 20px 60px rgba(124,58,237,0.2);}
+        .role-glow{position:absolute;width:200px;height:200px;border-radius:50%;filter:blur(60px);
+            top:-50px;right:-50px;pointer-events:none;}
+        .role-icon{width:64px;height:64px;border-radius:18px;display:flex;align-items:center;
+            justify-content:center;font-size:1.6rem;margin-bottom:24px;position:relative;z-index:1;}
+        .role-title{font-size:1.5rem;font-weight:800;color:#fff;margin-bottom:8px;position:relative;z-index:1;}
+        .role-sub{font-size:0.85rem;color:rgba(255,255,255,0.6);line-height:1.6;margin-bottom:24px;position:relative;z-index:1;}
+        .role-features{list-style:none;margin-bottom:28px;position:relative;z-index:1;}
+        .role-features li{display:flex;align-items:center;gap:8px;font-size:0.82rem;
+            color:rgba(255,255,255,0.75);margin-bottom:8px;}
+        .role-features li i{font-size:0.7rem;opacity:0.7;}
+        .role-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 22px;border-radius:10px;
+            font-size:0.85rem;font-weight:700;transition:all 0.3s;position:relative;z-index:1;}
+
+        /* ── CTA ── */
+        .cta-section{padding:100px 0;position:relative;z-index:1;}
+        .cta-box{background:linear-gradient(135deg,rgba(124,58,237,0.15) 0%,rgba(59,130,246,0.1) 100%);
+            border:1px solid rgba(124,58,237,0.25);border-radius:32px;padding:70px 40px;
+            text-align:center;position:relative;overflow:hidden;}
+        .cta-box::before{content:'';position:absolute;inset:0;
+            background:radial-gradient(ellipse at center,rgba(124,58,237,0.1) 0%,transparent 70%);pointer-events:none;}
+        .cta-title{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:900;color:#fff;letter-spacing:-1px;margin-bottom:16px;}
+        .cta-sub{font-size:1rem;color:rgba(255,255,255,0.5);max-width:480px;margin:0 auto 36px;}
+
+        /* ── FOOTER ── */
+        footer{background:rgba(0,0,0,0.4);border-top:1px solid rgba(255,255,255,0.05);
+            padding:40px 0;position:relative;z-index:1;}
+        .footer-brand{font-size:1.2rem;font-weight:900;color:#fff;}
+        .footer-copy{font-size:0.8rem;color:rgba(255,255,255,0.3);}
+        .footer-links a{font-size:0.8rem;color:rgba(255,255,255,0.4);text-decoration:none;transition:color 0.2s;margin-left:20px;}
+        .footer-links a:hover{color:#a78bfa;}
+
+        /* ── ANIMATIONS ── */
+        @keyframes fadeInUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+        .reveal{opacity:0;transform:translateY(30px);transition:all 0.6s cubic-bezier(0.16,1,0.3,1);}
+        .reveal.visible{opacity:1;transform:translateY(0);}
+
+        /* Shimmer line */
+        .shimmer-line{height:1px;background:linear-gradient(90deg,transparent,rgba(124,58,237,0.6),rgba(59,130,246,0.6),transparent);
+            margin:0 auto;animation:shimmerMove 3s ease-in-out infinite;}
+        @keyframes shimmerMove{0%{opacity:0.3;}50%{opacity:1;}100%{opacity:0.3;}}
+    </style>
+</head>
+<body>
+
+<!-- Particle Canvas -->
+<canvas id="particles"></canvas>
+
+<!-- ── NAVBAR ── -->
+<nav class="navbar" id="mainNav">
+    <div class="container d-flex align-items-center justify-content-between">
+        <a class="brand" href="/">
+            <div class="brand-icon"><i class="fas fa-graduation-cap"></i></div>
+            <div class="brand-text"><span class="brand-career">Career</span><span class="brand-is">IS</span></div>
+        </a>
+        <div class="d-flex align-items-center gap-3">
+            <a href="/login.html" class="btn-login">Sign In</a>
+            <a href="/register.html" class="btn-getstarted">Get Started <i class="fas fa-arrow-right ms-1" style="font-size:0.8rem;"></i></a>
+        </div>
+    </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+    <div class="glow-orb orb1"></div>
+    <div class="glow-orb orb2"></div>
+    <div class="glow-orb orb3"></div>
+
+    <div class="container" style="position:relative;z-index:1;">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <h1 class="hero-title">
+                    Career Information System
+                </h1>
+                <p class="hero-sub">Connect with alumni, discover internships, and build your professional future all in one place.</p>
+                <div class="hero-btns">
+                    <a href="/register.html" class="btn-primary-hero"><i class="fas fa-rocket"></i>Get Started Free</a>
+                    <a href="/login.html" class="btn-outline-hero"><i class="fas fa-sign-in-alt"></i>Sign In</a>
+                </div>
+            </div>
+            <div class="col-lg-6" style="position:relative;padding:30px;">
+                <div class="hero-card">
+                    <div class="card-topbar">
+                        <div class="cdot cdot-r"></div>
+                        <div class="cdot cdot-y"></div>
+                        <div class="cdot cdot-g"></div>
+                        <div class="card-title-bar">CareerIS Dashboard</div>
+                    </div>
+
+                    <!-- Mini stats -->
+                    <div class="stat-grid">
+                        <div class="stat-pill">
+                            <span class="stat-pill-num" id="h1">0</span>
+                            <span class="stat-pill-label"><i class="fas fa-users me-1" style="color:#7C3AED;"></i>Students</span>
+                        </div>
+                        <div class="stat-pill">
+                            <span class="stat-pill-num" id="h2">0</span>
+                            <span class="stat-pill-label"><i class="fas fa-briefcase me-1" style="color:#3B82F6;"></i>Internships</span>
+                        </div>
+                        <div class="stat-pill">
+                            <span class="stat-pill-num" id="h3">0</span>
+                            <span class="stat-pill-label"><i class="fas fa-user-tie me-1" style="color:#10b981;"></i>Alumni</span>
+                        </div>
+                        <div class="stat-pill">
+                            <span class="stat-pill-num" id="h4">0</span>
+                            <span class="stat-pill-label"><i class="fas fa-certificate me-1" style="color:#f59e0b;"></i>Certificates</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── SHIMMER DIVIDER ── -->
+<div class="shimmer-line" style="max-width:600px;margin:0 auto;"></div>
+
+<!-- ── STATS BAR ── -->
+<div class="stats-bar">
+    <div class="container">
+        <div class="row g-4 align-items-center text-center">
+            <div class="col-6 col-md-3 stat-item reveal">
+                <span class="stat-num" id="s1">0</span>
+                <div class="stat-label">Students Registered</div>
+            </div>
+            <div class="col-6 col-md-3 stat-item reveal">
+                <span class="stat-num" id="s2">0</span>
+                <div class="stat-label">Internships Posted</div>
+            </div>
+            <div class="col-6 col-md-3 stat-item reveal">
+                <span class="stat-num" id="s3">0</span>
+                <div class="stat-label">Alumni Connected</div>
+            </div>
+            <div class="col-6 col-md-3 stat-item reveal">
+                <span class="stat-num" id="s4">0</span>
+                <div class="stat-label">Certificates Verified</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── FEATURES ── -->
+<section class="features">
+    <div class="container">
+        <div class="text-center mb-5 reveal">
+            <span class="section-eyebrow">Platform Features</span>
+            <h2 class="section-title">Everything You Need to<br>Launch Your Career</h2>
+            <p class="section-sub">Built exclusively for JUW — manage internships, certificates, alumni connections, and more from one powerful platform.</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4">
+                <div class="feat-card h-100">
+                    <div class="feat-icon" style="background:linear-gradient(135deg,rgba(124,58,237,0.2),rgba(124,58,237,0.05));color:#a78bfa;border:1px solid rgba(124,58,237,0.2);">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <div class="feat-title">Internship Portal</div>
+                    <div class="feat-desc">Browse and apply for real internships posted by JUW alumni. Filter by type, location, and more. Track your application status in real time.</div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="feat-card h-100">
+                    <div class="feat-icon" style="background:linear-gradient(135deg,rgba(59,130,246,0.2),rgba(59,130,246,0.05));color:#60a5fa;border:1px solid rgba(59,130,246,0.2);">
+                        <i class="fas fa-certificate"></i>
+                    </div>
+                    <div class="feat-title">Certificate Verification</div>
+                    <div class="feat-desc">Upload your certifications for admin verification. Share a verified link with employers proving your credentials are authentic and endorsed by JUW.</div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="feat-card h-100">
+                    <div class="feat-icon" style="background:linear-gradient(135deg,rgba(16,185,129,0.2),rgba(16,185,129,0.05));color:#10b981;border:1px solid rgba(16,185,129,0.2);">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="feat-title">Alumni Network</div>
+                    <div class="feat-desc">Connect with JUW graduates working at top companies. Browse alumni by batch year, company, or domain. Reach out via LinkedIn or email directly.</div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="feat-card h-100">
+                    <div class="feat-icon" style="background:linear-gradient(135deg,rgba(245,158,11,0.2),rgba(245,158,11,0.05));color:#f59e0b;border:1px solid rgba(245,158,11,0.2);">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="feat-title">Resume Builder</div>
+                    <div class="feat-desc">Auto-generate a professional PDF resume using your profile, certificates, and work experience. Download it ready for applications.</div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="feat-card h-100">
+                    <div class="feat-icon" style="background:linear-gradient(135deg,rgba(239,68,68,0.2),rgba(239,68,68,0.05));color:#f87171;border:1px solid rgba(239,68,68,0.2);">
+                        <i class="fas fa-bullhorn"></i>
+                    </div>
+                    <div class="feat-title">Announcements</div>
+                    <div class="feat-desc">Stay updated with university notices, career events, deadlines, and important messages from admin and alumni in one feed.</div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="feat-card h-100">
+                    <div class="feat-icon" style="background:linear-gradient(135deg,rgba(6,182,212,0.2),rgba(6,182,212,0.05));color:#22d3ee;border:1px solid rgba(6,182,212,0.2);">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="feat-title">Secure & Role-Based</div>
+                    <div class="feat-desc">JWT-secured access with three separate portals for Students, Alumni, and Admins. Everyone sees only what they need — nothing more.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── HOW IT WORKS ── -->
+<section class="how">
+    <div class="container">
+        <div class="text-center mb-5 reveal">
+            <span class="section-eyebrow">Simple Process</span>
+            <h2 class="section-title">Up and Running in Minutes</h2>
+            <p class="section-sub">No complicated setup — just register, set up your profile, and start using CareerIS immediately.</p>
+        </div>
+        <div class="row g-4 position-relative">
+            <div class="col-md-6 col-lg-3">
+                <div class="step-card">
+                    <div class="step-num">1</div>
+                    <div class="step-title">Create Account</div>
+                    <div class="step-desc">Register as a Student, Alumni, or Admin with your JUW email in under 2 minutes.</div>
+                    <div class="step-connector d-none d-lg-block"></div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="step-card">
+                    <div class="step-num">2</div>
+                    <div class="step-title">Complete Profile</div>
+                    <div class="step-desc">Add your department, skills, and experiences so the platform can recommend the best opportunities for you.</div>
+                    <div class="step-connector d-none d-lg-block"></div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="step-card">
+                    <div class="step-num">3</div>
+                    <div class="step-title">Explore & Apply</div>
+                    <div class="step-desc">Browse internships, connect with alumni, upload certificates, and apply — all from your dashboard.</div>
+                    <div class="step-connector d-none d-lg-block"></div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="step-card">
+                    <div class="step-num">4</div>
+                    <div class="step-title">Track Everything</div>
+                    <div class="step-desc">Monitor your application statuses, certificate verification, and career progress in real time.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ── CTA ── -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-box reveal">
+            <span class="section-eyebrow">Ready to Begin?</span>
+            <h2 class="cta-title">Start Your Career Journey Today</h2>
+            <p class="cta-sub">Join hundreds of JUW students and alumni already using CareerIS to build real careers.</p>
+            <div class="d-flex gap-3 justify-content-center flex-wrap">
+                <a href="/register.html" class="btn-primary-hero"><i class="fas fa-rocket"></i>Create Free Account</a>
+                <a href="/login.html" class="btn-outline-hero"><i class="fas fa-sign-in-alt"></i>Already have an account?</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+    <div class="container d-flex flex-wrap align-items-center justify-content-between gap-3">
+        <div>
+            <div class="footer-brand">Career<span style="background:linear-gradient(135deg,#7C3AED,#60A5FA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">IS</span></div>
+            <div class="footer-copy mt-1">© 2026 Jinnah University for Women — Career Information System</div>
+        </div>
+        <div class="footer-links">
+            <a href="/about.html">About</a>
+            <a href="/contact.html">Contact</a>
+            <a href="/login.html">Login</a>
+            <a href="/register.html">Register</a>
+        </div>
+    </div>
+</footer>
+
+<script>
+// ══ PARTICLE CANVAS ══
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; initParticles(); });
+
+let particles = [];
+function initParticles() {
+    particles = [];
+    const count = Math.floor((canvas.width * canvas.height) / 15000);
+    for (let i = 0; i < count; i++) {
+        particles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            r: Math.random() * 1.5 + 0.3,
+            dx: (Math.random() - 0.5) * 0.3,
+            dy: (Math.random() - 0.5) * 0.3,
+            alpha: Math.random() * 0.5 + 0.1
+        });
+    }
+}
+initParticles();
+
+function drawParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(124,58,237,${p.alpha})`;
+        ctx.fill();
+        p.x += p.dx; p.y += p.dy;
+        if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+    });
+    // Draw lines between nearby particles
+    for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 120) {
+                ctx.beginPath();
+                ctx.strokeStyle = `rgba(124,58,237,${0.06 * (1 - dist / 120)})`;
+                ctx.lineWidth = 0.5;
+                ctx.moveTo(particles[i].x, particles[i].y);
+                ctx.lineTo(particles[j].x, particles[j].y);
+                ctx.stroke();
+            }
+        }
+    }
+    requestAnimationFrame(drawParticles);
+}
+drawParticles();
+
+// ══ NAVBAR SCROLL ══
+window.addEventListener('scroll', () => {
+    document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 50);
+});
+
+
+// ══ COUNTER ANIMATION ══
+function animateCounter(el, target, suffix='') {
+    const duration = 1800;
+    const start = performance.now();
+    function update(now) {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        el.textContent = Math.floor(eased * target) + suffix;
+        if (progress < 1) requestAnimationFrame(update);
+        else el.textContent = target + suffix;
+    }
+    requestAnimationFrame(update);
+}
+
+// Fetch real stats
+fetch('/api/stats').then(r => r.json()).then(d => {
+    const students     = d.students || d.totalStudents || 0;
+    const internships  = d.internships || d.totalInternships || 0;
+    const alumni       = d.alumni || d.totalAlumni || 0;
+    const certs        = d.certificates || d.approvedCertificates || 0;
+
+    // Hero card
+    animateCounter(document.getElementById('h1'), students);
+    animateCounter(document.getElementById('h2'), internships);
+    animateCounter(document.getElementById('h3'), alumni);
+    animateCounter(document.getElementById('h4'), certs);
+
+    // Stats bar
+    animateCounter(document.getElementById('s1'), students, '+');
+    animateCounter(document.getElementById('s2'), internships, '+');
+    animateCounter(document.getElementById('s3'), alumni, '+');
+    animateCounter(document.getElementById('s4'), certs, '+');
+}).catch(() => {
+    ['h1','h2','h3','h4'].forEach((id,i) => {
+        const fallback = [120,45,60,88];
+        animateCounter(document.getElementById(id), fallback[i]);
+    });
+    ['s1','s2','s3','s4'].forEach((id,i) => {
+        const fallback = [120,45,60,88];
+        animateCounter(document.getElementById(id), fallback[i], '+');
+    });
+});
+
+// ══ SCROLL REVEAL ══
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+            setTimeout(() => entry.target.classList.add('visible'), i * 80);
+            observer.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.reveal, .feat-card, .step-card, .role-card').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

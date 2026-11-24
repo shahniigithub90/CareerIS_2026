@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account — CareerIS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'Inter',sans-serif;background:#050816;color:#e2e8f0;min-height:100vh;overflow-x:hidden;}
+        #particles{position:fixed;inset:0;z-index:0;pointer-events:none;}
+        .orb{position:fixed;border-radius:50%;filter:blur(100px);pointer-events:none;}
+        .orb1{width:600px;height:600px;background:radial-gradient(circle,rgba(124,58,237,0.18) 0%,transparent 70%);top:-150px;right:-100px;}
+        .orb2{width:400px;height:400px;background:radial-gradient(circle,rgba(59,130,246,0.12) 0%,transparent 70%);bottom:-100px;left:-80px;}
+
+        .top-bar{position:fixed;top:0;left:0;right:0;z-index:100;padding:14px 24px;
+            display:flex;align-items:center;background:rgba(5,8,22,0.7);backdrop-filter:blur(20px);
+            border-bottom:1px solid rgba(124,58,237,0.1);}
+        .back-home{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,0.4);
+            font-size:0.8rem;font-weight:500;text-decoration:none;transition:color 0.2s;}
+        .back-home:hover{color:#a78bfa;}
+        .login-link{margin-left:auto;font-size:0.8rem;color:rgba(255,255,255,0.4);text-decoration:none;
+            padding:7px 16px;border:1px solid rgba(255,255,255,0.1);border-radius:8px;transition:all 0.2s;}
+        .login-link:hover{color:#a78bfa;border-color:rgba(124,58,237,0.4);background:rgba(124,58,237,0.08);}
+
+        .page-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;
+            padding:90px 16px 40px;position:relative;z-index:1;}
+
+        .auth-card{background:rgba(12,15,30,0.85);border:1px solid rgba(124,58,237,0.2);border-radius:24px;
+            padding:40px;width:100%;max-width:560px;backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+            box-shadow:0 40px 80px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.05);
+            animation:slideUp 0.5s cubic-bezier(0.16,1,0.3,1) both;}
+        @keyframes slideUp{from{opacity:0;transform:translateY(32px);}to{opacity:1;transform:translateY(0);}}
+
+        .auth-brand{display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:28px;}
+        .brand-icon{width:44px;height:44px;background:linear-gradient(135deg,#7C3AED,#3B82F6);border-radius:12px;
+            display:flex;align-items:center;justify-content:center;box-shadow:0 0 24px rgba(124,58,237,0.4);}
+        .brand-icon i{color:#fff;font-size:1.2rem;}
+        .brand-name{font-size:1.5rem;font-weight:900;letter-spacing:-0.5px;}
+        .brand-career{color:#fff;}.brand-is{background:linear-gradient(135deg,#7C3AED,#60A5FA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+
+        .auth-title{font-size:1.4rem;font-weight:800;color:#fff;text-align:center;margin-bottom:4px;letter-spacing:-0.5px;}
+        .auth-sub{font-size:0.82rem;color:rgba(255,255,255,0.35);text-align:center;margin-bottom:28px;}
+
+        /* Alert */
+        .auth-alert{padding:11px 14px;border-radius:10px;font-size:0.8rem;margin-bottom:16px;display:none;align-items:center;gap:8px;}
+        .auth-alert.error{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);color:#fca5a5;}
+        .auth-alert.success{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);color:#6ee7b7;}
+
+        /* Role selector */
+        .role-selector{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:22px;}
+        .role-btn{padding:11px 8px;border-radius:10px;border:1px solid rgba(255,255,255,0.07);
+            background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.45);text-align:center;
+            cursor:pointer;font-size:0.8rem;font-weight:600;transition:all 0.2s;display:flex;flex-direction:column;align-items:center;gap:5px;}
+        .role-btn:hover{border-color:rgba(124,58,237,0.3);background:rgba(124,58,237,0.07);color:rgba(255,255,255,0.75);}
+        .role-btn i{font-size:1.1rem;}
+        .active-student{border-color:rgba(129,140,248,0.5)!important;background:rgba(129,140,248,0.1)!important;color:#818cf8!important;}
+        .active-alumni{border-color:rgba(52,211,153,0.5)!important;background:rgba(52,211,153,0.08)!important;color:#34d399!important;}
+
+        /* Form */
+        .form-group{margin-bottom:14px;}
+        label.fld-label{display:block;font-size:0.75rem;font-weight:600;color:rgba(255,255,255,0.55);margin-bottom:5px;letter-spacing:0.3px;}
+        .input-wrap{position:relative;}
+        .input-wrap .fld-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,0.2);font-size:0.8rem;pointer-events:none;}
+        .fld-input,.fld-select{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);
+            border-radius:10px;padding:11px 12px 11px 36px;color:#fff;font-size:0.86rem;font-family:'Inter',sans-serif;
+            transition:all 0.25s;outline:none;-webkit-appearance:none;appearance:none;}
+        .fld-select{padding-left:36px;}
+        .fld-input:focus,.fld-select:focus{border-color:rgba(124,58,237,0.5);background:rgba(124,58,237,0.06);box-shadow:0 0 0 3px rgba(124,58,237,0.1);}
+        .fld-input::placeholder{color:rgba(255,255,255,0.18);}
+        .fld-select option{background:#0f1225;color:#e2e8f0;}
+        .eye-btn{position:absolute;right:11px;top:50%;transform:translateY(-50%);background:none;border:none;
+            color:rgba(255,255,255,0.25);cursor:pointer;padding:4px;transition:color 0.2s;}
+        .eye-btn:hover{color:rgba(255,255,255,0.6);}
+
+        /* Strength bar */
+        .strength-wrap{margin-top:6px;}
+        .strength-track{height:3px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden;}
+        .strength-bar{height:100%;width:0%;transition:all 0.3s;border-radius:2px;}
+        .strength-text{font-size:0.7rem;color:rgba(255,255,255,0.25);margin-top:3px;}
+
+        /* Hint */
+        .fld-hint{font-size:0.7rem;margin-top:3px;display:block;}
+
+        /* Notice boxes */
+        .notice-box{border-radius:10px;padding:10px 13px;font-size:0.78rem;display:flex;align-items:flex-start;gap:8px;margin-top:8px;}
+        .notice-alumni{background:rgba(52,211,153,0.07);border:1px solid rgba(52,211,153,0.2);color:rgba(255,255,255,0.55);}
+
+        /* Checkbox */
+        .check-wrap{display:flex;align-items:flex-start;gap:10px;margin:16px 0;}
+        .check-wrap input[type=checkbox]{width:15px;height:15px;margin-top:2px;accent-color:#7C3AED;flex-shrink:0;cursor:pointer;}
+        .check-wrap label{font-size:0.8rem;color:rgba(255,255,255,0.45);cursor:pointer;}
+        .check-wrap label a{color:#a78bfa;text-decoration:none;}
+        .check-wrap label a:hover{color:#c4b5fd;}
+
+        /* Submit */
+        .btn-submit{width:100%;padding:13px;background:linear-gradient(135deg,#7C3AED,#3B82F6);color:#fff;
+            font-weight:700;font-size:0.92rem;border:none;border-radius:12px;cursor:pointer;
+            transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:8px;
+            box-shadow:0 6px 24px rgba(124,58,237,0.35);}
+        .btn-submit:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(124,58,237,0.55);}
+        .btn-submit:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
+
+        .divider{display:flex;align-items:center;gap:12px;margin:20px 0;}
+        .divider span{font-size:0.73rem;color:rgba(255,255,255,0.2);}
+        .divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,0.06);}
+
+        .auth-footer{text-align:center;font-size:0.82rem;color:rgba(255,255,255,0.35);}
+        .auth-footer a{color:#a78bfa;text-decoration:none;font-weight:600;}
+        .auth-footer a:hover{color:#c4b5fd;}
+
+        .spinner{width:15px;height:15px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;}
+        @keyframes spin{to{transform:rotate(360deg);}}
+
+        /* Terms modal */
+        .terms-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;align-items:center;justify-content:center;padding:16px;}
+        .terms-modal.open{display:flex;}
+        .terms-box{background:#0f1225;border:1px solid rgba(124,58,237,0.2);border-radius:20px;max-width:540px;width:100%;
+            max-height:80vh;overflow-y:auto;padding:32px;box-shadow:0 40px 80px rgba(0,0,0,0.6);}
+        .terms-box h4{color:#fff;font-weight:800;margin-bottom:16px;}
+        .terms-box p{font-size:0.83rem;color:rgba(255,255,255,0.5);line-height:1.75;}
+        .terms-box strong{color:rgba(255,255,255,0.8);}
+        .btn-agree{width:100%;margin-top:20px;padding:12px;background:linear-gradient(135deg,#7C3AED,#3B82F6);
+            color:#fff;font-weight:700;font-size:0.9rem;border:none;border-radius:10px;cursor:pointer;transition:all 0.25s;}
+        .btn-agree:hover{transform:translateY(-2px);}
+    </style>
+</head>
+<body>
+<canvas id="particles"></canvas>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+
+<!-- Top bar -->
+<div class="top-bar">
+    <a href="/" class="back-home"><i class="fas fa-arrow-left"></i> Back to Home</a>
+    <a href="/login.html" class="login-link">Already have an account? Sign In</a>
+</div>
+
+<div class="page-wrap">
+    <div class="auth-card">
+        <div class="auth-brand">
+            <div class="brand-icon"><i class="fas fa-graduation-cap"></i></div>
+            <div class="brand-name"><span class="brand-career">Career</span><span class="brand-is">IS</span></div>
+        </div>
+        <h1 class="auth-title">Create Your Account</h1>
+        <p class="auth-sub">Join CareerIS and start your career journey at JUW</p>
+
+        <div class="auth-alert error" id="alertBox"><i class="fas fa-exclamation-circle"></i><span id="alertMsg"></span></div>
+
+        <!-- Role Selector -->
+        <div style="margin-bottom:6px;">
+            <label class="fld-label">I am a...</label>
+            <div class="role-selector">
+                <div class="role-btn active-student" id="roleStudent" onclick="selectRole('student',this)">
+                    <i class="fas fa-user-graduate"></i> Student
+                </div>
+                <div class="role-btn" id="roleAlumni" onclick="selectRole('alumni',this)">
+                    <i class="fas fa-user-tie"></i> Alumni
+                </div>
+            </div>
+        </div>
+        <input type="hidden" id="selectedRole" value="student">
+
+        <form id="registerForm" novalidate>
+            <!-- Name -->
+            <div class="form-group">
+                <label class="fld-label">Full Name *</label>
+                <div class="input-wrap">
+                    <input type="text" class="fld-input" id="regName" placeholder="e.g. Sara Ahmed" required oninput="validateName(this)">
+                    <i class="fas fa-user fld-icon"></i>
+                </div>
+                <small class="fld-hint" id="nameHint"></small>
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+                <label class="fld-label">Email Address *</label>
+                <div class="input-wrap">
+                    <input type="email" class="fld-input" id="regEmail" placeholder="you@example.com" required autocomplete="off">
+                    <i class="fas fa-envelope fld-icon"></i>
+                </div>
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+                <label class="fld-label">Password *</label>
+                <div class="input-wrap">
+                    <input type="password" class="fld-input" id="regPassword" placeholder="Min. 6 characters" required style="padding-right:40px;" autocomplete="new-password">
+                    <i class="fas fa-lock fld-icon"></i>
+                    <button type="button" class="eye-btn" onclick="toggleRegPassword()"><i class="fas fa-eye" id="toggleRegPass"></i></button>
+                </div>
+                <div class="strength-wrap">
+                    <div class="strength-track"><div class="strength-bar" id="strengthBar"></div></div>
+                    <div class="strength-text" id="strengthText"></div>
+                </div>
+            </div>
+
+            <!-- Student Fields -->
+            <div id="studentFields">
+                <div class="row g-2">
+                    <div class="col-md-6">
+                        <label class="fld-label">Enrollment Number</label>
+                        <div class="input-wrap">
+                            <input type="text" class="fld-input" id="studentId" placeholder="2021/IT/BSIT/12345" oninput="validateStudentId(this)">
+                            <i class="fas fa-id-card fld-icon"></i>
+                        </div>
+                        <small class="fld-hint" id="studentIdHint"></small>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="fld-label">Department</label>
+                        <div class="input-wrap">
+                            <select class="fld-select" id="department">
+                                <option value="">Select department</option>
+                                <option>Computer Science</option>
+                                <option>Software Engineering</option>
+                                <option>Information Technology</option>
+                                <option>Business Administration</option>
+                                <option>Mathematics</option>
+                                <option>Other</option>
+                            </select>
+                            <i class="fas fa-building fld-icon"></i>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <label class="fld-label">Current Year</label>
+                        <div class="input-wrap">
+                            <select class="fld-select" id="year">
+                                <option value="">Select year</option>
+                                <option>1st Year</option>
+                                <option>2nd Year</option>
+                                <option>3rd Year</option>
+                                <option>4th Year</option>
+                            </select>
+                            <i class="fas fa-calendar fld-icon"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alumni Fields -->
+            <div id="alumniFields" style="display:none;">
+                <div class="row g-2">
+                    <div class="col-md-6">
+                        <label class="fld-label">Graduation Year</label>
+                        <div class="input-wrap">
+                            <input type="text" class="fld-input" id="graduationYear" placeholder="e.g. 2020">
+                            <i class="fas fa-calendar-alt fld-icon"></i>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="fld-label">Current Company</label>
+                        <div class="input-wrap">
+                            <input type="text" class="fld-input" id="company" placeholder="Where do you work?">
+                            <i class="fas fa-building fld-icon"></i>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="fld-label">Designation</label>
+                        <div class="input-wrap">
+                            <input type="text" class="fld-input" id="designation" placeholder="Your job title">
+                            <i class="fas fa-briefcase fld-icon"></i>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="fld-label">LinkedIn Profile</label>
+                        <div class="input-wrap">
+                            <input type="url" class="fld-input" id="linkedIn" placeholder="linkedin.com/in/...">
+                            <i class="fab fa-linkedin fld-icon"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="notice-box notice-alumni">
+                    <i class="fas fa-info-circle" style="color:#34d399;margin-top:2px;flex-shrink:0;"></i>
+                    Alumni accounts are automatically activated so you can log in right away.
+                </div>
+            </div>
+
+            <!-- Terms -->
+            <div class="check-wrap">
+                <input type="checkbox" id="agreeTerms" required>
+                <label for="agreeTerms">I agree to the <a href="#" onclick="openTerms();return false;">Terms & Conditions</a> and <a href="#" onclick="openTerms();return false;">Privacy Policy</a></label>
+            </div>
+
+            <button type="submit" class="btn-submit" id="registerBtn">
+                <i class="fas fa-user-plus"></i>
+                <span id="btnText">Create Account</span>
+                <div class="spinner" id="btnSpinner" style="display:none;"></div>
+            </button>
+        </form>
+
+        <div class="divider"><span>Already registered?</span></div>
+        <div class="auth-footer"><a href="/login.html">Sign In to your account</a></div>
+    </div>
+</div>
+
+<!-- Terms Modal -->
+<div class="terms-modal" id="termsModal">
+    <div class="terms-box">
+        <h4><i class="fas fa-shield-alt me-2" style="color:#7C3AED;"></i>Terms & Conditions — CareerIS</h4>
+        <p>
+            <strong>1. Acceptance</strong><br>By creating an account on CareerIS, you agree to these terms and conditions set by Jinnah University for Women.<br><br>
+            <strong>2. Account Responsibility</strong><br>You are responsible for maintaining the confidentiality of your account credentials. Any activity under your account is your responsibility.<br><br>
+            <strong>3. Appropriate Use</strong><br>CareerIS is an academic platform for career-related activities. Users must not misuse the platform, post false information, or use it for any unlawful purpose.<br><br>
+            <strong>4. Internship Listings</strong><br>Alumni posting internships must ensure all information is accurate and genuine. CareerIS reserves the right to remove listings that violate these terms.<br><br>
+            <strong>5. Certificate Verification</strong><br>Certificates uploaded must be genuine and verifiable. Uploading fake or altered documents may result in account suspension.<br><br>
+            <strong>6. Privacy</strong><br>Your personal data is collected and used solely for CareerIS platform operations. We do not share your data with third parties without consent.<br><br>
+            <strong>7. Account Termination</strong><br>CareerIS administrators reserve the right to suspend or terminate accounts that violate these terms.
+        </p>
+        <button class="btn-agree" onclick="agreeAndClose()">I Understand & Agree ✓</button>
+    </div>
+</div>
+
+<script>
+// ── Particles ──
+const canvas=document.getElementById('particles');
+const ctx=canvas.getContext('2d');
+function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
+resize();window.addEventListener('resize',resize);
+let pts=[];
+for(let i=0;i<50;i++)pts.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()+0.3,dx:(Math.random()-.5)*.25,dy:(Math.random()-.5)*.25,a:Math.random()*.3+.08});
+(function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);pts.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(124,58,237,${p.a})`;ctx.fill();p.x+=p.dx;p.y+=p.dy;if(p.x<0||p.x>canvas.width)p.dx*=-1;if(p.y<0||p.y>canvas.height)p.dy*=-1;});requestAnimationFrame(draw);})();
+
+// ── Role ──
+let currentRole='student';
+function selectRole(role,el){
+    currentRole=role;
+    document.getElementById('selectedRole').value=role;
+    ['roleStudent','roleAlumni'].forEach(id=>{document.getElementById(id).className='role-btn';});
+    el.classList.add(role==='alumni'?'active-alumni':'active-student');
+    document.getElementById('studentFields').style.display=role==='student'?'block':'none';
+    document.getElementById('alumniFields').style.display=role==='alumni'?'block':'none';
+}
+
+// ── Validators ──
+function validateName(input){
+    const hint=document.getElementById('nameHint'),val=input.value.trim();
+    if(!val){hint.textContent='';return;}
+    if(/^\d+$/.test(val)){hint.textContent='Name cannot be numbers.';hint.style.color='#f87171';}
+    else if(!/^[A-Za-z\s]+$/.test(val)){hint.textContent='Letters only — no numbers or symbols.';hint.style.color='#f87171';}
+    else if(val.length<3){hint.textContent='Too short — enter your full name.';hint.style.color='#fbbf24';}
+    else{hint.textContent='✓ Looks good!';hint.style.color='#34d399';}
+}
+function validateStudentId(input){
+    const hint=document.getElementById('studentIdHint'),val=input.value.trim();
+    if(!val){hint.textContent='';return;}
+    if(/^\d{4}\/[A-Za-z]{2,8}\/[A-Za-z]{2,8}\/\d{3,6}$/i.test(val)){hint.textContent='✓ Looks good!';hint.style.color='#34d399';}
+    else{hint.textContent='Format: 2021/IT/BSIT/12345';hint.style.color='rgba(255,255,255,0.3)';}
+}
+function toggleRegPassword(){
+    const pwd=document.getElementById('regPassword'),icon=document.getElementById('toggleRegPass');
+    if(pwd.type==='password'){pwd.type='text';icon.className='fas fa-eye';}
+    else{pwd.type='password';icon.className='fas fa-eye-slash';}
+}
+
+// Password strength
+document.getElementById('regPassword').addEventListener('input',function(){
+    const val=this.value,bar=document.getElementById('strengthBar'),txt=document.getElementById('strengthText');
+    if(!val){bar.style.width='0%';txt.textContent='';return;}
+    let score=0;
+    if(val.length>=6)score++;if(val.length>=10)score++;
+    if(/[A-Z]/.test(val))score++;if(/[0-9]/.test(val))score++;if(/[^A-Za-z0-9]/.test(val))score++;
+    const levels=[{w:'20%',c:'#ef4444',t:'Very Weak'},{w:'40%',c:'#f97316',t:'Weak'},{w:'60%',c:'#f59e0b',t:'Fair'},{w:'80%',c:'#10b981',t:'Strong'},{w:'100%',c:'#059669',t:'Very Strong'}];
+    const l=levels[Math.min(score,4)];
+    bar.style.width=l.w;bar.style.background=l.c;txt.textContent=l.t;txt.style.color=l.c;
+});
+
+// ── Alert ──
+function showAlert(msg,type='error'){
+    const box=document.getElementById('alertBox'),span=document.getElementById('alertMsg');
+    span.textContent=msg;box.className=`auth-alert ${type}`;box.style.display='flex';
+    if(type!=='success')setTimeout(()=>{box.style.display='none';},5000);
+}
+
+// ── Terms ──
+function openTerms(){document.getElementById('termsModal').classList.add('open');}
+function agreeAndClose(){document.getElementById('termsModal').classList.remove('open');document.getElementById('agreeTerms').checked=true;}
+document.getElementById('termsModal').addEventListener('click',function(e){if(e.target===this)this.classList.remove('open');});
+
+// ── Submit ──
+document.getElementById('registerForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const name=document.getElementById('regName').value.trim();
+    const email=document.getElementById('regEmail').value.trim();
+    const password=document.getElementById('regPassword').value;
+    const agree=document.getElementById('agreeTerms').checked;
+    const btn=document.getElementById('registerBtn');
+    const txt=document.getElementById('btnText');
+    const spin=document.getElementById('btnSpinner');
+
+    if(!name){showAlert("Please enter your full name.");return;}
+    if(name.length<3){showAlert("Your name is too short — please enter your full name.");return;}
+    if(!/^[A-Za-z\s]+$/.test(name)){showAlert("Name should only contain letters — no numbers or symbols.");return;}
+    if(!email){showAlert("Please enter your email address.");return;}
+    if(!/^\S+@\S+\.\S+$/.test(email)){showAlert("That doesn't look like a valid email. Please check it.");return;}
+    if(!password){showAlert("Please create a password.");return;}
+    if(password.length<6){showAlert("Password must be at least 6 characters.");return;}
+    if(/^\d+$/.test(password)){showAlert("Password can't be all numbers — add some letters.");return;}
+    if(!agree){showAlert("Please agree to the Terms & Conditions to continue.");return;}
+
+    if(currentRole==='student'){
+        if(!document.getElementById('department').value){showAlert("Please select your department.");return;}
+        if(!document.getElementById('year').value){showAlert("Please select your current year.");return;}
+        const enroll=document.getElementById('studentId').value.trim();
+        if(enroll&&!/^\d{4}\/[A-Za-z]{2,8}\/[A-Za-z]{2,8}\/\d{3,6}$/i.test(enroll)){
+            showAlert("Enrollment number format should be: 2021/IT/BSIT/12345");return;
+        }
+    }
+    if(currentRole==='alumni'){
+        const gradYear=document.getElementById('graduationYear').value.trim();
+        if(!gradYear){showAlert("Please enter your graduation year.");return;}
+        if(!/^\d{4}$/.test(gradYear)||gradYear<1990||gradYear>new Date().getFullYear()){
+            showAlert("Please enter a valid graduation year — e.g. 2020.");return;
+        }
+    }
+
+    const payload={name,email,password,role:currentRole};
+    if(currentRole==='student'){
+        payload.studentId=document.getElementById('studentId').value.trim();
+        payload.department=document.getElementById('department').value;
+        payload.year=document.getElementById('year').value;
+    }
+    if(currentRole==='alumni'){
+        payload.graduationYear=document.getElementById('graduationYear').value.trim();
+        payload.company=document.getElementById('company').value.trim();
+        payload.designation=document.getElementById('designation').value.trim();
+        payload.linkedIn=document.getElementById('linkedIn').value.trim();
+    }
+
+    btn.disabled=true;txt.textContent='Creating Account…';spin.style.display='block';
+
+    try{
+        const res=await fetch('/api/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+        const data=await res.json();
+        if(data.success){
+            if(data.pending){
+                showAlert(data.message,'success');
+                txt.textContent='Pending Approval';spin.style.display='none';
+                setTimeout(()=>{window.location.href='/login.html';},3000);
+                return;
+            }
+            localStorage.setItem('careeris_token',data.token);
+            localStorage.setItem('careeris_user',JSON.stringify(data.user));
+            showAlert(data.message||'Account created successfully!','success');
+            txt.textContent='Account Created!';spin.style.display='none';
+            setTimeout(()=>{
+                if(currentRole==='student')window.location.href='/dashboard/student.html';
+                else if(currentRole==='alumni')window.location.href='/dashboard/alumni.html';
+                else window.location.href='/dashboard/admin.html';
+            },1800);
+        }else{
+            showAlert(data.message||'Registration failed. Please try again.');
+            btn.disabled=false;txt.textContent='Create Account';spin.style.display='none';
+        }
+    }catch(err){
+        showAlert('Server error. Please check your connection and try again.');
+        btn.disabled=false;txt.textContent='Create Account';spin.style.display='none';
+    }
+});
+</script>
+</body>
+</html>

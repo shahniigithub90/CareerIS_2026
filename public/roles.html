@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Roles — CareerIS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Custom styles for Roles page */
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #1a252f;
+        }
+
+        .hero-roles {
+            background: linear-gradient(rgba(44, 62, 80, 0.9), rgba(44, 62, 80, 0.9)), url('https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 100px 0;
+            margin-top: 56px;
+        }
+
+        .role-card {
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            height: 100%;
+        }
+
+        .role-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .role-header {
+            padding: 30px 20px;
+            color: white;
+            text-align: center;
+        }
+
+        .student-role .role-header {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+        }
+
+        .alumni-role .role-header {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+        }
+
+        .admin-role .role-header {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        }
+
+        .role-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .permission-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+        }
+
+        .permission-list li:last-child {
+            border-bottom: none;
+        }
+
+        .permission-list li i {
+            width: 20px;
+            margin-right: 10px;
+        }
+
+        .permission-true {
+            color: #27ae60;
+        }
+
+        .permission-false {
+            color: #e74c3c;
+        }
+
+        .workflow-step {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            border-left: 5px solid var(--secondary-color);
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background-color: var(--secondary-color);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .role-comparison th {
+            background-color: var(--light-color);
+            font-weight: 600;
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            color: var(--primary-color) !important;
+        }
+
+        .btn-primary {
+            background-color: var(--secondary-color);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+
+        .footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 40px 0;
+        }
+
+        .access-level {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-left: 10px;
+        }
+
+        .access-full {
+            background-color: #d5f4e6;
+            color: #27ae60;
+        }
+
+        .access-partial {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .access-limited {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .role-flowchart {
+            position: relative;
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .flow-arrow {
+            text-align: center;
+            font-size: 2rem;
+            color: var(--secondary-color);
+            margin: 20px 0;
+        }
+
+        .feature-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-size: 0.9rem;
+        }
+
+        .alumni-feature-icon {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: #3498db;
+        }
+
+        .internship-feature-icon {
+            background-color: rgba(46, 204, 113, 0.1);
+            color: #2ecc71;
+        }
+
+        .certification-feature-icon {
+            background-color: rgba(155, 89, 182, 0.1);
+            color: #9b59b6;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg fixed-top" id="mainNav">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+            <div style="width:36px;height:36px;background:linear-gradient(135deg,#3498db,#2980b9);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+                <i class="fas fa-graduation-cap text-white" style="font-size:1rem;"></i>
+            </div>
+            <span><span class="brand-career">Career</span><span class="brand-is">IS</span></span>
+        </a>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-center gap-1">
+                <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+                <li class="nav-item"><a class="nav-link" href="features.html">Features</a></li>
+                <li class="nav-item"><a class="nav-link active" href="roles.html">User Roles</a></li>
+                <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+                <li class="nav-item ms-2"><a class="nav-link" href="login.html">Login</a></li>
+                <li class="nav-item"><a class="nav-link navbar-btn" href="register.html">Get Started</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero-roles">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="display-4 fw-bold mb-4">User Roles & Permissions</h1>
+                <p class="lead mb-4">Understand how different users interact with CareerIS based on their role and access levels</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <!-- Role Overview -->
+    <section class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold mb-3">Three Core User Roles</h2>
+                <p class="text-muted">Each role has specific permissions and responsibilities within the system</p>
+            </div>
+
+            <div class="row">
+                <!-- Student Role -->
+                <div class="col-lg-4 mb-4">
+                    <div class="role-card student-role">
+                        <div class="role-header">
+                            <div class="role-icon">
+                                <i class="fas fa-user-graduate"></i>
+                            </div>
+                            <h3 class="mb-2">Student</h3>
+                            <p class="mb-0">Current university students</p>
+                        </div>
+                        <div class="card-body p-4">
+                            <h5 class="mb-3">Primary Responsibilities</h5>
+                            <ul class="list-unstyled mb-4">
+                                <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i> Search and apply for internships</li>
+                                <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i> Upload and manage certificates</li>
+                                <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i> Save favorite internship listings</li>
+                                <li><i class="fas fa-check-circle text-primary me-2"></i> Track application status</li>
+                            </ul>
+
+                            <h5 class="mb-3">Key Features Access</h5>
+                            <div class="permission-list">
+                                <li>
+                                    <span class="feature-icon internship-feature-icon">
+                                        <i class="fas fa-briefcase"></i>
+                                    </span>
+                                    <span>Internship Listings & Search</span>
+                                    <i class="fas fa-check permission-true ms-auto"></i>
+                                </li>
+                                <li>
+                                    <span class="feature-icon internship-feature-icon">
+                                        <i class="fas fa-file-upload"></i>
+                                    </span>
+                                    <span>Resume/CV Upload</span>
+                                    <i class="fas fa-check permission-true ms-auto"></i>
+                                </li>
+                                <li>
+                                    <span class="feature-icon internship-feature-icon">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </span>
+                                    <span>One-Click Applications</span>
+                                    <i class="fas fa-check permission-true ms-auto"></i>
+                                </li>
+                                <li>
+                                    <span class="feature-icon certification-feature-icon">
+                                        <i class="fas fa-upload"></i>
+                                    </span>
+                                    <span>Certificate Upload</span>
+                                    <i class="fas fa-check permission-true ms-auto"></i>
+                                </li>
+                                <li>
+                                    <span class="feature-icon certification-feature-icon">
+                                        <i class="fas fa-download"></i>
+                                    </span>
+                                    <span>Certificate Download</span>
+                                    <i class="fas fa-check permission-true ms-auto"></i>
+                                </li>
+                                <li>
+                                    <span class="feature-icon alumni-feature-icon">
+                                        <i class="fas fa-briefcase"></i>
+                                    </span>
+                                    <span>Post Jobs (Alumni)</span>
+                                    <i class="fas fa-times permission-false ms-auto"></i>
+                                </li>
+                                <li>
+                                    <span class="feature-icon certification-feature-icon">
+                                        <i class="fas fa-check-double"></i>
+                                    </span>
+                                    <span>Verify Certificates (Admin)</span>
+                                    <i class="fas fa-times permission-false ms-auto"></i>
+                                </li>
+                            </div>
+
+                            <div class="text-center mt-4">
+                                <span class="access-level access-partial">Internship & Certification Access</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alumni Role -->
+                <div class="col-lg-4 mb-4">
+                    <div class="role-card alumni-role">
+                        <div class="role-header">
+                            <div class="role-icon">
+                                <i class="fas fa-user-tie"></i>
+                            </div>
+                            <h3 class="mb-2">Alumni</h3>
+                            <p class="mb-0">Graduated students</p>
+                        </div>
+                        <div class="card-body p-4">
+                            <h5 class="mb-3">Primary Responsibilities</h5>
+                            <ul class="list-unstyled mb-4">
+                                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Post job opportunities for students</li>
+                                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Manage alumni profile and directory</li>
+                                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Organize batch reunions</li>
+                                <li><i class="fas fa-check-circle text-success me-2"></i> Stay updated with university news</li>
+                            </ul>
+
+                            <h5 class="mb-3">Key Features Access</h5>
+                            <div class="permission-list">
+                                <li>
+                                    <span class="feature-icon alumni-feature-icon">
+                                        <i class="fas fa-user-plus"></i>
+                                    </span>
+                                    <span>Profile Creation & Management</span>
+                                    <i class="fas fa-check permission-true ms-auto"></i>
+                                </li>
+                                <li>
+                                    <span class="feature-icon alumni-feature-icon">
+                                        <i class="fas fa-search"></i>
+                                    </span>
+                                    <span>Alumni Directory Search</span>
+                                    <i class="fas fa-check permission-true ms-auto"></i>
+                                </li>
+                                <li>
+                                    <span class="feature-icon alumni-feature-icon">
+                                        <i class="fas fa-briefcase"></i>
+                                    </span>
+                                    <span>Job Posting for Students</span>
+                                    <i class="fas fa-check permission-true ms-auto"></i>
+                                </li>
+                                <li>
+                                    <span class="feature-icon alumni-feature-icon">
+                                        <i class="fas fa-users"></i>
+                                    </span>
+                                    <span>Batch Reunion Organization</span>
+                                    <i class="fas fa-check permission-true ms-auto"></i>
+                                </li>
+                                <li>
+                                    <span class="feature-icon certification-feature-icon">
+                                        <i class="fas fa-download"></i>
+                                    </span>
+                                    <span>Certificate Download</span>
+                                    <i class="fas fa-check permission-true ms-auto"></i>
+                                </li>
+                                <li>
+                                    <span class="feature-icon certification-feature-icon">
+                                        <i class="fas fa-check-double"></i>
+                                    </span>
+                                    <span>Verify Certificates (Admin)</span>
+                                    <i class="fas fa-times permission-false ms-auto"></i>
+                                </li>
+                                <li>
+                                    <span class="feature-icon internship-feature-icon">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </span>
+                                    <span>Apply for Internships</span>
+                                    <i class="fas fa-times permission-false ms-auto"></i>
+                                </li>
+                            </div>
+
+                            <div class="text-center mt-4">
+                                <span class="access-level access-full">Alumni & Limited Certification Access</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Role -->
+                <div class="col-lg-4 mb-4">
+                    <div class="role-card admin-role">
+                        <div class="role-header">
+                            <div class="role-icon">
+                                <i class="fas fa-user-cog"></i>
+                            </div>
+                            <h3 class="mb-2">Administrator</h3>
+                            <p class="mb-0">University staff</p>
+                        </div>
+                        <div class="card-body p-4">
+                            <h5 class="mb-3">Primary Responsibilities</h5>
+                            <ul class="list-unstyled mb-4">
+                                <li class="mb-2"><i class="fas fa-check-circle text-purple me-2"></i> Verify uploaded certificates</li>
+                                <li class="mb-2"><i class="fas fa-check-circle text-purple me-2"></i> Manage all user accounts</li>
+                                <li class="mb-2"><i class="fas fa-check-circle text-purple me-2"></i> Monitor system activities</li>
+                                <li><i class="fas fa-check-circle text-purple me-2"></i> Post university news updates</li>
+                            </ul>
+
+                            <h5 class="mb-3">Key Features Access</h5>
+                            <div class="permission-list">
+                                <li>
+                                    <span class="feature-icon certification-feature-icon">
+                                        <i class="fas fa-check-double"></i>
+                                    </span>
+                                    <span>Certificate Verification System</span>
+                                    <i class="fas fa-check permission-true ms-auto"></i>
+                                </li>
+                                <li>
+                                    <span class="feature-icon alumni-feature-icon">
+                                        <i class="fas fa-newspaper"></i>
+                                    </span>
+                                    <span>University News Updates</span>
+                                    <i class="fas fa-check permission-true ms-auto"></i>
+                                </li>
+                                <li>
+                                    <span class="feature-icon certification-feature-icon">
+                                        <i class="fas fa-cog"></i>
+                                    </span>
+                                    <span>Certificate Management</span>
+                                    <i class="fas fa-check permission-true ms-auto"></i>
+                                </li>
+                                <li>
+                                    <span class="feature-icon internship-feature-icon">
+                                        <i class="fas fa-tasks"></i>
+                                    </span>
+                                    <span>Monitor Applications</span>
+                                    <i class="fas fa-check permission-true ms-auto"></i>
+                                </li>
+                                <li>
+                                    <span class="feature-icon alumni-feature-icon">
+                                        <i class="fas fa-search"></i>
+                                    </span>
+                                    <span>Access All Directories</span>
+                                    <i class="fas fa-check permission-true ms-auto"></i>
+                                </li>
+                                <li>
+                                    <span class="feature-icon alumni-feature-icon">
+                                        <i class="fas fa-users-cog"></i>
+                                    </span>
+                                    <span>User Account Management</span>
+                                    <i class="fas fa-check permission-true ms-auto"></i>
+                                </li>
+                                <li>
+                                    <span class="feature-icon alumni-feature-icon">
+                                        <i class="fas fa-chart-bar"></i>
+                                    </span>
+                                    <span>System Analytics & Reports</span>
+                                    <i class="fas fa-check permission-true ms-auto"></i>
+                                </li>
+                            </div>
+
+                            <div class="text-center mt-4">
+                                <span class="access-level access-full">Full System Access</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Role Interactions & Workflow -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold mb-3">Role Interactions & Workflow</h2>
+                <p class="text-muted">How different roles work together in the system</p>
+            </div>
+
+            <div class="role-flowchart">
+                <div class="row align-items-center">
+                    <div class="col-md-4 text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-user-graduate fa-3x text-primary"></i>
+                        </div>
+                        <h4>Student</h4>
+                        <p class="small">Uses: Internship Search, Applications, Certificate Upload</p>
+                    </div>
+
+                    <div class="col-md-4 text-center flow-arrow">
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+
+                    <div class="col-md-4 text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-user-tie fa-3x text-success"></i>
+                        </div>
+                        <h4>Alumni</h4>
+                        <p class="small">Uses: Job Posting, Directory Search, Reunion Organization</p>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-md-12 text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-arrow-down fa-2x text-secondary"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-user-cog fa-3x text-purple"></i>
+                        </div>
+                        <h4>Administrator</h4>
+                        <p class="small">Manages: Certificate Verification, News Updates, System Monitoring</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-5">
+                <div class="col-lg-6 mb-4">
+                    <h4 class="fw-bold mb-4">Typical Workflow Example</h4>
+
+                    <div class="workflow-step">
+                        <div class="d-flex align-items-center mb-3">
+                            <span class="step-number">1</span>
+                            <h5 class="mb-0">Alumni Action</h5>
+                        </div>
+                        <p class="mb-0">Alumni posts a software developer internship opportunity on the portal.</p>
+                    </div>
+
+                    <div class="workflow-step">
+                        <div class="d-flex align-items-center mb-3">
+                            <span class="step-number">2</span>
+                            <h5 class="mb-0">Student Action</h5>
+                        </div>
+                        <p class="mb-0">Student searches internships, finds the posting, uploads Python certificate, and applies.</p>
+                    </div>
+
+                    <div class="workflow-step">
+                        <div class="d-flex align-items-center mb-3">
+                            <span class="step-number">3</span>
+                            <h5 class="mb-0">Admin Action</h5>
+                        </div>
+                        <p class="mb-0">Admin verifies the student's certificate authenticity in the certification portal.</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 mb-4">
+                    <h4 class="fw-bold mb-4">Access Control Matrix</h4>
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered role-comparison">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Feature / Portal</th>
+                                    <th>Student</th>
+                                    <th>Alumni</th>
+                                    <th>Admin</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Internship Portal</strong></td>
+                                    <td class="table-primary">Full Access</td>
+                                    <td class="table-secondary">Post Only</td>
+                                    <td class="table-secondary">Monitor Only</td>
+                                </tr>
+                                <tr>
+                                    <td>• Search Listings</td>
+                                    <td><i class="fas fa-check text-success"></i></td>
+                                    <td><i class="fas fa-check text-success"></i></td>
+                                    <td><i class="fas fa-check text-success"></i></td>
+                                </tr>
+                                <tr>
+                                    <td>• Apply for Internships</td>
+                                    <td><i class="fas fa-check text-success"></i></td>
+                                    <td><i class="fas fa-times text-danger"></i></td>
+                                    <td><i class="fas fa-times text-danger"></i></td>
+                                </tr>
+                                <tr>
+                                    <td>• Post Internships</td>
+                                    <td><i class="fas fa-times text-danger"></i></td>
+                                    <td><i class="fas fa-check text-success"></i></td>
+                                    <td><i class="fas fa-check text-success"></i></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Alumni Portal</strong></td>
+                                    <td class="table-secondary">View Only</td>
+                                    <td class="table-success">Full Access</td>
+                                    <td class="table-secondary">Manage</td>
+                                </tr>
+                                <tr>
+                                    <td>• Directory Search</td>
+                                    <td><i class="fas fa-check text-success"></i></td>
+                                    <td><i class="fas fa-check text-success"></i></td>
+                                    <td><i class="fas fa-check text-success"></i></td>
+                                </tr>
+                                <tr>
+                                    <td>• Job Posting</td>
+                                    <td><i class="fas fa-times text-danger"></i></td>
+                                    <td><i class="fas fa-check text-success"></i></td>
+                                    <td><i class="fas fa-check text-success"></i></td>
+                                </tr>
+                                <tr>
+                                    <td>• Reunion Organization</td>
+                                    <td><i class="fas fa-times text-danger"></i></td>
+                                    <td><i class="fas fa-check text-success"></i></td>
+                                    <td><i class="fas fa-check text-success"></i></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Certification Portal</strong></td>
+                                    <td class="table-info">Upload/Download</td>
+                                    <td class="table-info">Download Only</td>
+                                    <td class="table-purple">Verify/Manage</td>
+                                </tr>
+                                <tr>
+                                    <td>• Upload Certificates</td>
+                                    <td><i class="fas fa-check text-success"></i></td>
+                                    <td><i class="fas fa-times text-danger"></i></td>
+                                    <td><i class="fas fa-times text-danger"></i></td>
+                                </tr>
+                                <tr>
+                                    <td>• Download Certificates</td>
+                                    <td><i class="fas fa-check text-success"></i></td>
+                                    <td><i class="fas fa-check text-success"></i></td>
+                                    <td><i class="fas fa-check text-success"></i></td>
+                                </tr>
+                                <tr>
+                                    <td>• Verify Certificates</td>
+                                    <td><i class="fas fa-times text-danger"></i></td>
+                                    <td><i class="fas fa-times text-danger"></i></td>
+                                    <td><i class="fas fa-check text-success"></i></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Role Progression -->
+    <section class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold mb-3">Role Progression & Transition</h2>
+                <p class="text-muted">How users can move between roles over time</p>
+            </div>
+
+            <div class="row align-items-center">
+                <div class="col-lg-8 mx-auto">
+                    <div class="card border-0 shadow-lg">
+                        <div class="card-body p-5">
+                            <div class="row align-items-center">
+                                <div class="col-md-4 text-center">
+                                    <div class="mb-3">
+                                        <div class="rounded-circle bg-primary d-inline-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
+                                            <i class="fas fa-user-graduate fa-2x text-white"></i>
+                                        </div>
+                                    </div>
+                                    <h5>Student Role</h5>
+                                    <p class="small">Access to:<br>Internship Portal (Full)<br>Certification Portal (Upload/Download)</p>
+                                </div>
+
+                                <div class="col-md-4 text-center">
+                                    <div class="mb-4">
+                                        <i class="fas fa-graduation-cap fa-2x text-secondary"></i>
+                                        <div class="mt-2">
+                                            <span class="badge bg-info">Graduation + Admin Approval</span>
+                                        </div>
+                                    </div>
+                                    <p class="small">Upon graduation and admin verification, students can transition to alumni role</p>
+                                </div>
+
+                                <div class="col-md-4 text-center">
+                                    <div class="mb-3">
+                                        <div class="rounded-circle bg-success d-inline-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
+                                            <i class="fas fa-user-tie fa-2x text-white"></i>
+                                        </div>
+                                    </div>
+                                    <h5>Alumni Role</h5>
+                                    <p class="small">Access to:<br>Alumni Portal (Full)<br>Certification Portal (Download Only)<br>Internship Portal (Post Only)</p>
+                                </div>
+                            </div>
+
+                            <div class="row mt-5">
+                                <div class="col-md-12">
+                                    <div class="alert alert-info">
+                                        <h5><i class="fas fa-info-circle me-2"></i> Important Notes</h5>
+                                        <ul class="mb-0">
+                                            <li><strong>Students:</strong> Can upload/download certificates, apply for internships, search listings</li>
+                                            <li><strong>Alumni:</strong> Can post jobs, search directory, organize reunions, download certificates</li>
+                                            <li><strong>Admins:</strong> Can verify certificates, post news, manage all users and content</li>
+                                            <li>Role transitions require admin approval for security purposes</li>
+                                            <li>All role activities are logged for monitoring and analytics</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<footer class="footer">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="footer-brand d-flex align-items-center gap-2 mb-3">
+                    <div style="width:36px;height:36px;background:linear-gradient(135deg,#3498db,#2980b9);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+                        <i class="fas fa-graduation-cap text-white" style="font-size:1rem;"></i>
+                    </div>
+                    <span><span class="brand-career">Career</span><span class="brand-is">IS</span></span>
+                </div>
+                <p style="font-size:0.9rem;">A comprehensive Career Information System for Jinnah University for Women — connecting students, alumni, and industry partners.</p>
+                <div class="mt-3">
+                    <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4">
+                <h5>Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="index.html">Home</a></li>
+                    <li class="mb-2"><a href="about.html">About</a></li>
+                    <li class="mb-2"><a href="features.html">Features</a></li>
+                    <li class="mb-2"><a href="roles.html">User Roles</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-3 col-md-4">
+                <h5>Portals</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="dashboard/alumni.html">Alumni Portal</a></li>
+                    <li class="mb-2"><a href="dashboard/student.html">Internship Portal</a></li>
+                    <li class="mb-2"><a href="dashboard/student.html">Certification Portal</a></li>
+                    <li class="mb-2"><a href="login.html">Login</a></li>
+                    <li><a href="register.html">Register</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-3 col-md-4">
+                <h5>Contact Info</h5>
+                <ul class="list-unstyled" style="font-size:0.9rem;">
+                    <li class="mb-2"><i class="fas fa-university me-2" style="color:var(--secondary);"></i>Jinnah University for Women</li>
+                    <li class="mb-2"><i class="fas fa-map-marker-alt me-2" style="color:var(--secondary);"></i>Niazmabad, Block 5, Karachi</li>
+                    <li class="mb-2"><i class="fas fa-envelope me-2" style="color:var(--secondary);"></i>info@careeris.edu</li>
+                    <li><i class="fas fa-user-tie me-2" style="color:var(--secondary);"></i>Supervisor: Ms. Ushna Tasleem</li>
+                </ul>
+            </div>
+        </div>
+        <hr class="footer-divider">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+            <p class="mb-0" style="font-size:0.85rem;">© 2026 CareerIS — Career Information System. Final Year Project.</p>
+            <p class="mb-0" style="font-size:0.8rem;color:rgba(255,255,255,0.3);">Rabaika · Samra · Ariqah · Shahneela</p>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

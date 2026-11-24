@@ -1,0 +1,2128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard — CareerIS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        /* ── Dark form overrides ─────────────────────────── */
+        .form-control, .form-select {
+            background: #1e2130 !important;
+            border: 1px solid rgba(255,255,255,0.12) !important;
+            color: #f0f2f5 !important;
+            border-radius: 8px !important;
+        }
+        .form-control:focus, .form-select:focus {
+            background: #252840 !important;
+            border-color: #9b59b6 !important;
+            box-shadow: 0 0 0 3px rgba(155,89,182,0.2) !important;
+            color: #f0f2f5 !important;
+        }
+        .form-control::placeholder { color: #6b7280 !important; }
+        .form-select option { background: #1e2130; color: #f0f2f5; }
+        .form-label { color: #9ba3af !important; font-size: 0.85rem; }
+        /* ── Dark card overrides ─────────────────────────── */
+        .card {
+            background: var(--card-bg, #1a1d27) !important;
+            border: 1px solid rgba(255,255,255,0.08) !important;
+            border-radius: 14px !important;
+        }
+        .card-header {
+            background: rgba(255,255,255,0.03) !important;
+            border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+            color: #f0f2f5 !important;
+            border-radius: 14px 14px 0 0 !important;
+            padding: 1rem 1.25rem !important;
+        }
+        .card-body { background: transparent !important; }
+        /* ── Drop zone dark ──────────────────────────────── */
+        #dropZone {
+            border: 2px dashed rgba(155,89,182,0.4) !important;
+            background: rgba(155,89,182,0.06) !important;
+            border-radius: 12px !important;
+            transition: all 0.3s !important;
+        }
+        #dropZone:hover { border-color: #9b59b6 !important; background: rgba(155,89,182,0.1) !important; }
+        #fileLabel { color: #f0f2f5 !important; }
+
+        /* ── Resume Builder ──────────────────────────────── */
+        .rb-tab {
+            padding: 10px 14px; background: transparent; border: none;
+            color: var(--text-secondary); font-size: 0.78rem; font-weight: 500;
+            cursor: pointer; white-space: nowrap; border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .rb-tab:hover { color: var(--text-primary); }
+        .rb-tab.active { color: #9b59b6; border-bottom-color: #9b59b6; background: rgba(155,89,182,0.06); }
+        .rb-label { font-size: 0.78rem; color: var(--text-secondary); font-weight: 600; display: block; margin-bottom: 6px; }
+        .rb-exp-card {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 10px; padding: 0.85rem; margin-bottom: 0.75rem;
+        }
+        .rb-exp-card .rb-remove {
+            background: rgba(239,68,68,0.1); color: #ef4444; border: 1px solid rgba(239,68,68,0.25);
+            border-radius: 6px; padding: 3px 10px; font-size: 0.75rem; cursor: pointer;
+        }
+        /* Preview section title */
+        .prev-sec-title {
+            font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.09em;
+            font-weight: 700; color: #6c5ce7; border-bottom: 1.5px solid #e8e4ff;
+            padding-bottom: 4px; margin-bottom: 8px;
+        }
+        .prev-skill-tag {
+            display: inline-block; background: #f0eeff; color: #5a4fd1;
+            border-radius: 4px; padding: 2px 9px; font-size: 0.72rem; font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+<div class="dashboard-layout">
+
+<!-- SIDEBAR OVERLAY (mobile) -->
+<div id="sidebarOverlay" onclick="toggleSidebar(false)" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:998;"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+        <div class="sidebar-logo-icon"><i class="fas fa-graduation-cap text-white"></i></div>
+        <div class="sidebar-logo-text"><span class="c">Career</span><span class="is">IS</span></div>
+    </div>
+    <div class="sidebar-user">
+        <div class="sidebar-avatar" style="background:linear-gradient(135deg,#3498db,#2980b9);" id="sidebarAvatar">S</div>
+        <div class="sidebar-user-info">
+            <div class="sidebar-user-name" id="sidebarName">Student</div>
+            <div class="sidebar-user-role">Student Portal</div>
+        </div>
+    </div>
+    <nav class="sidebar-nav">
+        <div class="nav-section-label">Main</div>
+        <a class="nav-item active" onclick="showPage('dashboard',this)"><i class="fas fa-th-large"></i> Dashboard</a>
+        <div class="nav-section-label">Internships</div>
+        <a class="nav-item" onclick="showPage('internships',this)"><i class="fas fa-briefcase"></i> Browse Internships</a>
+        <div class="nav-section-label">Certifications</div>
+        <a class="nav-item" onclick="showPage('certificates',this)"><i class="fas fa-certificate"></i> My Certificates</a>
+        <a class="nav-item" onclick="showPage('upload-cert',this)"><i class="fas fa-upload"></i> Upload Certificate</a>
+        <div class="nav-section-label">Network</div>
+        <a class="nav-item" onclick="showPage('alumni-dir',this)"><i class="fas fa-users"></i> Alumni Directory</a>
+        <a class="nav-item" onclick="showPage('announcements',this)" id="annNavItem"><i class="fas fa-bullhorn"></i> Announcements <span id="annBadge" style="display:none;background:#ef4444;color:#fff;font-size:0.65rem;font-weight:700;border-radius:10px;padding:1px 6px;margin-left:4px;"></span></a>
+        <div class="nav-section-label">Account</div>
+        <a class="nav-item" onclick="showPage('resume',this)"><i class="fas fa-file-pdf"></i> Resume Generator</a>
+        <a class="nav-item" onclick="showPage('profile',this)"><i class="fas fa-user-circle"></i> My Profile</a>
+    </nav>
+    <div class="sidebar-bottom">
+        <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main-content">
+    <div class="topbar">
+        <div class="topbar-left" style="display:flex;align-items:center;gap:14px;">
+            <div class="topbar-icon-btn sidebar-toggle-btn" onclick="toggleSidebar()" style="display:none;"><i class="fas fa-bars"></i></div>
+            <div>
+                <h4 id="pageTitle">Dashboard</h4>
+                <p id="pageSubtitle">Welcome back! Here's your overview.</p>
+            </div>
+        </div>
+        <div class="topbar-right">
+            <div class="topbar-icon-btn" style="position:relative;" onclick="toggleNotifDropdown()" id="notifBellBtn">
+                <i class="fas fa-bell"></i>
+                <span id="notifBellDot" style="display:none;position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:50%;background:#ef4444;"></span>
+                <div id="notifDropdown" style="display:none;position:absolute;top:46px;right:0;width:320px;max-height:400px;overflow-y:auto;background:#1a1d27;border:1px solid rgba(255,255,255,0.1);border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,0.4);z-index:1200;text-align:left;">
+                    <div style="padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.08);font-weight:700;color:#fff;font-size:0.9rem;">Notifications</div>
+                    <div id="notifDropdownList" style="padding:8px;"></div>
+                </div>
+            </div>
+            <div class="topbar-icon-btn" onclick="showPage('internships',null)"><i class="fas fa-search"></i></div>
+            <div class="topbar-avatar" style="background:linear-gradient(135deg,#3498db,#2980b9);" id="topAvatar">S</div>
+        </div>
+    </div>
+
+    <div class="page-content">
+
+        <!-- DASHBOARD PAGE -->
+        <div id="page-dashboard">
+            <div class="welcome-banner" style="background:linear-gradient(135deg,#2c3e50,#3498db);">
+                <div class="welcome-text">
+                    <h2>Welcome back, <span id="welcomeName">Student</span>! 👋</h2>
+                    <p id="welcomeSubtitle">Loading your stats...</p>
+                </div>
+                <i class="fas fa-user-graduate welcome-icon"></i>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:rgba(52,152,219,0.12);color:#3498db;"><i class="fas fa-paper-plane"></i></div>
+                    <div class="stat-info">
+                        <div class="stat-number" style="color:#3498db;" id="statApps">—</div>
+                        <div class="stat-label">Applications Sent</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:rgba(155,89,182,0.12);color:#9b59b6;"><i class="fas fa-certificate"></i></div>
+                    <div class="stat-info">
+                        <div class="stat-number" style="color:#9b59b6;" id="statCerts">—</div>
+                        <div class="stat-label">Certificates</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:rgba(46,204,113,0.12);color:#2ecc71;"><i class="fas fa-check-circle"></i></div>
+                    <div class="stat-info">
+                        <div class="stat-number" style="color:#2ecc71;" id="statVerified">—</div>
+                        <div class="stat-label">Verified Certs</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:rgba(243,156,18,0.12);color:#f39c12;"><i class="fas fa-clock"></i></div>
+                    <div class="stat-info">
+                        <div class="stat-number" style="color:#f39c12;" id="statPending">—</div>
+                        <div class="stat-label">Pending Verification</div>
+                    </div>
+                </div>
+            </div>
+            <div class="content-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-briefcase me-2" style="color:#3498db;"></i>Recent Internships</h5>
+                        <a href="#" class="view-all" onclick="showPage('internships',null)">View All →</a>
+                    </div>
+                    <div class="card-body" id="dashInternships"><div class="text-center py-3 text-muted"><i class="fas fa-spinner fa-spin"></i> Loading...</div></div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:20px;">
+                    <div class="card">
+                        <div class="card-header"><h5><i class="fas fa-bolt me-2" style="color:#f39c12;"></i>Quick Actions</h5></div>
+                        <div class="card-body">
+                            <div class="quick-actions">
+                                <a class="quick-action-btn" onclick="showPage('internships',null)"><i class="fas fa-search" style="color:#3498db;"></i>Find Internships</a>
+                                <a class="quick-action-btn" onclick="showPage('upload-cert',null)"><i class="fas fa-upload" style="color:#9b59b6;"></i>Upload Certificate</a>
+                                <a class="quick-action-btn" onclick="showPage('alumni-dir',null)"><i class="fas fa-users" style="color:#2ecc71;"></i>Alumni Network</a>
+                                <a class="quick-action-btn" onclick="showPage('resume',null)"><i class="fas fa-file-pdf" style="color:#e74c3c;"></i>Generate Resume</a>
+                                <a class="quick-action-btn" onclick="showPage('profile',null)"><i class="fas fa-user-edit" style="color:#f39c12;"></i>Edit Profile</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-paper-plane me-2" style="color:#3498db;"></i>Recent Applications</h5>
+                            <a href="#" class="view-all" onclick="showPage('internships',null)">View All →</a>
+                        </div>
+                        <div class="card-body" id="dashApplications"><div class="text-center py-3 text-muted"><i class="fas fa-spinner fa-spin"></i> Loading...</div></div>
+                    </div>
+                </div>
+            </div>
+            <!-- Announcements on dashboard -->
+            <div class="card mt-4" id="annDashCard" style="display:none;">
+                <div class="card-header d-flex align-items-center justify-content-between">
+                    <span><i class="fas fa-bullhorn me-2" style="color:#f39c12;"></i><strong>Announcements</strong></span>
+                </div>
+                <div class="card-body p-3">
+                    <div id="annDashList" style="display:flex;flex-direction:column;gap:0.5rem;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- INTERNSHIPS PAGE -->
+        <div id="page-internships" style="display:none;">
+            <div class="welcome-banner" style="background:linear-gradient(135deg,#27ae60,#2ecc71);margin-bottom:25px;">
+                <div class="welcome-text"><h2><i class="fas fa-briefcase me-2"></i>Internship Portal</h2>
+                <p>Browse and apply for internships posted by alumni and companies.</p></div>
+            </div>
+            <div class="card mb-4">
+                <div class="card-body" style="padding:18px;">
+                    <div class="row g-3 align-items-center">
+                        <div class="col-md-5">
+                            <div style="position:relative;">
+                                <i class="fas fa-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#adb5bd;"></i>
+                                <input type="text" class="form-control" id="internshipSearch" placeholder="Search by role, company, skills..." style="padding-left:38px;border-radius:30px;">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select" id="internshipTypeFilter" style="border-radius:30px;">
+                                <option value="">All Types</option>
+                                <option value="Internship (Paid)">Internship (Paid)</option>
+                                <option value="Internship (Unpaid)">Internship (Unpaid)</option>
+                                <option value="Graduate Trainee">Graduate Trainee</option>
+                                <option value="Full-time">Full-time</option>
+                                <option value="Part-time">Part-time</option>
+                                <option value="Remote">Remote</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select" id="internshipLocationFilter" style="border-radius:30px;">
+                                <option value="">All Locations</option>
+                                <option value="Karachi">Karachi</option>
+                                <option value="Lahore">Lahore</option>
+                                <option value="Islamabad">Islamabad</option>
+                                <option value="Remote">Remote</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn-primary-dash w-100" onclick="loadInternships()"><i class="fas fa-search me-1"></i>Search</button>
+                        </div>
+                        <div class="col-md-1">
+                            <button class="btn-outline-dash w-100" onclick="document.getElementById('internshipSearch').value='';document.getElementById('internshipTypeFilter').value='';document.getElementById('internshipLocationFilter').value='';loadInternships()">✕</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Recommended for You section -->
+            <div id="recommendedSection" style="margin-bottom:24px;display:none;">
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+                    <span style="background:linear-gradient(135deg,#6c5ce7,#a29bfe);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-size:1rem;font-weight:700;"><i class="fas fa-magic"></i> Recommended for You</span>
+                    <span style="font-size:.78rem;color:#adb5bd;">Based on your department &amp; skills</span>
+                </div>
+                <div id="recommendedList" class="row g-3"></div>
+                <hr style="border-color:rgba(255,255,255,.08);margin:20px 0 16px;">
+                <div style="font-weight:600;color:var(--text-primary);margin-bottom:12px;font-size:.9rem;"><i class="fas fa-th-list me-2" style="color:#6c757d;"></i>All Internships</div>
+            </div>
+
+            <div id="internshipsList" class="row g-4"><div class="col-12 text-center py-4 text-muted"><i class="fas fa-spinner fa-spin fa-2x"></i><p class="mt-2">Loading internships...</p></div></div>
+        </div>
+
+        <!-- APPLICATIONS PAGE -->
+
+        <!-- CERTIFICATES PAGE -->
+        <div id="page-certificates" style="display:none;">
+            <div class="welcome-banner" style="background:linear-gradient(135deg,#9b59b6,#8e44ad);margin-bottom:25px;">
+                <div class="welcome-text"><h2><i class="fas fa-certificate me-2"></i>My Certificates</h2>
+                <p>All your uploaded certificates and their verification status.</p></div>
+                <button class="btn-primary-dash ms-auto" style="position:relative;z-index:2;" onclick="showPage('upload-cert',null)"><i class="fas fa-plus me-1"></i>Upload New</button>
+            </div>
+            <div style="position:relative;max-width:360px;margin-bottom:18px;">
+                <i class="fas fa-search" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#adb5bd;font-size:0.85rem;"></i>
+                <input type="text" class="form-control" id="certSearchBox" placeholder="Search by title or issuer..." style="padding-left:38px;border-radius:30px;" oninput="loadCertificates()">
+            </div>
+            <div id="certsList" class="row g-4"><div class="col-12 text-center py-4 text-muted"><i class="fas fa-spinner fa-spin fa-2x"></i><p class="mt-2">Loading certificates...</p></div></div>
+        </div>
+
+        <!-- UPLOAD CERT PAGE -->
+        <div id="page-upload-cert" style="display:none;">
+            <div class="welcome-banner" style="background:linear-gradient(135deg,#9b59b6,#8e44ad);margin-bottom:25px;">
+                <div class="welcome-text"><h2><i class="fas fa-upload me-2"></i>Upload Certificate</h2>
+                <p>Upload your certificates for admin verification.</p></div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-7">
+                    <div id="certUploadAlert" style="display:none;" class="mb-3"></div>
+                    <div class="card">
+                        <div class="card-header"><h5><i class="fas fa-file-upload me-2" style="color:#9b59b6;"></i>Certificate Details</h5></div>
+                        <div class="card-body p-4">
+                            <form id="certUploadForm" enctype="multipart/form-data">
+                                <div class="mb-3">
+                                    <label class="form-label fw-600" style="font-weight:600;font-size:0.85rem;">Certificate Title *</label>
+                                    <input type="text" class="form-control" id="certTitle" placeholder="e.g. Python for Data Science" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-600" style="font-weight:600;font-size:0.85rem;">Issuing Organization *</label>
+                                    <input type="text" class="form-control" id="certIssuer" placeholder="e.g. Coursera, Udemy, Google" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-600" style="font-weight:600;font-size:0.85rem;">Issuer Website <span style="color:var(--text-muted);font-weight:400;">(optional)</span></label>
+                                    <input type="url" class="form-control" id="certIssuerUrl" placeholder="e.g. https://coursera.org">
+                                    <small style="color:var(--text-muted);font-size:0.75rem;">If provided, the certificate's verification QR code will link here instead of our verification page.</small>
+                                </div>
+                                <div class="row g-3 mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label" style="font-weight:600;font-size:0.85rem;">Issue Date</label>
+                                        <input type="date" class="form-control" id="certDate">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label" style="font-weight:600;font-size:0.85rem;">Category</label>
+                                        <select class="form-select" id="certCategory">
+                                            <option value="Programming">Programming</option>
+                                            <option value="Data Science">Data Science</option>
+                                            <option value="Design">Design</option>
+                                            <option value="Networking">Networking</option>
+                                            <option value="Cloud">Cloud Computing</option>
+                                            <option value="Cybersecurity">Cybersecurity</option>
+                                            <option value="AI/ML">AI / Machine Learning</option>
+                                            <option value="Business">Business</option>
+                                            <option value="Development">Web / App Development</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label" style="font-weight:600;font-size:0.85rem;">Upload File (PDF or Image, max 5MB) *</label>
+                                    <div style="padding:35px;text-align:center;cursor:pointer;" onclick="document.getElementById('certFile').click()" id="dropZone">
+                                        <i class="fas fa-cloud-upload-alt" style="font-size:2.5rem;color:#9b59b6;margin-bottom:12px;display:block;"></i>
+                                        <div style="font-weight:600;margin-bottom:5px;" id="fileLabel">Drag & drop your file here</div>
+                                        <div style="color:#6c757d;font-size:0.85rem;">PDF, JPG, PNG accepted</div>
+                                        <input type="file" accept=".pdf,.jpg,.jpeg,.png" style="display:none;" id="certFile" onchange="fileChosen(this)">
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn-primary-dash w-100" id="uploadBtn" style="justify-content:center;padding:13px;font-size:1rem;background:linear-gradient(135deg,#9b59b6,#8e44ad)!important;">
+                                    <i class="fas fa-upload me-2"></i>Submit for Verification
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ALUMNI DIRECTORY PAGE -->
+        <div id="page-alumni-dir" style="display:none;">
+            <div class="welcome-banner" style="background:linear-gradient(135deg,#2ecc71,#27ae60);margin-bottom:25px;">
+                <div class="welcome-text"><h2><i class="fas fa-users me-2"></i>Alumni Directory</h2>
+                <p>Connect with alumni from Jinnah University for Women.</p></div>
+            </div>
+            <div class="card mb-4">
+                <div class="card-body p-3">
+                    <div class="row g-2">
+                        <div class="col-md-6">
+                            <input class="form-control" id="alumniSearch" placeholder="Search alumni by name, company, designation..." style="border-radius:30px;">
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select" id="alumniYearFilter" style="border-radius:30px;">
+                                <option value="">All Batches</option>
+                                <option value="2024">2024</option>
+                                <option value="2023">2023</option>
+                                <option value="2022">2022</option>
+                                <option value="2021">2021</option>
+                                <option value="2020">2020</option>
+                                <option value="2019">2019</option>
+                                <option value="2018">2018</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn-primary-dash w-100" onclick="loadAlumni()"><i class="fas fa-search me-1"></i>Search</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="alumniList" class="row g-4"><div class="col-12 text-center py-4 text-muted"><i class="fas fa-spinner fa-spin fa-2x"></i><p class="mt-2">Loading alumni...</p></div></div>
+        </div>
+
+        <!-- ANNOUNCEMENTS PAGE -->
+        <div id="page-announcements" style="display:none;">
+            <div class="welcome-banner" style="background:linear-gradient(135deg,#f39c12,#e67e22);margin-bottom:25px;">
+                <div class="welcome-text"><h2><i class="fas fa-bullhorn me-2"></i>Announcements</h2>
+                <p>Important notices from the university and career office.</p></div>
+            </div>
+            <div id="annPageList" style="display:flex;flex-direction:column;gap:0.75rem;">
+                <div class="text-center py-5" style="color:#6b7280;"><i class="fas fa-spinner fa-spin fa-2x"></i></div>
+            </div>
+        </div>
+
+        <!-- RESUME GENERATOR PAGE -->
+        <div id="page-resume" style="display:none;">
+            <div class="row g-4">
+
+                <!-- ── LEFT: Builder Form ── -->
+                <div class="col-lg-5">
+                    <div style="background:var(--card-bg);border:1px solid rgba(255,255,255,0.08);border-radius:16px;overflow:hidden;">
+
+                        <!-- Section Tabs -->
+                        <div style="display:flex;overflow-x:auto;border-bottom:1px solid rgba(255,255,255,0.08);scrollbar-width:none;">
+                            <button class="rb-tab active" onclick="rbTab('contact',this)"><i class="fas fa-user me-1"></i>Contact</button>
+                            <button class="rb-tab" onclick="rbTab('summary',this)"><i class="fas fa-align-left me-1"></i>Summary</button>
+                            <button class="rb-tab" onclick="rbTab('experience',this)"><i class="fas fa-briefcase me-1"></i>Experience</button>
+                            <button class="rb-tab" onclick="rbTab('skills',this)"><i class="fas fa-code me-1"></i>Skills</button>
+                            <button class="rb-tab" onclick="rbTab('extra',this)"><i class="fas fa-star me-1"></i>More</button>
+                        </div>
+
+                        <div style="padding:1.25rem;">
+
+                            <!-- CONTACT -->
+                            <div id="rbs-contact" class="rb-section">
+                                <p style="font-size:0.78rem;color:var(--text-secondary);margin-bottom:1rem;">Auto-filled from your profile. Update there if needed.</p>
+                                <label class="rb-label">Full Name</label>
+                                <input class="form-control mb-3" id="rb-name" placeholder="Your full name">
+                                <label class="rb-label">Email Address</label>
+                                <input class="form-control mb-3" id="rb-email" type="email" placeholder="you@email.com">
+                                <label class="rb-label">Phone Number</label>
+                                <input class="form-control mb-3" id="rb-phone" placeholder="+92 300 1234567">
+                                <label class="rb-label">City / Location</label>
+                                <input class="form-control mb-3" id="rb-location" placeholder="Karachi, Pakistan">
+                                <label class="rb-label">LinkedIn URL <span style="color:var(--text-muted);font-weight:400;">(optional)</span></label>
+                                <input class="form-control mb-3" id="rb-linkedin" placeholder="linkedin.com/in/yourname">
+                                <label class="rb-label">Portfolio / GitHub <span style="color:var(--text-muted);font-weight:400;">(optional)</span></label>
+                                <input class="form-control" id="rb-portfolio" placeholder="github.com/yourname">
+                            </div>
+
+                            <!-- SUMMARY -->
+                            <div id="rbs-summary" class="rb-section" style="display:none;">
+                                <label class="rb-label">Professional Summary</label>
+                                <p style="font-size:0.77rem;color:var(--text-secondary);margin-bottom:8px;">2–4 sentences describing who you are, your field, and your goal.</p>
+                                <textarea class="form-control" id="rb-summary" rows="5" placeholder="A motivated Software Engineering student at JUW with hands-on experience in web development. Seeking an internship opportunity to apply my skills in React and Node.js..."></textarea>
+                            </div>
+
+                            <!-- EXPERIENCE -->
+                            <div id="rbs-experience" class="rb-section" style="display:none;">
+                                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+                                    <span style="font-size:0.85rem;color:var(--text-secondary);">Add internships or jobs</span>
+                                    <button onclick="addExpEntry()" style="background:rgba(108,92,231,0.15);color:#9b59b6;border:1px solid rgba(108,92,231,0.3);border-radius:8px;padding:5px 12px;font-size:0.8rem;cursor:pointer;"><i class="fas fa-plus me-1"></i>Add</button>
+                                </div>
+                                <div id="rb-exp-list"></div>
+                                <div id="rb-auto-exp" style="margin-top:0.5rem;"></div>
+                            </div>
+
+                            <!-- SKILLS -->
+                            <div id="rbs-skills" class="rb-section" style="display:none;">
+                                <label class="rb-label">Technical Skills</label>
+                                <input class="form-control mb-3" id="rb-skills" placeholder="Python, React, Node.js, SQL, MongoDB…">
+                                <label class="rb-label">Languages</label>
+                                <input class="form-control mb-3" id="rb-langs" placeholder="English (Fluent), Urdu (Native)">
+                                <label class="rb-label">Certifications</label>
+                                <p style="font-size:0.77rem;color:var(--text-secondary);margin-bottom:8px;">Auto-loaded from your verified certificates.</p>
+                                <div id="rb-certs-preview" style="font-size:0.83rem;color:var(--text-secondary);font-style:italic;">Loading...</div>
+                            </div>
+
+                            <!-- MORE (Achievements, Education extras) -->
+                            <div id="rbs-extra" class="rb-section" style="display:none;">
+                                <label class="rb-label">GPA / CGPA <span style="color:var(--text-muted);font-weight:400;">(optional)</span></label>
+                                <input class="form-control mb-3" id="rb-gpa" placeholder="3.8 / 4.0">
+                                <label class="rb-label">Achievements & Activities <span style="color:var(--text-muted);font-weight:400;">(one per line)</span></label>
+                                <textarea class="form-control mb-3" id="rb-extra" rows="4" placeholder="Dean's List 2024&#10;Head of JUW Tech Society&#10;1st place — NASCON Hackathon 2024"></textarea>
+                                <label class="rb-label">Hobbies / Interests <span style="color:var(--text-muted);font-weight:400;">(optional)</span></label>
+                                <input class="form-control" id="rb-hobbies" placeholder="UI/UX Design, Open Source, Public Speaking">
+                            </div>
+                        </div>
+
+                        <!-- Generate Button -->
+                        <div style="padding:0 1.25rem 1.25rem;">
+                            <button onclick="generateResume()" id="generateResumeBtn" style="width:100%;padding:13px;background:linear-gradient(135deg,#6c5ce7,#4834d4);color:#fff;border:none;border-radius:10px;font-size:0.95rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+                                <i class="fas fa-file-pdf"></i> Generate & Download PDF
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── RIGHT: Live Preview ── -->
+                <div class="col-lg-7">
+                    <div style="background:var(--card-bg);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:1.25rem;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+                            <h6 style="font-weight:700;color:var(--text-primary);margin:0;"><i class="fas fa-eye me-2" style="color:#6c5ce7;"></i>Live Preview</h6>
+                            <span style="font-size:0.75rem;color:var(--text-muted);">Updates as you type</span>
+                        </div>
+                        <!-- Resume preview (white paper) -->
+                        <div id="resumePreview" style="background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,0.3);font-family:'Arial',sans-serif;color:#222;font-size:0.82rem;line-height:1.5;max-height:680px;overflow-y:auto;">
+
+                            <!-- Header strip -->
+                            <div style="background:#1a1a2e;padding:22px 28px 18px;">
+                                <div id="prev-name" style="font-size:1.55rem;font-weight:700;color:#fff;letter-spacing:0.03em;">Your Name</div>
+                                <div id="prev-title" style="font-size:0.82rem;color:#a29bfe;margin-top:2px;font-weight:500;">Department · Jinnah University for Women</div>
+                                <div id="prev-contact-line" style="margin-top:8px;display:flex;flex-wrap:wrap;gap:12px;">
+                                    <span id="prev-email-chip" style="font-size:0.75rem;color:rgba(255,255,255,0.7);"><i class="fas fa-envelope" style="color:#6c5ce7;margin-right:4px;"></i><span id="prev-email-val"></span></span>
+                                    <span id="prev-phone-chip" style="font-size:0.75rem;color:rgba(255,255,255,0.7);display:none;"><i class="fas fa-phone" style="color:#6c5ce7;margin-right:4px;"></i><span id="prev-phone-val"></span></span>
+                                    <span id="prev-location-chip" style="font-size:0.75rem;color:rgba(255,255,255,0.7);display:none;"><i class="fas fa-map-marker-alt" style="color:#6c5ce7;margin-right:4px;"></i><span id="prev-location-val"></span></span>
+                                    <span id="prev-linkedin-chip" style="font-size:0.75rem;color:rgba(255,255,255,0.7);display:none;"><i class="fab fa-linkedin" style="color:#6c5ce7;margin-right:4px;"></i><span id="prev-linkedin-val"></span></span>
+                                </div>
+                            </div>
+
+                            <div style="padding:18px 28px;">
+
+                                <!-- Summary -->
+                                <div id="prev-summary-sec" style="display:none;margin-bottom:14px;">
+                                    <div class="prev-sec-title">Professional Summary</div>
+                                    <p id="prev-summary-text" style="color:#444;margin:0;font-size:0.81rem;"></p>
+                                </div>
+
+                                <!-- Experience -->
+                                <div id="prev-exp-sec" style="display:none;margin-bottom:14px;">
+                                    <div class="prev-sec-title">Experience</div>
+                                    <div id="prev-exp-list"></div>
+                                </div>
+
+                                <!-- Education -->
+                                <div style="margin-bottom:14px;">
+                                    <div class="prev-sec-title">Education</div>
+                                    <div style="display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:4px;">
+                                        <div>
+                                            <div style="font-weight:700;color:#1a1a2e;font-size:0.85rem;">Jinnah University for Women, Karachi</div>
+                                            <div id="prev-edu-dept" style="color:#555;font-size:0.8rem;">Bachelor of Science</div>
+                                        </div>
+                                        <div id="prev-edu-gpa" style="font-size:0.78rem;color:#6c5ce7;font-weight:600;display:none;"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Skills -->
+                                <div id="prev-skills-sec" style="display:none;margin-bottom:14px;">
+                                    <div class="prev-sec-title">Skills</div>
+                                    <div id="prev-skills-tags" style="display:flex;flex-wrap:wrap;gap:5px;"></div>
+                                </div>
+
+                                <!-- Certifications -->
+                                <div id="prev-certs-sec" style="display:none;margin-bottom:14px;">
+                                    <div class="prev-sec-title">Certifications</div>
+                                    <div id="prev-certs-list" style="color:#444;font-size:0.8rem;"></div>
+                                </div>
+
+                                <!-- Languages -->
+                                <div id="prev-langs-sec" style="display:none;margin-bottom:14px;">
+                                    <div class="prev-sec-title">Languages</div>
+                                    <div id="prev-langs-text" style="color:#444;font-size:0.8rem;"></div>
+                                </div>
+
+                                <!-- Achievements -->
+                                <div id="prev-extra-sec" style="display:none;margin-bottom:14px;">
+                                    <div class="prev-sec-title">Achievements & Activities</div>
+                                    <div id="prev-extra-text" style="color:#444;font-size:0.8rem;"></div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ── AI-style Smart Recommendations (based on resume skills) ── -->
+            <div id="resumeRecoSection" style="display:none;margin-top:24px;background:var(--card-bg);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:22px;">
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+                    <i class="fas fa-magic" style="color:#6c5ce7;font-size:1.1rem;"></i>
+                    <h5 style="margin:0;font-weight:700;">Recommended For You</h5>
+                </div>
+                <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:16px;">Based on the skills and experience in your resume.</p>
+                <div id="resumeRecoList" class="row g-3"></div>
+            </div>
+        </div>
+
+        <!-- PROFILE PAGE -->
+        <div id="page-profile" style="display:none;">
+            <div class="welcome-banner" style="background:linear-gradient(135deg,#2c3e50,#3498db);margin-bottom:25px;">
+                <div class="welcome-text"><h2><i class="fas fa-user-circle me-2"></i>My Profile</h2>
+                <p>Manage your personal and academic information.</p></div>
+            </div>
+            <div id="profileAlert" style="display:none;" class="mb-3"></div>
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <div class="card text-center">
+                        <div class="card-body p-4">
+                            <div style="width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#3498db,#2980b9);display:flex;align-items:center;justify-content:center;margin:0 auto 15px;font-size:2rem;color:white;font-weight:800;" id="profileAvatar">S</div>
+                            <h5 style="font-weight:700;" id="profileName">—</h5>
+                            <p style="color:#6c757d;font-size:0.85rem;" id="profileEmail">—</p>
+                            <span class="tag tag-blue mb-2 d-inline-block">Student</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header"><h5><i class="fas fa-edit me-2" style="color:#3498db;"></i>Edit Profile</h5></div>
+                        <div class="card-body p-4">
+                            <div class="row g-3">
+                                <div class="col-md-6"><label class="form-label" style="font-weight:600;font-size:0.85rem;">Full Name</label><input class="form-control" id="editName"></div>
+                                <div class="col-md-6"><label class="form-label" style="font-weight:600;font-size:0.85rem;">Student ID</label><input class="form-control" id="editStudentId"></div>
+                                <div class="col-md-6">
+                                    <label class="form-label" style="font-weight:600;font-size:0.85rem;">Department</label>
+                                    <select class="form-select" id="editDept">
+                                        <option value="">Select...</option>
+                                        <option>Computer Science</option>
+                                        <option>Software Engineering</option>
+                                        <option>Information Technology</option>
+                                        <option>Business Administration</option>
+                                        <option>Mathematics</option>
+                                        <option>Other</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" style="font-weight:600;font-size:0.85rem;">Current Year</label>
+                                    <select class="form-select" id="editYear">
+                                        <option value="">Select...</option>
+                                        <option>1st Year</option>
+                                        <option>2nd Year</option>
+                                        <option>3rd Year</option>
+                                        <option>4th Year</option>
+                                    </select>
+                                </div>
+                                <div class="col-12"><label class="form-label" style="font-weight:600;font-size:0.85rem;">Skills (comma separated)</label><input class="form-control" id="editSkills" placeholder="Python, JavaScript, SQL..."></div>
+                                <div class="col-12"><button class="btn-primary-dash" id="saveProfileBtn" style="padding:11px 30px;" onclick="saveProfile()"><i class="fas fa-save me-2"></i>Save Changes</button></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- /page-content -->
+</div><!-- /main-content -->
+</div><!-- /dashboard-layout -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// ── Auth & User State ────────────────────────────────────
+const token = localStorage.getItem('careeris_token');
+const user  = JSON.parse(localStorage.getItem('careeris_user') || '{}');
+
+// Redirect if not logged in or wrong role
+if (!token || !user.id) { window.location.href = '/login.html'; }
+if (user.role && user.role !== 'student') {
+    window.location.href = user.role === 'alumni' ? '/dashboard/alumni.html' : '/dashboard/admin.html';
+}
+
+const firstName = (user.name || 'Student').split(' ')[0];
+const initials  = (user.name || 'S').split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
+
+document.getElementById('sidebarName').textContent   = user.name || 'Student';
+document.getElementById('sidebarAvatar').textContent = initials;
+document.getElementById('topAvatar').textContent     = initials;
+document.getElementById('welcomeName').textContent   = firstName;
+
+// ── API Helper ───────────────────────────────────────────
+async function api(url, options = {}) {
+    const res = await fetch(url, {
+        ...options,
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            ...(options.headers || {})
+        }
+    });
+    if (res.status === 401) { logout(); return null; }
+    return res.json();
+}
+
+// ── Page Navigation ──────────────────────────────────────
+const pages    = ['dashboard','internships','certificates','upload-cert','alumni-dir','announcements','resume','profile'];
+const titles   = { dashboard:'Dashboard', internships:'Internship Portal', certificates:'My Certificates', 'upload-cert':'Upload Certificate', 'alumni-dir':'Alumni Directory', announcements:'Announcements', resume:'Resume Generator', profile:'My Profile' };
+const subs     = { dashboard:"Here's your overview.", internships:'Browse and apply for internships.', certificates:'Your certificates and verification status.', 'upload-cert':'Submit a certificate for verification.', 'alumni-dir':'Connect with JUW alumni.', announcements:'Important notices from the university.', resume:'Generate and download your professional PDF resume.', profile:'Manage your information.' };
+
+function toggleSidebar(force) {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    const shouldOpen = typeof force === 'boolean' ? force : !sidebar.classList.contains('open');
+    sidebar.classList.toggle('open', shouldOpen);
+    overlay.style.display = shouldOpen ? 'block' : 'none';
+}
+
+function showPage(page, el) {
+    pages.forEach(p => {
+        const el = document.getElementById('page-'+p);
+        if (el) el.style.display = p === page ? 'block' : 'none';
+    });
+    document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
+    if (el) el.classList.add('active');
+    document.getElementById('pageTitle').textContent    = titles[page] || page;
+    document.getElementById('pageSubtitle').textContent = subs[page] || '';
+    window.scrollTo(0,0);
+    toggleSidebar(false); // auto-close on mobile after navigating
+
+    // Lazy-load page data
+    if (page === 'dashboard')    loadDashboard();
+    if (page === 'internships')  { loadInternships(); loadRecommended(); }
+    if (page === 'certificates') loadCertificates();
+    if (page === 'alumni-dir')     loadAlumni();
+    if (page === 'announcements')  loadAnnouncementsPage();
+    if (page === 'resume')         loadResumePage();
+    if (page === 'profile')      loadProfile();
+}
+
+// ── DASHBOARD ────────────────────────────────────────────
+async function loadDashboard() {
+    const [appsData, certsData] = await Promise.all([
+        api('/api/internships/my/applications'),
+        api('/api/certificates/my')
+    ]);
+
+    if (appsData) {
+        document.getElementById('statApps').textContent = appsData.applications?.length || 0;
+        // Recent apps
+        const recent = (appsData.applications || []).slice(0, 3);
+        const appHtml = recent.length ? recent.map(a => `
+            <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                <div>
+                    <div style="font-weight:600;font-size:0.85rem;">${a.internship?.title || 'N/A'} — ${a.internship?.company || ''}</div>
+                    <div style="font-size:0.75rem;color:#6c757d;">${new Date(a.createdAt).toLocaleDateString()}</div>
+                </div>
+                ${statusBadge(a.status)}
+            </div>`).join('') : '<p class="text-muted text-center py-2">No applications yet.</p>';
+        const dashAppsEl = document.getElementById('dashApplications');
+        if (dashAppsEl) dashAppsEl.innerHTML = appHtml;
+    }
+
+    if (certsData) {
+        const certs    = certsData.certificates || [];
+        const verified = certs.filter(c => c.status === 'approved').length;
+        const pending  = certs.filter(c => c.status === 'pending').length;
+        document.getElementById('statCerts').textContent    = certs.length;
+        document.getElementById('statVerified').textContent = verified;
+        document.getElementById('statPending').textContent  = pending;
+        document.getElementById('welcomeSubtitle').textContent = `You have ${pending} cert${pending!==1?'s':''} pending verification.`;
+    }
+
+    // Recent internships
+    const intData = await api('/api/internships');
+    if (intData) {
+        const recent = (intData.internships || []).slice(0, 3);
+        const colors = ['#3498db','#9b59b6','#2ecc71','#e74c3c','#f39c12'];
+        document.getElementById('dashInternships').innerHTML = recent.length
+            ? recent.map((i,idx) => `
+                <div class="internship-item">
+                    <div class="company-logo" style="background:linear-gradient(135deg,${colors[idx%colors.length]},${colors[(idx+1)%colors.length]});">${abbrev(i.company)}</div>
+                    <div class="internship-info">
+                        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">
+                            <div class="internship-title">${i.title}</div>
+                            <button class="int-dots-btn" onclick="toggleIntMenu(event,this)" data-link="${(i.applyLink||'').replace(/"/g,'&quot;')}" data-title="${(i.title||'').replace(/"/g,'&quot;')}" title="More options" style="background:none;border:none;color:#9ba3af;padding:2px 6px;cursor:pointer;font-size:0.9rem;border-radius:6px;line-height:1;flex-shrink:0;"><i class="fas fa-ellipsis-vertical"></i></button>
+                        </div>
+                        <div class="internship-company">${i.company}</div>
+                        <div class="internship-meta"><span class="tag tag-blue">${i.type||'Full-time'}</span><span class="tag tag-green">${i.location||'Karachi'}</span></div>
+                    </div>
+                    <div style="display:flex;gap:6px;">
+                        <button class="btn-outline-dash" style="padding:6px 10px;font-size:0.75rem;" onclick="viewInternship('${i._id}')"><i class="fas fa-eye"></i></button>
+                        <button class="btn-primary-dash" style="padding:6px 14px;font-size:0.75rem;" onclick="confirmThenApply('${i._id}','${(i.title||'').replace(/'/g,"\\'")}','${i.applyLink||''}')">Apply</button>
+                    </div>
+                </div>`).join('')
+            : '<p class="text-muted text-center py-3">No internships available yet.</p>';
+    }
+
+    // Load announcements
+    const annData = await api('/api/admin/announcements');
+    const anns = (annData?.announcements || []).filter(a => a.status === 'published');
+    const annCard = document.getElementById('annDashCard');
+    const annList = document.getElementById('annDashList');
+    if (anns.length) {
+        annCard.style.display = 'block';
+        const pCfg = { normal: { color:'#10b981', label:'NORMAL' }, important: { color:'#3b82f6', label:'IMPORTANT' }, urgent: { color:'#ef4444', label:'URGENT' } };
+        annList.innerHTML = anns.slice(0,5).map(a => {
+            const cfg = pCfg[a.priority] || pCfg.normal;
+            const date = new Date(a.createdAt).toLocaleDateString('en-US', { month:'short', day:'numeric' });
+            return `<div style="border-left:3px solid ${cfg.color};padding:8px 12px;background:rgba(255,255,255,0.03);border-radius:0 8px 8px 0;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;">
+                    <span style="font-size:0.68rem;font-weight:700;color:${cfg.color};letter-spacing:1px;">${cfg.label}</span>
+                    <span style="font-size:0.72rem;color:#6b7280;">${date}</span>
+                </div>
+                <div style="font-weight:600;font-size:0.85rem;color:#f0f2f5;">${a.title}</div>
+                <div style="font-size:0.8rem;color:#9ba3af;margin-top:2px;">${a.message}</div>
+            </div>`;
+        }).join('');
+    } else {
+        annCard.style.display = 'none';
+    }
+}
+
+// ── INTERNSHIPS ──────────────────────────────────────────
+async function loadRecommended() {
+    const recSection = document.getElementById('recommendedSection');
+    const recList    = document.getElementById('recommendedList');
+    const data = await api('/api/internships/recommended/for-me');
+    const list = data?.internships || [];
+    if (!list.length) { recSection.style.display = 'none'; return; }
+    recSection.style.display = '';
+    recList.innerHTML = list.map(job => `
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100" style="border:1px solid rgba(108,92,231,0.25);background:rgba(108,92,231,0.04);">
+                <div style="height:4px;background:linear-gradient(135deg,#6c5ce7,#a29bfe);"></div>
+                <div class="card-body p-3">
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+                        <div style="font-weight:700;font-size:.9rem;">${job.title}</div>
+                        <span style="font-size:.65rem;background:rgba(108,92,231,.15);color:#a29bfe;padding:2px 8px;border-radius:20px;white-space:nowrap;">✨ Match</span>
+                    </div>
+                    <div style="font-size:.8rem;color:#adb5bd;">${job.company}</div>
+                    <div style="font-size:.78rem;color:#6c757d;margin-top:6px;">${job.type||''} · ${job.location||'Karachi'}</div>
+                    <button onclick="viewInternship('${job._id}')" class="btn-primary-dash mt-2 w-100" style="font-size:.78rem;justify-content:center;padding:7px;background:linear-gradient(135deg,#6c5ce7,#a29bfe)!important;">View Details</button>
+                </div>
+            </div>
+        </div>`).join('');
+}
+
+async function loadInternships() {
+    const search   = document.getElementById('internshipSearch')?.value || '';
+    const type     = document.getElementById('internshipTypeFilter')?.value || '';
+    const location = document.getElementById('internshipLocationFilter')?.value || '';
+    let params = [];
+    if (search)   params.push(`search=${encodeURIComponent(search)}`);
+    if (type)     params.push(`type=${encodeURIComponent(type)}`);
+    if (location) params.push(`location=${encodeURIComponent(location)}`);
+    const url = '/api/internships' + (params.length ? '?' + params.join('&') : '');
+    document.getElementById('internshipsList').innerHTML = '<div class="col-12 text-center py-4"><i class="fas fa-spinner fa-spin fa-2x text-muted"></i></div>';
+    const data = await api(url);
+    if (!data) return;
+
+    const list = data.internships || [];
+    const colors = ['#3498db','#9b59b6','#2ecc71','#e74c3c','#f39c12','#1abc9c'];
+    document.getElementById('internshipsList').innerHTML = list.length
+        ? list.map((i,idx) => `
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100" style="transition:all 0.3s;">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-start justify-content-between mb-3">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="company-logo" style="background:linear-gradient(135deg,${colors[idx%colors.length]},${colors[(idx+2)%colors.length]});width:50px;height:50px;font-size:1rem;">${abbrev(i.company)}</div>
+                                <div>
+                                    <div style="font-weight:700;font-size:0.9rem;color:#f0f2f5;">${i.title}</div>
+                                    <div style="font-size:0.78rem;color:#9ba3af;">${i.company}</div>
+                                </div>
+                            </div>
+                            <button class="int-dots-btn" onclick="toggleIntMenu(event,this)" data-link="${(i.applyLink||'').replace(/"/g,'&quot;')}" data-title="${(i.title||'').replace(/"/g,'&quot;')}" title="More options" style="background:none;border:none;color:#9ba3af;padding:2px 6px;cursor:pointer;font-size:0.9rem;border-radius:6px;line-height:1;flex-shrink:0;"><i class="fas fa-ellipsis-vertical"></i></button>
+                        </div>
+                        <div class="d-flex gap-2 mb-3 flex-wrap">
+                            <span class="tag tag-blue">${i.type||'Full-time'}</span>
+                            <span class="tag tag-green">${i.location||'Karachi'}</span>
+                            ${i.salary ? `<span class="tag tag-orange">${i.salary}</span>` : ''}
+                        </div>
+                        <p style="font-size:0.82rem;color:#9ba3af;margin-bottom:15px;">${(i.description||'').substring(0,100)}${i.description?.length>100?'...':''}</p>
+                        ${i.deadline ? `<p style="font-size:0.75rem;color:#e74c3c;margin-bottom:12px;"><i class="fas fa-clock me-1"></i>Deadline: ${new Date(i.deadline).toLocaleDateString()}</p>` : ''}
+                        <div class="d-flex gap-2">
+                            <button class="btn-primary-dash flex-fill" style="justify-content:center;" onclick="applyInternship('${i._id}','${(i.title||'').replace(/'/g,"\\'")}','${i.applyLink||''}')">Apply Now</button>
+                            <button class="btn-outline-dash" onclick="viewInternship('${i._id}')"><i class="fas fa-eye"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>`).join('')
+        : '<div class="col-12 text-center py-5 text-muted"><i class="fas fa-briefcase fa-3x mb-3 d-block"></i>No internships found.</div>';
+}
+
+function confirmThenApply(id, title, applyLink) {
+    const old = document.getElementById('applyConfirmModal');
+    if (old) old.remove();
+    const modal = document.createElement('div');
+    modal.id = 'applyConfirmModal';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:10001;display:flex;align-items:center;justify-content:center;padding:20px;';
+    modal.innerHTML = `
+        <div style="background:#1a1d27;border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:26px;max-width:380px;width:100%;text-align:center;">
+            <i class="fas fa-paper-plane" style="font-size:1.8rem;color:#3498db;margin-bottom:12px;"></i>
+            <h5 style="color:#fff;font-weight:700;margin-bottom:6px;">Apply to "${title}"?</h5>
+            <p style="color:#9ba3af;font-size:0.85rem;margin-bottom:20px;">This will submit your application right away. You'll fill a short confirmation form after.</p>
+            <div style="display:flex;gap:10px;">
+                <button onclick="document.getElementById('applyConfirmModal').remove()" style="flex:1;padding:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:rgba(255,255,255,0.7);cursor:pointer;font-size:0.85rem;">Cancel</button>
+                <button onclick="document.getElementById('applyConfirmModal').remove();applyInternship('${id}','${(title||'').replace(/'/g,"\\'")}','${applyLink||''}')" style="flex:1;padding:10px;background:linear-gradient(135deg,#3498db,#2471a3);border:none;border-radius:10px;color:#fff;font-weight:700;cursor:pointer;font-size:0.85rem;">Yes, Apply</button>
+            </div>
+        </div>`;
+    document.body.appendChild(modal);
+    modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+}
+
+async function applyInternship(id, title, applyLink) {
+    if (applyLink) window.open(applyLink, '_blank', 'noopener');
+
+    const data = await api(`/api/internships/${id}/apply`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ coverLetter: '', cvLink: '' })
+    });
+
+    if (!data) return;
+    if (!data.success) {
+        alert(data.message || 'Failed to apply. Please try again.');
+        return;
+    }
+
+    loadInternships();
+    loadNotifications();
+    const appliedId = data.application?._id;
+    if (appliedId) openConfirmationModal(appliedId, title);
+}
+
+let _cvUploadedUrl = '';
+
+function handleCvDrop(e) {
+    e.preventDefault();
+    document.getElementById('cvDropZone').style.borderColor = 'rgba(255,255,255,0.1)';
+    document.getElementById('cvDropZone').style.background  = 'rgba(255,255,255,0.03)';
+    const file = e.dataTransfer.files[0];
+    if (file) uploadCvFile(file);
+}
+function handleCvFileSelect(input) {
+    if (input.files[0]) uploadCvFile(input.files[0]);
+}
+
+async function uploadCvFile(file) {
+    const label  = document.getElementById('cvDropLabel');
+    const status = document.getElementById('cvUploadStatus');
+    const zone   = document.getElementById('cvDropZone');
+    _cvUploadedUrl = '';
+
+    // Validate
+    const ext = file.name.split('.').pop().toLowerCase();
+    if (!['pdf','doc','docx'].includes(ext)) {
+        status.style.display = 'block';
+        status.style.color   = '#fca5a5';
+        status.innerHTML     = '<i class="fas fa-exclamation-circle me-1"></i>Only PDF, DOC or DOCX allowed.';
+        return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+        status.style.display = 'block';
+        status.style.color   = '#fca5a5';
+        status.innerHTML     = '<i class="fas fa-exclamation-circle me-1"></i>File too large — max 5MB.';
+        return;
+    }
+
+    label.innerHTML  = `<i class="fas fa-spinner fa-spin me-1"></i>Uploading ${file.name}…`;
+    status.style.display = 'none';
+    zone.style.borderColor = 'rgba(124,58,237,0.5)';
+
+    const formData = new FormData();
+    formData.append('cv', file);
+    const token = localStorage.getItem('careeris_token');
+
+    try {
+        const res  = await fetch('/api/upload/cv', { method: 'POST', headers: { Authorization: `Bearer ${token}` }, body: formData });
+        const data = await res.json();
+        if (data.success) {
+            _cvUploadedUrl = data.url;
+            zone.style.borderColor = 'rgba(16,185,129,0.5)';
+            zone.style.background  = 'rgba(16,185,129,0.05)';
+            label.innerHTML = `<i class="fas fa-check-circle me-1" style="color:#10b981;"></i><span style="color:#6ee7b7;">${file.name}</span> — uploaded`;
+        } else {
+            zone.style.borderColor = 'rgba(239,68,68,0.4)';
+            label.innerHTML = '<i class="fas fa-cloud-upload-alt" style="font-size:1.6rem;color:rgba(255,255,255,0.25);display:block;margin-bottom:8px;"></i>Drag & drop or browse';
+            status.style.display = 'block';
+            status.style.color   = '#fca5a5';
+            status.innerHTML     = '<i class="fas fa-exclamation-circle me-1"></i>' + (data.message || 'Upload failed.');
+        }
+    } catch {
+        label.innerHTML = '<i class="fas fa-cloud-upload-alt" style="font-size:1.6rem;color:rgba(255,255,255,0.25);display:block;margin-bottom:8px;"></i>Drag & drop or browse';
+        status.style.display = 'block';
+        status.style.color   = '#fca5a5';
+        status.innerHTML     = '<i class="fas fa-exclamation-circle me-1"></i>Upload failed — check connection.';
+    }
+}
+
+async function submitApply(id) {
+    const btn   = document.getElementById('applySubmitBtn');
+    const msgEl = document.getElementById('applyModalMsg');
+    const cover = document.getElementById('applyMsgCover').value.trim();
+
+    btn.disabled = true;
+    btn.textContent = 'Submitting…';
+
+    const data = await api(`/api/internships/${id}/apply`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ coverLetter: cover, cvLink: _cvUploadedUrl })
+    });
+
+    btn.disabled = false;
+    btn.textContent = 'Submit Application';
+    if (!data) return;
+
+    if (data.success) {
+        msgEl.style.cssText = 'display:block;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);color:#6ee7b7;';
+        msgEl.innerHTML = '<i class="fas fa-check-circle me-1"></i>' + (data.message || 'Application submitted!');
+        _cvUploadedUrl = '';
+        const appliedId    = data.application?._id;
+        const appliedTitle = document.getElementById('applyModal')?.querySelector('h5')?.textContent?.replace(/^Apply for "|"$/g,'') || 'this internship';
+        const extLink       = _pendingApplyLink;
+        _pendingApplyLink    = '';
+        if (extLink) window.open(extLink, '_blank', 'noopener');
+        setTimeout(() => {
+            document.getElementById('applyModal')?.remove();
+            loadInternships();
+            loadNotifications();
+            if (appliedId) openConfirmationModal(appliedId, appliedTitle);
+        }, 1200);
+    } else {
+        msgEl.style.cssText = 'display:block;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#fca5a5;';
+        msgEl.innerHTML = '<i class="fas fa-exclamation-circle me-1"></i>' + (data.message || 'Failed to apply. Please try again.');
+    }
+}
+
+// ── NOTIFICATION BELL ─────────────────────────────────────
+async function loadNotifications() {
+    const data = await api('/api/internships/my/applications');
+    const apps = (data?.applications || []).filter(a => !a.decisionMade && a.internship);
+    const dot  = document.getElementById('notifBellDot');
+    const list = document.getElementById('notifDropdownList');
+    dot.style.display = apps.length ? 'block' : 'none';
+    list.innerHTML = apps.length
+        ? apps.map(a => `
+            <div style="padding:10px 8px;border-radius:8px;margin-bottom:4px;background:rgba(255,255,255,0.03);">
+                <div style="font-size:0.82rem;color:#fff;font-weight:600;">${a.internship.title}</div>
+                <div style="font-size:0.75rem;color:#9ba3af;margin-bottom:8px;">${a.internship.company||''}</div>
+                <button class="btn-primary-dash w-100" style="font-size:0.75rem;padding:6px;justify-content:center;" onclick="openConfirmationModal('${a._id}','${(a.internship.title||'').replace(/'/g,"\\'")}')"><i class="fas fa-clipboard-check me-1"></i>Fill Confirmation Form</button>
+            </div>`).join('')
+        : '<div style="padding:20px;text-align:center;color:#6b7280;font-size:0.8rem;">No pending confirmations.</div>';
+}
+
+function toggleNotifDropdown() {
+    const dd = document.getElementById('notifDropdown');
+    dd.style.display = dd.style.display === 'block' ? 'none' : 'block';
+}
+document.addEventListener('click', (e) => {
+    if (!document.getElementById('notifBellBtn')?.contains(e.target)) {
+        const dd = document.getElementById('notifDropdown');
+        if (dd) dd.style.display = 'none';
+    }
+    // Close any open internship "⋮" menus on an outside click
+    if (!e.target.closest('.int-dots-btn') && !e.target.closest('.int-menu-dropdown')) {
+        closeAllIntMenus();
+    }
+});
+
+// ── Internship "⋮" menu (View Link / Share Link / Cancel) ──
+// Built as a position:fixed element appended to <body> (not nested inside
+// the card), because .card has overflow:hidden and would otherwise clip
+// an absolutely-positioned dropdown invisible.
+function toggleIntMenu(event, btn) {
+    event.stopPropagation();
+    const alreadyOpenForThis = btn.getAttribute('data-menu-open') === '1';
+    closeAllIntMenus();
+    if (alreadyOpenForThis) return;
+
+    const link  = btn.getAttribute('data-link')  || '';
+    const title = btn.getAttribute('data-title') || '';
+    const rect  = btn.getBoundingClientRect();
+
+    const menu = document.createElement('div');
+    menu.className = 'int-menu-dropdown';
+    menu.style.cssText = `position:fixed;top:${rect.bottom+6}px;left:${Math.max(8, rect.right-180)}px;background:#1a1d27;border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:6px;min-width:180px;z-index:99999;box-shadow:0 10px 28px rgba(0,0,0,0.5);`;
+    menu.innerHTML = `
+        <button style="display:flex;align-items:center;gap:8px;width:100%;background:none;border:none;color:#e4e6eb;padding:8px 10px;border-radius:6px;font-size:0.8rem;cursor:pointer;text-align:left;"><i class="fas fa-up-right-from-square" style="width:14px;"></i>View Link</button>
+        <button style="display:flex;align-items:center;gap:8px;width:100%;background:none;border:none;color:#e4e6eb;padding:8px 10px;border-radius:6px;font-size:0.8rem;cursor:pointer;text-align:left;"><i class="fas fa-share-nodes" style="width:14px;"></i>Share Link</button>
+        <button style="display:flex;align-items:center;gap:8px;width:100%;background:none;border:none;color:#9ba3af;padding:8px 10px;border-radius:6px;font-size:0.8rem;cursor:pointer;text-align:left;"><i class="fas fa-xmark" style="width:14px;"></i>Cancel</button>`;
+    const [viewBtn, shareBtn, cancelBtn] = menu.querySelectorAll('button');
+    viewBtn.onclick  = (e) => { e.stopPropagation(); openInternshipLink(link); closeAllIntMenus(); };
+    shareBtn.onclick = (e) => { e.stopPropagation(); shareInternshipLink(link, title); closeAllIntMenus(); };
+    cancelBtn.onclick = (e) => { e.stopPropagation(); closeAllIntMenus(); };
+
+    document.body.appendChild(menu);
+    btn.setAttribute('data-menu-open', '1');
+}
+function closeAllIntMenus() {
+    document.querySelectorAll('.int-menu-dropdown').forEach(m => m.remove());
+    document.querySelectorAll('.int-dots-btn[data-menu-open]').forEach(b => b.removeAttribute('data-menu-open'));
+}
+window.addEventListener('scroll', closeAllIntMenus, true);
+window.addEventListener('resize', closeAllIntMenus);
+function openInternshipLink(url) {
+    if (url) window.open(url, '_blank', 'noopener');
+    else showLinkToast('No external link was provided for this posting.');
+}
+function shareInternshipLink(url, title) {
+    if (!url) { showLinkToast('No external link was provided for this posting.'); return; }
+    if (navigator.share) {
+        navigator.share({ title: title || 'Internship', url }).catch(() => {});
+    } else if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(() => showLinkToast('Link copied to clipboard!'));
+    } else {
+        showLinkToast(url);
+    }
+}
+function showLinkToast(msg) {
+    const old = document.getElementById('linkActionToast');
+    if (old) old.remove();
+    const toast = document.createElement('div');
+    toast.id = 'linkActionToast';
+    toast.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#1a1d27;border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:12px 18px;max-width:300px;box-shadow:0 12px 30px rgba(0,0,0,0.4);z-index:9998;color:#e4e6eb;font-size:0.82rem;';
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3500);
+}
+
+function showApplyFollowupToast(appId) {
+    const old = document.getElementById('applyFollowupToast');
+    if (old) old.remove();
+    const toast = document.createElement('div');
+    toast.id = 'applyFollowupToast';
+    toast.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#1a1d27;border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:16px 18px;max-width:300px;box-shadow:0 12px 30px rgba(0,0,0,0.4);z-index:9998;';
+    toast.innerHTML = `
+        <div style="display:flex;gap:10px;align-items:flex-start;">
+            <i class="fas fa-bell" style="color:#f39c12;margin-top:2px;"></i>
+            <div style="flex:1;">
+                <div style="color:#fff;font-weight:600;font-size:0.85rem;margin-bottom:4px;">Application submitted!</div>
+                <div style="color:#9ba3af;font-size:0.78rem;margin-bottom:10px;">Please fill the confirmation form to record your response for this internship.</div>
+                <button class="btn-primary-dash w-100" style="font-size:0.78rem;padding:7px;justify-content:center;" onclick="document.getElementById('applyFollowupToast').remove();document.getElementById('notifBellBtn').click();"><i class="fas fa-clipboard-check me-1"></i>Open Form</button>
+            </div>
+            <button onclick="document.getElementById('applyFollowupToast').remove();" style="background:none;border:none;color:#9ba3af;cursor:pointer;">✕</button>
+        </div>`;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 12000);
+}
+
+// ── CONFIRMATION FORM (accept / reject + offer letter) ────
+let _confirmAppId = null;
+function openConfirmationModal(appId, internshipTitle) {
+    _confirmAppId = appId;
+    document.getElementById('notifDropdown').style.display = 'none';
+    const old = document.getElementById('confirmModal');
+    if (old) old.remove();
+
+    const modal = document.createElement('div');
+    modal.id = 'confirmModal';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
+    modal.innerHTML = `
+        <div style="background:#1a1d27;border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:28px;max-width:440px;width:100%;max-height:90vh;overflow-y:auto;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;">
+                <div>
+                    <h5 style="color:#fff;font-weight:700;margin:0 0 4px;">Confirmation Form</h5>
+                    <div style="color:#9ba3af;font-size:0.8rem;">${internshipTitle}</div>
+                </div>
+                <button onclick="document.getElementById('confirmModal').remove()" style="background:none;border:none;color:#9ba3af;font-size:1.2rem;cursor:pointer;">✕</button>
+            </div>
+            <div id="confirmModalMsg" style="display:none;padding:10px;border-radius:8px;font-size:0.8rem;margin-bottom:12px;"></div>
+            <div class="mb-2">
+                <label class="form-label" style="font-size:0.8rem;color:#c9ccd6;">Full Name</label>
+                <input type="text" id="confName" class="form-control" value="${(user.name||'').replace(/"/g,'&quot;')}">
+            </div>
+            <div class="mb-2">
+                <label class="form-label" style="font-size:0.8rem;color:#c9ccd6;">Field / Department</label>
+                <input type="text" id="confField" class="form-control" value="${(user.department||'').replace(/"/g,'&quot;')}" placeholder="e.g. Computer Science">
+            </div>
+            <div class="mb-3">
+                <label class="form-label" style="font-size:0.8rem;color:#c9ccd6;">Year</label>
+                <input type="text" id="confYear" class="form-control" value="${(user.year||'').replace(/"/g,'&quot;')}" placeholder="e.g. Final Year">
+            </div>
+            <div class="d-flex gap-2 mb-3">
+                <button type="button" id="confAcceptBtn" class="btn-primary-dash flex-fill" style="justify-content:center;background:linear-gradient(135deg,#2ecc71,#27ae60)!important;" onclick="pickDecision('accepted')">Accept Offer</button>
+                <button type="button" id="confRejectBtn" class="btn-outline-dash flex-fill" style="justify-content:center;color:#e74c3c;border-color:#e74c3c;" onclick="pickDecision('rejected')">Reject</button>
+            </div>
+            <div id="confAcceptFields" style="display:none;margin-bottom:12px;">
+                <label class="form-label" style="font-size:0.8rem;color:#c9ccd6;">Upload Offer Letter *</label>
+                <input type="file" id="confOfferLetter" class="form-control" accept=".pdf,.jpg,.jpeg,.png">
+            </div>
+            <div id="confRejectFields" style="display:none;margin-bottom:12px;">
+                <label class="form-label" style="font-size:0.8rem;color:#c9ccd6;">Reason (optional)</label>
+                <textarea id="confReason" class="form-control" rows="2"></textarea>
+            </div>
+            <button id="confSubmitBtn" class="btn-primary-dash w-100" style="justify-content:center;display:none;" onclick="submitDecision()">Submit</button>
+        </div>`;
+    document.body.appendChild(modal);
+}
+
+let _confirmDecision = null;
+function pickDecision(decision) {
+    _confirmDecision = decision;
+    document.getElementById('confAcceptFields').style.display = decision === 'accepted' ? 'block' : 'none';
+    document.getElementById('confRejectFields').style.display = decision === 'rejected' ? 'block' : 'none';
+    document.getElementById('confSubmitBtn').style.display = 'block';
+    document.getElementById('confAcceptBtn').style.opacity  = decision === 'accepted' ? '1' : '0.5';
+    document.getElementById('confRejectBtn').style.opacity  = decision === 'rejected' ? '1' : '0.5';
+}
+
+async function submitDecision() {
+    const msgEl = document.getElementById('confirmModalMsg');
+    if (!_confirmDecision) return;
+    if (_confirmDecision === 'accepted' && !document.getElementById('confOfferLetter').files[0]) {
+        msgEl.style.cssText = 'display:block;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#fca5a5;';
+        msgEl.innerHTML = 'Please upload the offer letter before submitting.';
+        return;
+    }
+    const btn = document.getElementById('confSubmitBtn');
+    btn.disabled = true; btn.textContent = 'Submitting…';
+
+    const fd = new FormData();
+    fd.append('decision', _confirmDecision);
+    fd.append('name',  document.getElementById('confName').value.trim());
+    fd.append('field', document.getElementById('confField').value.trim());
+    fd.append('year',  document.getElementById('confYear').value.trim());
+    if (_confirmDecision === 'rejected') fd.append('reason', document.getElementById('confReason').value.trim());
+    if (_confirmDecision === 'accepted') fd.append('offerLetter', document.getElementById('confOfferLetter').files[0]);
+
+    const data = await api(`/api/internships/applications/${_confirmAppId}/decision`, { method: 'POST', body: fd });
+    btn.disabled = false; btn.textContent = 'Submit';
+
+    if (data?.success) {
+        msgEl.style.cssText = 'display:block;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);color:#6ee7b7;';
+        msgEl.innerHTML = 'Response recorded! Admin has been notified.';
+        setTimeout(() => { document.getElementById('confirmModal')?.remove(); loadNotifications(); }, 1500);
+    } else {
+        msgEl.style.cssText = 'display:block;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#fca5a5;';
+        msgEl.innerHTML = data?.message || 'Failed to submit. Try again.';
+    }
+}
+
+loadNotifications();
+
+async function viewInternship(id) {
+    const data = await api(`/api/internships/${id}`);
+    if (!data || !data.internship) return;
+    const i = data.internship;
+
+    // Remove any existing modal
+    const old = document.getElementById('viewJobModal');
+    if (old) old.remove();
+
+    const modal = document.createElement('div');
+    modal.id = 'viewJobModal';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
+    modal.innerHTML = `
+        <div style="background:#1a1d27;border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:32px;max-width:560px;width:100%;max-height:85vh;overflow-y:auto;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;">
+                <div>
+                    <h4 style="color:#fff;font-weight:700;margin:0 0 4px;">${i.title}</h4>
+                    <div style="color:#9ba3af;font-size:0.875rem;">${i.company} · ${i.location||'Karachi'}</div>
+                </div>
+                <button onclick="document.getElementById('viewJobModal').remove()" style="background:none;border:none;color:#9ba3af;font-size:1.3rem;cursor:pointer;padding:0 4px;">✕</button>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
+                <span style="background:rgba(52,152,219,0.15);color:#3498db;padding:4px 10px;border-radius:20px;font-size:0.75rem;">${i.type||'Internship'}</span>
+                ${i.salary ? `<span style="background:rgba(46,204,113,0.15);color:#2ecc71;padding:4px 10px;border-radius:20px;font-size:0.75rem;">${i.salary}</span>` : ''}
+                ${i.openings ? `<span style="background:rgba(253,203,110,0.15);color:#fdcb6e;padding:4px 10px;border-radius:20px;font-size:0.75rem;">${i.openings} Opening${i.openings>1?'s':''}</span>` : ''}
+            </div>
+            ${i.description ? `<p style="color:#9ba3af;font-size:0.875rem;line-height:1.7;margin-bottom:16px;">${i.description}</p>` : ''}
+            ${i.skills?.length ? `<div style="margin-bottom:16px;"><div style="color:#fff;font-size:0.8rem;font-weight:600;margin-bottom:8px;">Required Skills</div><div style="display:flex;gap:6px;flex-wrap:wrap;">${i.skills.map(s=>`<span style="background:rgba(108,92,231,0.15);color:#a29bfe;padding:3px 10px;border-radius:20px;font-size:0.75rem;">${s}</span>`).join('')}</div></div>` : ''}
+            ${i.deadline ? `<p style="color:#e74c3c;font-size:0.8rem;margin-bottom:16px;"><i class="fas fa-clock me-1"></i>Deadline: ${new Date(i.deadline).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})}</p>` : ''}
+            <div style="margin-top:20px;">
+                <button onclick="document.getElementById('viewJobModal').remove()" style="padding:12px 24px;background:transparent;border:1px solid rgba(255,255,255,0.15);color:#9ba3af;border-radius:10px;font-size:0.9rem;cursor:pointer;">Close</button>
+            </div>
+        </div>`;
+    document.body.appendChild(modal);
+    modal.addEventListener('click', e => { if(e.target === modal) modal.remove(); });
+}
+
+// ── APPLICATIONS ─────────────────────────────────────────
+async function loadApplications() {
+    const data = await api('/api/internships/my/applications');
+    const list = data?.applications || [];
+    const colors = ['#3498db','#9b59b6','#2ecc71','#e74c3c','#f39c12'];
+    document.getElementById('applicationsList').innerHTML = list.length
+        ? list.map((a,idx) => `
+            <tr>
+                <td><div class="d-flex align-items-center gap-2">
+                    <div class="company-logo" style="width:32px;height:32px;font-size:0.7rem;background:linear-gradient(135deg,${colors[idx%colors.length]},#2980b9);">${abbrev(a.internship?.company||'?')}</div>
+                    ${a.internship?.company||'N/A'}
+                </div></td>
+                <td>${a.internship?.title||'N/A'}</td>
+                <td>${new Date(a.createdAt).toLocaleDateString()}</td>
+                <td>${statusBadge(a.status)}</td>
+            </tr>`).join('')
+        : '<tr><td colspan="4" class="text-center py-4 text-muted">No applications yet. <a href="#" onclick="showPage(\'internships\',null)">Browse internships →</a></td></tr>';
+}
+
+// ── CERTIFICATES ─────────────────────────────────────────
+async function loadCertificates() {
+    const data = await api('/api/certificates/my');
+    let list = data?.certificates || [];
+    const q = (document.getElementById('certSearchBox')?.value || '').toLowerCase().trim();
+    if (q) list = list.filter(c => (c.title||'').toLowerCase().includes(q) || (c.issuer||'').toLowerCase().includes(q));
+    const palette = [['#2ecc71','#27ae60'],['#f39c12','#e67e22'],['#3498db','#2980b9'],['#9b59b6','#8e44ad'],['#e74c3c','#c0392b']];
+    document.getElementById('certsList').innerHTML = list.length
+        ? list.map((c,idx) => {
+            const [c1,c2] = palette[idx%palette.length];
+            return `
+            <div class="col-md-6 col-lg-4">
+                <div class="card">
+                    <div style="height:5px;background:linear-gradient(135deg,${c1},${c2});"></div>
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-start gap-3 mb-3">
+                            <div class="cert-icon" style="background:${c1}22;color:${c1};"><i class="fas fa-certificate" style="font-size:1.3rem;"></i></div>
+                            <div>
+                                <div style="font-weight:700;">${c.title}</div>
+                                <div style="font-size:0.78rem;color:#6c757d;">${c.issuer} · ${c.issueDate ? new Date(c.issueDate).getFullYear() : '—'}</div>
+                                <div style="font-size:0.75rem;color:#adb5bd;">${c.category||''}</div>
+                            </div>
+                        </div>
+                        ${certStatusBadge(c.status)}
+                        ${c.rejectReason ? `<p style="font-size:0.75rem;color:#e74c3c;margin-top:6px;"><i class="fas fa-info-circle me-1"></i>${c.rejectReason}</p>` : ''}
+                        <div class="d-flex gap-2 mt-3 flex-wrap">
+                            <a href="${c.fileUrl}" target="_blank" class="btn-primary-dash flex-fill" style="justify-content:center;font-size:0.78rem;background:linear-gradient(135deg,${c1},${c2})!important;text-decoration:none;"><i class="fas fa-eye me-1"></i>View</a>
+                            ${c.status === 'approved' ? `<a href="/verify?id=${c._id}" target="_blank" class="btn-outline-dash flex-fill" style="font-size:0.78rem;text-align:center;text-decoration:none;"><i class="fas fa-shield-alt me-1"></i>Verify</a>` : ''}
+                            <button class="btn-outline-dash" onclick="deleteCert('${c._id}')" style="color:#e74c3c;border-color:#e74c3c;"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+          }).join('')
+        : '<div class="col-12 text-center py-5 text-muted"><i class="fas fa-certificate fa-3x mb-3 d-block"></i>No certificates yet. <a href="#" onclick="showPage(\'upload-cert\',null)">Upload one →</a></div>';
+}
+
+function showQR(certId, title) {
+    const verifyUrl = `${window.location.origin}/verify?id=${certId}`;
+    const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(verifyUrl)}&color=6c5ce7&bgcolor=ffffff&qzone=1`;
+    document.getElementById('qrModalTitle').textContent   = title;
+    document.getElementById('qrModalImage').src           = qrSrc;
+    document.getElementById('qrModalLink').href           = verifyUrl;
+    document.getElementById('qrModalLink').textContent    = verifyUrl;
+    new bootstrap.Modal(document.getElementById('qrModal')).show();
+}
+
+async function deleteCert(id) {
+    if (!confirm('Delete this certificate?')) return;
+    const data = await api(`/api/certificates/${id}`, { method: 'DELETE' });
+    if (data?.success) { loadCertificates(); loadDashboard(); }
+    else alert(data?.message || 'Error deleting certificate.');
+}
+
+// ── CERTIFICATE UPLOAD ───────────────────────────────────
+function fileChosen(input) {
+    const label = document.getElementById('fileLabel');
+    label.textContent = input.files[0] ? input.files[0].name : 'Drag & drop your file here';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('certUploadForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const title      = document.getElementById('certTitle').value.trim();
+        const issuer     = document.getElementById('certIssuer').value.trim();
+        const issuerUrl  = document.getElementById('certIssuerUrl').value.trim();
+        const date     = document.getElementById('certDate').value;
+        const category = document.getElementById('certCategory').value;
+        const file     = document.getElementById('certFile').files[0];
+        const btn      = document.getElementById('uploadBtn');
+
+        if (!title || !issuer)   { showAlert('certUploadAlert', 'Please fill in title and issuer.', 'error'); return; }
+        if (!file)               { showAlert('certUploadAlert', 'Please choose a file to upload.', 'error'); return; }
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Uploading...';
+
+        const form = new FormData();
+        form.append('certificate', file);
+        form.append('title',       title);
+        form.append('issuer',      issuer);
+        form.append('issuerUrl',   issuerUrl);
+        form.append('issueDate',   date);
+        form.append('category',    category);
+
+        try {
+            const res  = await fetch('/api/certificates/upload', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` },
+                body: form
+            });
+            const data = await res.json();
+            if (data.success) {
+                showAlert('certUploadAlert', 'Certificate uploaded! Pending admin verification.', 'success');
+                document.getElementById('certUploadForm').reset();
+                document.getElementById('fileLabel').textContent = 'Drag & drop your file here';
+            } else {
+                showAlert('certUploadAlert', data.message || 'Upload failed.', 'error');
+            }
+        } catch (err) {
+            showAlert('certUploadAlert', 'Server error. Try again.', 'error');
+        }
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-upload me-2"></i>Submit for Verification';
+    });
+});
+
+// ── ALUMNI DIRECTORY ─────────────────────────────────────
+async function loadAlumni() {
+    const search = document.getElementById('alumniSearch')?.value || '';
+    const year   = document.getElementById('alumniYearFilter')?.value || '';
+    let params = [];
+    if (search) params.push(`search=${encodeURIComponent(search)}`);
+    if (year)   params.push(`year=${encodeURIComponent(year)}`);
+    const url = '/api/admin/alumni-directory' + (params.length ? '?' + params.join('&') : '');
+    document.getElementById('alumniList').innerHTML = '<div class="col-12 text-center py-4"><i class="fas fa-spinner fa-spin fa-2x text-muted"></i></div>';
+    const data = await api(url);
+    const list = data?.alumni || [];
+    const colors = ['linear-gradient(135deg,#3498db,#2980b9)','linear-gradient(135deg,#2ecc71,#27ae60)','linear-gradient(135deg,#9b59b6,#8e44ad)','linear-gradient(135deg,#e74c3c,#c0392b)','linear-gradient(135deg,#f39c12,#e67e22)'];
+    document.getElementById('alumniList').innerHTML = list.length
+        ? list.map((a,idx) => `
+            <div class="col-md-6 col-lg-4">
+                <div class="card" style="transition:all 0.3s;hover:transform:translateY(-4px);">
+                    <div class="card-body p-4 text-center">
+                        <div style="width:70px;height:70px;border-radius:50%;background:${colors[idx%colors.length]};display:flex;align-items:center;justify-content:center;margin:0 auto 14px;color:white;font-weight:800;font-size:1.25rem;box-shadow:0 4px 15px rgba(0,0,0,0.3);">${abbrev(a.name)}</div>
+                        <h5 style="font-weight:800;margin-bottom:4px;color:#ffffff;font-size:1rem;letter-spacing:0.01em;">${a.name}</h5>
+                        <div style="font-size:0.8rem;color:#a0aec0;margin-bottom:4px;">${a.designation||'Alumni'}</div>
+                        <div style="font-size:0.82rem;color:#63b3ed;font-weight:600;margin-bottom:10px;">${a.company||''}</div>
+                        ${a.graduationYear ? `<span class="tag tag-green mb-3 d-inline-block">Class of ${a.graduationYear}</span>` : ''}
+                        <div class="d-flex gap-2 justify-content-center mt-2">
+                            ${a.linkedIn
+                                ? `<a href="${a.linkedIn}" target="_blank" class="btn-primary-dash" style="padding:8px 20px;font-size:0.82rem;text-decoration:none;border-radius:50px;background:linear-gradient(135deg,#0077b5,#005e8e);"><i class="fab fa-linkedin me-1"></i>Connect on LinkedIn</a>`
+                                : `<a href="mailto:${a.email}" class="btn-primary-dash" style="padding:8px 20px;font-size:0.82rem;text-decoration:none;border-radius:50px;"><i class="fas fa-envelope me-1"></i>Connect</a>`
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>`).join('')
+        : '<div class="col-12 text-center py-5 text-muted"><i class="fas fa-users fa-3x mb-3 d-block"></i>No alumni found.</div>';
+}
+
+// ══════════════ RESUME BUILDER ══════════════
+let resumeData = { certs: [], apps: [] };
+let expEntries = [];
+
+// Tab switching
+function rbTab(name, btn) {
+    document.querySelectorAll('.rb-tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.rb-section').forEach(s => s.style.display = 'none');
+    btn.classList.add('active');
+    document.getElementById('rbs-' + name).style.display = '';
+}
+
+// Add experience entry
+function addExpEntry() {
+    const id = Date.now();
+    expEntries.push(id);
+    const container = document.getElementById('rb-exp-list');
+    const div = document.createElement('div');
+    div.className = 'rb-exp-card';
+    div.id = 'exp-' + id;
+    div.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <span style="font-size:0.8rem;font-weight:600;color:var(--text-primary);">Entry #${expEntries.length}</span>
+            <button class="rb-remove" onclick="removeExp(${id})"><i class="fas fa-trash me-1"></i>Remove</button>
+        </div>
+        <input class="form-control mb-2 exp-title" placeholder="Job Title / Role" oninput="updatePreview()">
+        <input class="form-control mb-2 exp-company" placeholder="Company / Organization">
+        <div class="row g-2 mb-2">
+            <div class="col-6"><input class="form-control exp-start" placeholder="Start (e.g. Jan 2024)" oninput="updatePreview()"></div>
+            <div class="col-6"><input class="form-control exp-end" placeholder="End (or Present)" oninput="updatePreview()"></div>
+        </div>
+        <textarea class="form-control exp-desc" rows="2" placeholder="Briefly describe your role and achievements…" oninput="updatePreview()"></textarea>
+    `;
+    container.appendChild(div);
+    updatePreview();
+}
+
+function removeExp(id) {
+    document.getElementById('exp-' + id)?.remove();
+    expEntries = expEntries.filter(e => e !== id);
+    updatePreview();
+}
+
+async function loadResumePage() {
+    // Pre-fill contact fields from profile
+    document.getElementById('rb-name').value    = user.name  || '';
+    document.getElementById('rb-email').value   = user.email || '';
+    if (user.skills) document.getElementById('rb-skills').value = user.skills;
+
+    // Preview header defaults
+    updatePreview();
+
+    // Load certs and apps
+    const [certsData, appsData] = await Promise.all([
+        api('/api/certificates/my'),
+        api('/api/internships/my/applications')
+    ]);
+    resumeData.certs = (certsData?.certificates || []).filter(c => c.status === 'approved');
+    resumeData.apps  = (appsData?.applications  || []).filter(a => a.status === 'hired' || a.status === 'shortlisted');
+
+    // Show auto-loaded certs in skills tab
+    const certsPreview = document.getElementById('rb-certs-preview');
+    if (resumeData.certs.length) {
+        certsPreview.style.fontStyle = 'normal';
+        certsPreview.innerHTML = resumeData.certs.map(c =>
+            `<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;"><i class="fas fa-certificate" style="color:#9b59b6;font-size:0.7rem;"></i><span>${c.title} — ${c.issuer}${c.issueDate?' ('+new Date(c.issueDate).getFullYear()+')':''}</span></div>`
+        ).join('');
+    } else {
+        certsPreview.textContent = 'No verified certificates yet.';
+    }
+
+    // Auto-add internship experience from approved applications
+    if (resumeData.apps.length) {
+        const autoDiv = document.getElementById('rb-auto-exp');
+        autoDiv.innerHTML = `<p style="font-size:0.77rem;color:#9b59b6;margin-bottom:8px;"><i class="fas fa-magic me-1"></i>Auto-loaded from your internship applications:</p>` +
+            resumeData.apps.map(a => `<div style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:3px;">• ${a.internship?.title||'Internship'} @ ${a.internship?.company||'—'}</div>`).join('');
+    }
+
+    // Attach live listeners
+    ['rb-name','rb-email','rb-phone','rb-location','rb-linkedin','rb-summary','rb-skills','rb-langs','rb-extra','rb-gpa'].forEach(id => {
+        document.getElementById(id)?.addEventListener('input', updatePreview);
+    });
+    updatePreview();
+}
+
+function updatePreview() {
+    const name     = (document.getElementById('rb-name')?.value || user?.name || '').trim();
+    const email    = (document.getElementById('rb-email')?.value || '').trim();
+    const phone    = (document.getElementById('rb-phone')?.value || '').trim();
+    const location = (document.getElementById('rb-location')?.value || '').trim();
+    const linkedin = (document.getElementById('rb-linkedin')?.value || '').trim();
+    const summary  = (document.getElementById('rb-summary')?.value || '').trim();
+    const skills   = (document.getElementById('rb-skills')?.value || '').trim();
+    const langs    = (document.getElementById('rb-langs')?.value || '').trim();
+    const extra    = (document.getElementById('rb-extra')?.value || '').trim();
+    const gpa      = (document.getElementById('rb-gpa')?.value || '').trim();
+
+    // Header
+    document.getElementById('prev-name').textContent  = name || 'Your Name';
+    document.getElementById('prev-title').textContent = [user?.department, 'Jinnah University for Women'].filter(Boolean).join(' · ');
+    document.getElementById('prev-email-val').textContent   = email;
+    document.getElementById('prev-phone-val').textContent   = phone;
+    document.getElementById('prev-location-val').textContent = location;
+    document.getElementById('prev-linkedin-val').textContent = linkedin;
+    document.getElementById('prev-phone-chip').style.display   = phone ? '' : 'none';
+    document.getElementById('prev-location-chip').style.display = location ? '' : 'none';
+    document.getElementById('prev-linkedin-chip').style.display = linkedin ? '' : 'none';
+
+    // Summary
+    const sumSec = document.getElementById('prev-summary-sec');
+    if (summary) { sumSec.style.display=''; document.getElementById('prev-summary-text').textContent = summary; }
+    else sumSec.style.display = 'none';
+
+    // Education
+    document.getElementById('prev-edu-dept').textContent = [user?.department ? `Bachelor of Science in ${user.department}` : 'Bachelor of Science', user?.year ? `Year ${user.year}` : ''].filter(Boolean).join(' · ');
+    const gpaSec = document.getElementById('prev-edu-gpa');
+    if (gpa) { gpaSec.style.display=''; gpaSec.textContent = `CGPA: ${gpa}`; }
+    else gpaSec.style.display = 'none';
+
+    // Experience — manual entries
+    const expCards = document.querySelectorAll('.rb-exp-card');
+    const expItems = [];
+    expCards.forEach(card => {
+        const title   = card.querySelector('.exp-title')?.value.trim();
+        const company = card.querySelector('.exp-company')?.value.trim();
+        const start   = card.querySelector('.exp-start')?.value.trim();
+        const end     = card.querySelector('.exp-end')?.value.trim();
+        const desc    = card.querySelector('.exp-desc')?.value.trim();
+        if (title || company) expItems.push({ title, company, start, end, desc });
+    });
+    // Auto-loaded from applications
+    resumeData.apps.forEach(a => {
+        expItems.push({ title: a.internship?.title || 'Intern', company: a.internship?.company || '—', start: '', end: '', desc: `${a.internship?.type||''} · ${a.internship?.location||''}`.trim() });
+    });
+    const expSec = document.getElementById('prev-exp-sec');
+    if (expItems.length) {
+        expSec.style.display = '';
+        document.getElementById('prev-exp-list').innerHTML = expItems.map(e => `
+            <div style="margin-bottom:10px;">
+                <div style="display:flex;justify-content:space-between;flex-wrap:wrap;">
+                    <div style="font-weight:700;color:#1a1a2e;font-size:0.84rem;">${e.title||'Role'} ${e.company?`<span style="color:#555;font-weight:400;">at ${e.company}</span>`:''}</div>
+                    ${e.start||e.end ? `<div style="font-size:0.75rem;color:#888;">${[e.start,e.end].filter(Boolean).join(' – ')}</div>` : ''}
+                </div>
+                ${e.desc ? `<div style="color:#555;font-size:0.78rem;margin-top:2px;">${e.desc}</div>` : ''}
+            </div>`).join('');
+    } else expSec.style.display = 'none';
+
+    // Skills
+    const skillSec = document.getElementById('prev-skills-sec');
+    if (skills) {
+        skillSec.style.display = '';
+        document.getElementById('prev-skills-tags').innerHTML = skills.split(',').map(s => s.trim()).filter(Boolean).map(s => `<span class="prev-skill-tag">${s}</span>`).join('');
+    } else skillSec.style.display = 'none';
+
+    // Certs
+    const certSec = document.getElementById('prev-certs-sec');
+    if (resumeData.certs.length) {
+        certSec.style.display = '';
+        document.getElementById('prev-certs-list').innerHTML = resumeData.certs.map(c =>
+            `<div style="margin-bottom:3px;">• <strong>${c.title}</strong> — ${c.issuer}${c.issueDate?' ('+new Date(c.issueDate).getFullYear()+')':''}</div>`
+        ).join('');
+    } else certSec.style.display = 'none';
+
+    // Languages
+    const langSec = document.getElementById('prev-langs-sec');
+    if (langs) { langSec.style.display=''; document.getElementById('prev-langs-text').textContent = langs; }
+    else langSec.style.display = 'none';
+
+    // Achievements
+    const extraSec = document.getElementById('prev-extra-sec');
+    if (extra) {
+        extraSec.style.display = '';
+        document.getElementById('prev-extra-text').innerHTML = extra.split('\n').filter(l=>l.trim()).map(l=>`<div style="margin-bottom:2px;">• ${l.trim()}</div>`).join('');
+    } else extraSec.style.display = 'none';
+}
+
+async function generateResume() {
+    const { jsPDF } = window.jspdf;
+    const doc  = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const pageW = 210, pageH = 297;
+    const sideW = 68, mainX = sideW + 8, mainW = pageW - mainX - 12;
+    const purple = [108, 92, 231], darkNav = [26, 26, 46], white = [255,255,255];
+    const darkTxt = [33, 37, 41], mutedTxt = [100, 110, 120], accentTxt = [108, 92, 231];
+    const sideTextW = sideW - 16;
+
+    // Read form values
+    const name     = document.getElementById('rb-name').value.trim()     || user?.name || 'Your Name';
+    const email    = document.getElementById('rb-email').value.trim()    || '';
+    const phone    = document.getElementById('rb-phone').value.trim()    || '';
+    const location = document.getElementById('rb-location').value.trim() || '';
+    const linkedin = document.getElementById('rb-linkedin').value.trim() || '';
+    const portfolio= document.getElementById('rb-portfolio').value.trim()|| '';
+    const summary  = document.getElementById('rb-summary').value.trim()  || '';
+    const skills   = document.getElementById('rb-skills').value.trim()   || '';
+    const langs    = document.getElementById('rb-langs').value.trim()    || '';
+    const extra    = document.getElementById('rb-extra').value.trim()    || '';
+    const gpa      = document.getElementById('rb-gpa').value.trim()      || '';
+    const hobbies  = document.getElementById('rb-hobbies').value.trim()  || '';
+
+    // Collect manual experience entries
+    const expItems = [];
+    document.querySelectorAll('.rb-exp-card').forEach(card => {
+        const t = card.querySelector('.exp-title')?.value.trim();
+        const c = card.querySelector('.exp-company')?.value.trim();
+        const s = card.querySelector('.exp-start')?.value.trim();
+        const e = card.querySelector('.exp-end')?.value.trim();
+        const d = card.querySelector('.exp-desc')?.value.trim();
+        if (t || c) expItems.push({ title:t, company:c, start:s, end:e, desc:d });
+    });
+    resumeData.apps.forEach(a => {
+        expItems.push({ title: a.internship?.title||'Intern', company: a.internship?.company||'—', start:'', end:'', desc: [a.internship?.type, a.internship?.location].filter(Boolean).join(' · ') });
+    });
+
+    // ══════ SIDEBAR ══════
+    doc.setFillColor(...darkNav);
+    doc.rect(0, 0, sideW, pageH, 'F');
+
+    // Name in sidebar header
+    doc.setFillColor(...purple);
+    doc.rect(0, 0, sideW, 48, 'F');
+
+    // Initials circle
+    const initials = name.split(' ').map(w=>w[0]?.toUpperCase()||'').slice(0,2).join('');
+    doc.setFillColor(255,255,255);
+    doc.circle(sideW/2, 20, 11, 'F');
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(11);
+    doc.setTextColor(...purple);
+    doc.text(initials, sideW/2, 23.5, { align:'center' });
+
+    // Name below circle
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(8.5);
+    doc.setTextColor(...white);
+    const nameWrapped = doc.splitTextToSize(name, sideW - 8);
+    doc.text(nameWrapped, sideW/2, 37, { align:'center' });
+
+    let sy = 55; // sidebar y cursor
+
+    function sideSec(title) {
+        if (sy > 278) return false;
+        doc.setFont('helvetica','bold');
+        doc.setFontSize(7);
+        doc.setTextColor(...purple);
+        doc.text(title.toUpperCase(), 8, sy);
+        sy += 3;
+        doc.setDrawColor(...purple);
+        doc.setLineWidth(0.3);
+        doc.line(8, sy, sideW - 8, sy);
+        sy += 4;
+        doc.setTextColor(200, 200, 220);
+        return true;
+    }
+
+    function sideText(txt, opts={}) {
+        if (!txt || sy > 280) return;
+        const wrapped = doc.splitTextToSize(txt, sideTextW);
+        doc.setFont('helvetica', opts.bold ? 'bold' : 'normal');
+        doc.setFontSize(opts.size || 8);
+        doc.setTextColor(...(opts.color || [200,200,220]));
+        doc.text(wrapped, 8, sy);
+        sy += wrapped.length * (opts.lh || 4.2) + (opts.gap || 1.5);
+    }
+
+    // Contact
+    if (sideSec('Contact')) {
+        if (email)    { sideText('✉  ' + email, { size: 7.5 }); }
+        if (phone)    { sideText('✆  ' + phone, { size: 7.5 }); }
+        if (location) { sideText('⚲  ' + location, { size: 7.5 }); }
+        if (linkedin) { sideText('in  ' + linkedin, { size: 7.5 }); }
+        if (portfolio){ sideText('⌂  ' + portfolio, { size: 7.5 }); }
+        sy += 3;
+    }
+
+    // Skills
+    if (skills && sideSec('Skills')) {
+        skills.split(',').map(s=>s.trim()).filter(Boolean).forEach(sk => {
+            sideText('• ' + sk, { size: 8 });
+        });
+        sy += 3;
+    }
+
+    // Languages
+    if (langs && sideSec('Languages')) {
+        langs.split(',').map(s=>s.trim()).filter(Boolean).forEach(l => sideText('• ' + l, { size:8 }));
+        sy += 3;
+    }
+
+    // Hobbies
+    if (hobbies && sideSec('Interests')) {
+        sideText(hobbies, { size:8 });
+        sy += 3;
+    }
+
+    // ══════ MAIN COLUMN ══════
+    let my = 18; // main y cursor
+
+    function mainSec(title) {
+        if (my > 270) { doc.addPage(); my = 15; doc.setFillColor(...darkNav); doc.rect(0,0,sideW,pageH,'F'); }
+        doc.setFont('helvetica','bold');
+        doc.setFontSize(9);
+        doc.setTextColor(...accentTxt);
+        doc.text(title.toUpperCase(), mainX, my);
+        my += 2.5;
+        doc.setDrawColor(...purple);
+        doc.setLineWidth(0.4);
+        doc.line(mainX, my, mainX + mainW, my);
+        my += 5;
+        doc.setTextColor(...darkTxt);
+    }
+
+    function mainText(txt, opts={}) {
+        if (!txt || my > 278) return;
+        const wrapped = doc.splitTextToSize(txt, mainW - (opts.indent||0));
+        doc.setFont('helvetica', opts.bold?'bold':'normal');
+        doc.setFontSize(opts.size || 9.5);
+        doc.setTextColor(...(opts.color || darkTxt));
+        doc.text(wrapped, mainX + (opts.indent||0), my);
+        my += wrapped.length * (opts.lh || 5) + (opts.gap || 1);
+    }
+
+    // Department / title line under header
+    const deptLine = [user?.department, 'Jinnah University for Women, Karachi'].filter(Boolean).join('  ·  ');
+    doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...mutedTxt);
+    doc.text(deptLine, mainX, my); my += 8;
+
+    // Summary
+    if (summary) {
+        mainSec('Professional Summary');
+        mainText(summary, { color: mutedTxt, lh: 4.5, gap: 4 });
+    }
+
+    // Experience
+    if (expItems.length) {
+        mainSec('Experience');
+        expItems.forEach(e => {
+            const rightText = [e.start, e.end].filter(Boolean).join(' – ');
+            doc.setFont('helvetica','bold'); doc.setFontSize(9.5); doc.setTextColor(...darkTxt);
+            doc.text(e.title || 'Role', mainX, my);
+            if (rightText) {
+                doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(...mutedTxt);
+                doc.text(rightText, mainX + mainW, my, { align:'right' });
+            }
+            my += 5;
+            if (e.company) { mainText(e.company, { color: accentTxt, size: 8.5, gap: 2 }); }
+            if (e.desc)    { mainText(e.desc, { color: mutedTxt, size: 8.5, lh: 4.2, indent: 2 }); }
+            my += 2;
+        });
+    }
+
+    // Education
+    mainSec('Education');
+    doc.setFont('helvetica','bold'); doc.setFontSize(9.5); doc.setTextColor(...darkTxt);
+    doc.text('Jinnah University for Women, Karachi', mainX, my); my += 5;
+    const deptYr = [user?.department ? 'BS ' + user.department : 'Bachelor of Science', user?.year ? 'Year ' + user.year : ''].filter(Boolean).join(' · ');
+    mainText(deptYr, { color: mutedTxt, size: 8.5 });
+    if (gpa) { mainText('CGPA: ' + gpa, { color: accentTxt, size: 8.5, bold: true }); }
+    my += 2;
+
+    // Certifications
+    if (resumeData.certs.length) {
+        mainSec('Certifications');
+        resumeData.certs.forEach(c => {
+            const yr = c.issueDate ? ' (' + new Date(c.issueDate).getFullYear() + ')' : '';
+            doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...darkTxt);
+            doc.text('• ' + (c.title||''), mainX, my);
+            doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...mutedTxt);
+            const issLine = (c.issuer||'') + yr;
+            if (issLine) { my+=4.5; mainText(issLine, { indent:4, color: mutedTxt, size:8.5, gap:2 }); }
+            else my += 5;
+        });
+        my += 2;
+    }
+
+    // Achievements
+    if (extra) {
+        mainSec('Achievements & Activities');
+        extra.split('\n').filter(l=>l.trim()).forEach(l => {
+            mainText('• ' + l.trim(), { size: 9, gap: 2 });
+        });
+        my += 2;
+    }
+
+    // ── Footer on all pages ───────────────────────────────
+    const total = doc.internal.getNumberOfPages();
+    for (let p = 1; p <= total; p++) {
+        doc.setPage(p);
+        doc.setFontSize(7); doc.setTextColor(160,160,180);
+        doc.text(`Generated by CareerIS · Jinnah University for Women`, pageW/2, pageH - 4, { align:'center' });
+    }
+
+    const fname = `${(name).replace(/\s+/g,'_')}_Resume.pdf`;
+    doc.save(fname);
+
+    // Smart match internships based on resume content (skills + experience + summary)
+    matchInternshipsToResume({ skills, summary, extra, expItems });
+}
+
+// ── Smart Recommendations (keyword matching, no external AI needed) ──
+// Common tech-skill synonyms so "JS" matches "JavaScript", "ReactJS" matches "React", etc.
+const SKILL_SYNONYMS = {
+    'js':'javascript', 'ts':'typescript', 'reactjs':'react', 'react.js':'react', 'nodejs':'node', 'node.js':'node',
+    'vuejs':'vue', 'vue.js':'vue', 'py':'python', 'postgres':'postgresql', 'ml':'machinelearning',
+    'ai':'artificialintelligence', 'db':'database', 'oop':'objectorientedprogramming', 'ui':'userinterface',
+    'ux':'userexperience', 'mongo':'mongodb', 'golang':'go', 'csharp':'c#', 'nextjs':'next', 'next.js':'next',
+    'expressjs':'express', 'express.js':'express', 'html5':'html', 'css3':'css'
+};
+const GENERIC_NOISE = new Set(['intern','internship','student','company','work','job','role','team','looking','apply','remote','paid','unpaid','position','opportunity','year','years','experience','good','strong']);
+
+function normalizeToken(t) {
+    t = t.toLowerCase().replace(/[^a-z0-9+#.]/g, '');
+    if (SKILL_SYNONYMS[t]) t = SKILL_SYNONYMS[t];
+    if (t.length > 3 && t.endsWith('s') && !t.endsWith('ss')) t = t.slice(0, -1); // crude de-pluralize
+    return t;
+}
+
+function tokenize(text, { dropGeneric = false } = {}) {
+    return (text || '').split(/[^a-zA-Z0-9+#.]+/)
+        .map(normalizeToken)
+        .filter(t => t.length > 1 && (!dropGeneric || !GENERIC_NOISE.has(t)));
+}
+
+async function matchInternshipsToResume({ skills, summary, extra, expItems }) {
+    const section = document.getElementById('resumeRecoSection');
+    const list    = document.getElementById('resumeRecoList');
+    section.style.display = 'block';
+    list.innerHTML = '<div class="col-12 text-center text-muted py-3"><i class="fas fa-spinner fa-spin me-1"></i>Asking AI to find your best matches…</div>';
+
+    const experienceText = expItems.map(e => [e.title, e.company, e.desc].filter(Boolean).join(' at ')).join(' | ');
+
+    try {
+        const aiData = await api('/api/internships/ai-recommend', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ skills, summary, experience: experienceText, extra })
+        });
+
+        if (aiData?.success) {
+            renderAiRecommendations(aiData.recommendations || []);
+            return;
+        }
+        // AI not configured or failed — fall back to free local matching
+        console.warn('AI recommendations unavailable, falling back to keyword matching:', aiData?.message);
+    } catch (e) {
+        console.warn('AI recommendation request failed, falling back to keyword matching:', e);
+    }
+
+    matchInternshipsToResumeLocal({ skills, summary, extra, expItems });
+}
+
+function renderAiRecommendations(recommendations) {
+    const list = document.getElementById('resumeRecoList');
+    if (!recommendations.length) {
+        list.innerHTML = '<div class="col-12 text-center text-muted py-3">AI couldn\'t find a strong match yet — add more specific skills or experience to your resume.</div>';
+        return;
+    }
+    list.innerHTML = recommendations.map(({ internship: i, matchScore, reason }) => `
+        <div class="col-md-6">
+            <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px;height:100%;display:flex;flex-direction:column;">
+                <div style="display:flex;justify-content:between;align-items:start;gap:8px;">
+                    <div style="flex:1;">
+                        <div style="font-weight:700;font-size:0.92rem;">${i.title}</div>
+                        <div style="font-size:0.8rem;color:var(--text-muted);">${i.company || ''}</div>
+                    </div>
+                    <span style="background:rgba(108,92,231,0.15);color:#a29bfe;font-size:0.7rem;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap;"><i class="fas fa-wand-magic-sparkles me-1"></i>${matchScore}% match</span>
+                </div>
+                <div style="margin:10px 0;font-size:0.78rem;color:var(--text-secondary);font-style:italic;">"${reason || ''}"</div>
+                <div style="margin-top:auto;display:flex;gap:8px;">
+                    <button class="btn-outline-dash flex-fill" style="justify-content:center;font-size:0.8rem;" onclick="viewInternship('${i._id}')"><i class="fas fa-eye me-1"></i>View</button>
+                    <button class="btn-primary-dash flex-fill" style="justify-content:center;font-size:0.8rem;" onclick="confirmThenApply('${i._id}','${(i.title||'').replace(/'/g,"\\'")}','${i.applyLink||''}')">Apply</button>
+                </div>
+            </div>
+        </div>`).join('');
+}
+
+// ── Fallback: free keyword matching (used only if AI isn't configured/available) ──
+async function matchInternshipsToResumeLocal({ skills, summary, extra, expItems }) {
+    const list = document.getElementById('resumeRecoList');
+    list.innerHTML = '<div class="col-12 text-center text-muted py-3"><i class="fas fa-spinner fa-spin me-1"></i>Finding matches based on your resume…</div>';
+
+    // Primary signal: the explicit Skills field (weighted heavily).
+    const skillTokens = new Set(tokenize(skills));
+    // Secondary signal: summary/experience/achievements (weighted lightly, generic words dropped).
+    const expText = expItems.map(e => [e.title, e.desc].filter(Boolean).join(' ')).join(' ');
+    const contextTokens = new Set(tokenize([summary, extra, expText].filter(Boolean).join(' '), { dropGeneric: true }));
+
+    if (skillTokens.size === 0 && contextTokens.size === 0) {
+        list.innerHTML = '<div class="col-12 text-center text-muted py-3">Add some skills or experience to your resume to get recommendations.</div>';
+        return;
+    }
+
+    const data = await api('/api/internships');
+    const internships = data?.internships || [];
+
+    const scored = internships.map(i => {
+        const iSkillTokens   = new Set(tokenize((i.skills || []).join(' ')));
+        const iContextTokens = new Set(tokenize([i.title, i.description].filter(Boolean).join(' '), { dropGeneric: true }));
+
+        const skillMatches   = [...skillTokens].filter(t => iSkillTokens.has(t) || iContextTokens.has(t));
+        const contextMatches = [...contextTokens].filter(t => iSkillTokens.has(t) || iContextTokens.has(t));
+
+        // Weighted score: a matched explicit skill counts 3x a matched context word.
+        const score   = skillMatches.length * 3 + contextMatches.length * 1;
+        const maxPossible = Math.max(1, skillTokens.size * 3 + contextTokens.size * 1);
+        const percent  = Math.min(100, Math.round((score / maxPossible) * 100));
+
+        return { internship: i, score, percent, matched: [...new Set([...skillMatches, ...contextMatches])] };
+    })
+    .filter(x => x.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 6);
+
+    if (!scored.length) {
+        list.innerHTML = '<div class="col-12 text-center text-muted py-3">No close matches found yet — add more specific skills (e.g. "React", "Python", "SQL") to your resume for better recommendations.</div>';
+        return;
+    }
+
+    list.innerHTML = scored.map(({ internship: i, matched, percent }) => `
+        <div class="col-md-6">
+            <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px;height:100%;display:flex;flex-direction:column;">
+                <div style="display:flex;justify-content:between;align-items:start;gap:8px;">
+                    <div style="flex:1;">
+                        <div style="font-weight:700;font-size:0.92rem;">${i.title}</div>
+                        <div style="font-size:0.8rem;color:var(--text-muted);">${i.company || ''}</div>
+                    </div>
+                    <span style="background:rgba(108,92,231,0.15);color:#a29bfe;font-size:0.7rem;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap;"><i class="fas fa-bullseye me-1"></i>${percent}% match</span>
+                </div>
+                <div style="margin:10px 0;display:flex;flex-wrap:wrap;gap:5px;">
+                    ${matched.slice(0,6).map(m => `<span style="background:rgba(46,204,113,0.12);color:#2ecc71;font-size:0.7rem;padding:2px 8px;border-radius:12px;">${m}</span>`).join('')}
+                </div>
+                <div style="margin-top:auto;display:flex;gap:8px;">
+                    <button class="btn-outline-dash flex-fill" style="justify-content:center;font-size:0.8rem;" onclick="viewInternship('${i._id}')"><i class="fas fa-eye me-1"></i>View</button>
+                    <button class="btn-primary-dash flex-fill" style="justify-content:center;font-size:0.8rem;" onclick="confirmThenApply('${i._id}','${(i.title||'').replace(/'/g,"\\'")}','${i.applyLink||''}')">Apply</button>
+                </div>
+            </div>
+        </div>`).join('');
+}
+
+// ── PROFILE ──────────────────────────────────────────────
+function loadProfile() {
+    const initials2 = (user.name||'S').split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
+    document.getElementById('profileAvatar').textContent = initials2;
+    document.getElementById('profileName').textContent   = user.name || '—';
+    document.getElementById('profileEmail').textContent  = user.email || '—';
+    document.getElementById('editName').value      = user.name || '';
+    document.getElementById('editStudentId').value = user.studentId || '';
+    document.getElementById('editSkills').value    = Array.isArray(user.skills) ? user.skills.join(', ') : (user.skills||'');
+    const deptSel = document.getElementById('editDept');
+    const yearSel = document.getElementById('editYear');
+    for (const opt of deptSel.options) if (opt.value === user.department) { opt.selected = true; break; }
+    for (const opt of yearSel.options) if (opt.value === user.year)       { opt.selected = true; break; }
+}
+
+async function saveProfile() {
+    const btn = document.getElementById('saveProfileBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving...';
+
+    const payload = {
+        name:      document.getElementById('editName').value.trim(),
+        studentId: document.getElementById('editStudentId').value.trim(),
+        department:document.getElementById('editDept').value,
+        year:      document.getElementById('editYear').value,
+        skills:    document.getElementById('editSkills').value.trim()
+    };
+
+    const data = await api('/api/auth/profile', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    });
+
+    if (data?.success) {
+        // Update localStorage
+        const updated = { ...user, ...data.user };
+        localStorage.setItem('careeris_user', JSON.stringify(updated));
+        showAlert('profileAlert', 'Profile updated successfully!', 'success');
+        document.getElementById('sidebarName').textContent = updated.name;
+        document.getElementById('profileName').textContent = updated.name;
+    } else {
+        showAlert('profileAlert', data?.message || 'Update failed.', 'error');
+    }
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-save me-2"></i>Save Changes';
+}
+
+// ── UTILITIES ────────────────────────────────────────────
+function abbrev(name) {
+    if (!name) return '?';
+    return name.split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2) || name[0].toUpperCase();
+}
+
+function statusBadge(status) {
+    const map = {
+        pending:     ['status-pending','Pending'],
+        review:      ['status-review','In Review'],
+        approved:    ['status-approved','Accepted ✓'],
+        accepted:    ['status-approved','Accepted ✓'],
+        shortlisted: ['status-review','Shortlisted'],
+        rejected:    ['status-rejected','Rejected'],
+        withdrawn:   ['status-rejected','Withdrawn']
+    };
+    const [cls,label] = map[status] || ['status-pending', status||'Pending'];
+    return `<span class="status-badge ${cls}">${label}</span>`;
+}
+
+function certStatusBadge(status) {
+    if (status === 'approved') return '<span class="status-badge status-approved mb-2 d-inline-flex"><i class="fas fa-check me-1"></i>Verified</span>';
+    if (status === 'rejected') return '<span class="status-badge status-rejected mb-2 d-inline-flex"><i class="fas fa-times me-1"></i>Rejected</span>';
+    return '<span class="status-badge status-pending mb-2 d-inline-flex"><i class="fas fa-clock me-1"></i>Pending Verification</span>';
+}
+
+function showAlert(containerId, msg, type) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    el.className = type === 'success'
+        ? 'alert alert-success d-flex align-items-center gap-2 mb-3'
+        : 'alert alert-danger d-flex align-items-center gap-2 mb-3';
+    el.innerHTML = `<i class="fas ${type==='success'?'fa-check-circle':'fa-exclamation-circle'}"></i>${msg}`;
+    el.style.display = 'flex';
+    if (type === 'success') setTimeout(() => { el.style.display = 'none'; }, 4000);
+}
+
+function logout() {
+    localStorage.removeItem('careeris_token');
+    localStorage.removeItem('careeris_user');
+    window.location.href = '/index.html';
+}
+
+// ── ANNOUNCEMENTS PAGE ────────────────────────────────────
+async function loadAnnouncementsPage() {
+    const container = document.getElementById('annPageList');
+    container.innerHTML = '<div class="text-center py-5" style="color:#6b7280;"><i class="fas fa-spinner fa-spin fa-2x"></i></div>';
+    const data = await api('/api/admin/announcements');
+    const anns = (data?.announcements || []).filter(a => a.status === 'published');
+
+    // Clear badge once user views page
+    const badge = document.getElementById('annBadge');
+    if (badge) badge.style.display = 'none';
+
+    if (!anns.length) {
+        container.innerHTML = '<div class="text-center py-5" style="color:#6b7280;"><i class="fas fa-bullhorn fa-3x mb-3 d-block"></i>No announcements yet.</div>';
+        return;
+    }
+
+    const pCfg = {
+        normal:    { color:'#10b981', bg:'rgba(16,185,129,0.07)',  border:'rgba(16,185,129,0.25)',  label:'NORMAL'    },
+        important: { color:'#3b82f6', bg:'rgba(59,130,246,0.07)',  border:'rgba(59,130,246,0.25)',  label:'IMPORTANT' },
+        urgent:    { color:'#ef4444', bg:'rgba(239,68,68,0.07)',   border:'rgba(239,68,68,0.25)',   label:'URGENT'    },
+    };
+
+    container.innerHTML = anns.map(a => {
+        const cfg  = pCfg[a.priority] || pCfg.normal;
+        const date = new Date(a.createdAt).toLocaleDateString('en-US', { weekday:'short', year:'numeric', month:'short', day:'numeric' });
+        const aud  = a.audience === 'all' ? 'Everyone' : a.audience === 'students' ? 'Students' : 'Alumni';
+        return `
+        <div class="card" style="border-left:4px solid ${cfg.color} !important;background:${cfg.bg} !important;">
+            <div class="card-body p-4">
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;">
+                    <span style="font-size:0.72rem;font-weight:800;color:${cfg.color};letter-spacing:1.5px;text-transform:uppercase;">${cfg.label}</span>
+                    <span style="font-size:0.78rem;color:#6b7280;"><i class="fas fa-calendar-alt me-1"></i>${date}</span>
+                    <span style="font-size:0.78rem;color:#6b7280;"><i class="fas fa-users me-1"></i>${aud}</span>
+                </div>
+                <h5 style="color:#f0f2f5;font-weight:700;margin-bottom:6px;word-break:break-word;">${a.title}</h5>
+                <p style="color:#9ba3af;font-size:0.88rem;margin:0;line-height:1.6;word-break:break-word;overflow-wrap:break-word;white-space:pre-wrap;">${a.message}</p>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+// Show badge when new announcements exist
+async function checkAnnBadge() {
+    const data = await api('/api/admin/announcements');
+    const count = (data?.announcements || []).filter(a => a.status === 'published').length;
+    const badge = document.getElementById('annBadge');
+    if (badge && count > 0) {
+        badge.textContent = count;
+        badge.style.display = 'inline';
+    }
+}
+
+// ── Initial Load ─────────────────────────────────────────
+loadDashboard();
+checkAnnBadge();
+</script>
+<!-- QR Code Modal -->
+<div class="modal fade" id="qrModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius:16px;border:none;overflow:hidden;">
+            <div class="modal-header" style="background:linear-gradient(135deg,#6c5ce7,#a29bfe);color:white;border:none;">
+                <h5 class="modal-title"><i class="fas fa-qrcode me-2"></i>Certificate QR Code</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center p-4">
+                <p style="font-size:.85rem;color:#6c757d;margin-bottom:16px;">Scan this QR code to verify the authenticity of:</p>
+                <strong id="qrModalTitle" style="color:#1a1a2e;display:block;margin-bottom:20px;"></strong>
+                <img id="qrModalImage" src="" alt="QR Code" style="border-radius:12px;border:3px solid #f0f0f0;box-shadow:0 8px 30px rgba(0,0,0,.1);" width="200" height="200">
+                <div style="margin-top:16px;padding:10px 14px;background:#f8f9fa;border-radius:8px;word-break:break-all;">
+                    <a id="qrModalLink" href="#" target="_blank" style="font-size:.72rem;color:#6c5ce7;text-decoration:none;"></a>
+                </div>
+                <p style="font-size:.75rem;color:#adb5bd;margin-top:12px;"><i class="fas fa-shield-alt me-1"></i>Verified by CareerIS · Jinnah University for Women</p>
+            </div>
+            <div class="modal-footer" style="border:none;justify-content:center;padding-bottom:20px;">
+                <a id="qrModalLink2" href="#" target="_blank" class="btn" style="background:linear-gradient(135deg,#6c5ce7,#a29bfe);color:white;border-radius:50px;padding:8px 24px;font-size:.85rem;" onclick="document.getElementById('qrModalLink2').href=document.getElementById('qrModalLink').href">
+                    <i class="fas fa-external-link-alt me-1"></i>Open Verify Page
+                </a>
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal" style="border-radius:50px;padding:8px 24px;font-size:.85rem;">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
